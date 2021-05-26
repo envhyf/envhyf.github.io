@@ -1,0 +1,195 @@
+title: WRF-Chem安装札记
+date: 2016-08-10 23:32:26
+
+categories:
+
+- Research
+
+tags: 
+
+- Air quality
+- Linux 
+
+- Model
+
+---
+
+实验室的服务器的四块硬盘全坏，而未进行备份，不得不将以前的内容全部重装一次。Python部分有Anaconda的分发包，比较容易。但常用的WRF模型却研究了好久。  
+
+之前，服务器采用的是ifort编译器。重装后，系统中只有gcc, 版本也比较旧(4.1.2)。 WRF编译失败，我认为原因可能是gcc太旧了。 因而，我考虑升级gcc的版本，同时由于本人不是root用户，也不能借助`yum install gcc`的简单办法，只得step by step地做。  
+
+本文记录了自gcc升级至WRF-Chem成功安装的全部流程，作为今后类似工作的参考。
+<!--more-->
+
+## <font color="blue"> GCC的安装</font> 
+
+遵循GCC官网中的介绍，由于GCC的安装有赖于GMP, MPFR, MPC等库，而自己以前是逐个编译。官网并不推荐这种方法,而推荐采用如下所示的方案。 GCC文件夹内含有download_prerequisites的信息，可自行直接下载有关依赖资料库，避免自己选择库文件时的版本不一致。      
+[GCC官方网址](https://gcc.gnu.org/wiki/InstallingGCC)
+
+```bash
+#下载某个版本的gcc(尽量选择较新的版本)后
+tar xzf gcc-4.6.2.tar.gz
+cd gcc-4.6.2
+./contrib/download_prerequisites ## 按照依赖资料库
+cd ..
+mkdir objdir ## 编译信息储存的文件夹设为objdir
+cd objdir
+$./../gcc-4.6.2/configure --prefix=$HOME/lib/gcc-4.6.2 \
+    --enable-languages=c,c++,fortran,go ## $HOME/gcc-4.6.2即为安装位置
+make
+make install 
+cd ..
+```
+
+gcc的编译过程比较慢，需要等待一会儿
+
+安装完毕后，打开~/.bashrc, 在其中添加一行:      
+
+`export LD_LIBRARY_PATH=$HOME/gcc-4.9.4/lib64`
+
+利用`gcc -v`核查版本，查询是否安装成功
+
+## <font color="blue">WRF与WPS有关依赖库的安装</font>
+
+主要依赖的资料库包括mpich, netcdf, Jasper,libpng以及zlib。zlib和libpng间有先后关系，需先编译zlib。
+
+### NETCDF安装  
+此处安装的是用以支持NetCDF格式文件创建、访问和共享的函式库。安装步骤如下:      
+
+```bash
+# 在~/.bashrc中添加以下逐行
+export DIR=$HOME/lib
+export PATH="$DIR/netcdf/bin:$PATH"
+export NETCDF="$DIR/netcdf"
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+export FCFLAGS=-m64
+export F77=gfortran
+export FFLAGS=-m64
+```
+
+下载NETCDF库文件，进行解压与编译: 
+
+```bash
+tar xzvf netcdf-4.1.3.tar.gz     #or just .tar if no .gz present
+cd netcdf-4.1.3
+./configure --prefix=$DIR/netcdf --disable-dap \
+     --disable-netcdf-4 --disable-shared
+make
+make install
+setenv PATH $DIR/netcdf/bin:$PATH
+setenv NETCDF $DIR/netcdf
+cd ..
+```
+若安装成功，terminal会出现“Congratulations, xxx“之类的输出。
+
+
+### MPICH安装  
+MPICH用以支持WRF等数值模式的并行计算，安装步骤如下:     
+
+```
+tar xzvf mpich-3.0.4.tar.gz  
+cd mpich-3.0.4
+./configure --prefix=$DIR/mpich
+make
+make install
+vim ~/.bashrc
+export PATH="$DIR/mpich/bin:$PATH"
+cd ..
+```
+
+### zlib, libpng, Jasper安装
+zlib是WPS程序用以提取grib格式数据的必需函式库，安装步骤如下:
+
+```bash
+vim ~/.bashrc
+export LDFLAGS=-L/diks2/hyf/lib/grib2/lib
+export CPPFLAGS=-I/disk2/hyf/lib/grib2/include
+tar xzvf zlib-1.2.7.tar.gz  
+cd zlib-1.2.7
+./configure --prefix=$DIR/grib2
+make
+make install
+cd ..
+```
+
+
+libpng同样是WPS程序用以提取grib格式数据的必需函式库，安装步骤如下:
+```bash
+tar xzvf libpng-1.2.50.tar.gz     
+cd libpng-1.2.50
+./configure --prefix=$DIR/grib2
+make
+make install
+cd ..
+```
+
+
+Jasper同样是WPS程序用以提取grib格式数据的必需函式库，安装步骤如下:
+```bash
+tar xzvf jasper-1.900.1.tar.gz
+cd jasper-1.900
+./configure --prefix=$DIR/grib2
+make
+make install
+cd ..
+```
+
+三者均安装在grib2这个文件夹下。
+
+## <font color="blue">WRF和WPS的安装</font>
+
+请注意, WRF及其前处理WPS工具应安装于同一文件夹下.
+
+### WRF的安装
+
+```bash
+## 解压WRFV3.8
+gunzip WRFV3.8.TAR.gz
+tar -xf WRFV3.8.TAR
+cd WRFV3
+mv ../chem . ## 将预先下载好的wrf-chem解压文件放到该文件夹下
+```
+
+开始编译,`./configure`.
+对编译器和并行方式进行选择，此处我采用的是gfortran编译器以及dmpr并行方式。      
+
+>dmpr指的是分布式并行方式，与smpr共享内存型并性方式有所区别。一般将这两类并行方式称为OpenMP(OMP)和Message Passing Interface(MPI)。_  
+
+键入:    
+`./compile em_real >& log.compile`进行编译，等待......     
+      
+键入:    
+`./compile convert_emiss>& log.compile`进行编译，等待......      
+    
+完成后, 利用`ls ./main/*.exe`进行检查，若出现五个 __.exe__ 格式的可执行文件，打开chem文件夹，出现`convert_emiss.exe`, 说明安装成功。
+
+
+### WPS的安装
+
+WPS是用以整合静态地理数据和气象场初始条件、边界条件资料的工具，其安装较快。 
+
+```bash
+# 解压文件
+gunzip WPSV3.8.TAR.gz
+tar -xf WPSV3.8.TAR
+cd WPS
+vim ~/.bashrc
+export JASPERLIB=$DIR/grib2/lib
+export JASPERINC=$DIR/grib2/include
+./configure
+./compile >& log.compile
+```
+
+若安装成功后，会出现geogrid.exe, ungrib.exe, metgrid.exe三个可执行文件。
+
+
+
+## 参考资料
+[1. GCC install](http://stackoverflow.com/questions/9450394/how-to-install-gcc-piece-by-piece-with-gmp-mpfr-mpc-elf-without-shared-libra
+)      
+
+[2. Compiling WRF](http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php)  
+
+[3. Install WRF on Ubuntu Server](http://forum.wrfforum.com/viewtopic.php?f=5&t=7099)

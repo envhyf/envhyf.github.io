@@ -106,7 +106,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Suche" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -136,6 +136,54 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
+            <a href="/2022/07/10/2-Easy-Steps-For-NOAA-Weather-Data/" itemprop="url">2 Easy Steps to Download Historical Weather Data</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2022-07-10T08:00:00.000Z" itemprop="datePublished">7月 10 2022</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>The National Oceanic and Atmospheric Administration (NOAA) Integrated Surface Database (ISD) provides one of the richest sources of historical weather data consisting of hourly and synpoptic observation. This blog will introuce the simple way to retrieve and process the raw data into Python dataframe.</p>
+<p>&lt;–more–&gt;</p>
+<h1 id="Selection-of-weather-station"><a href="#Selection-of-weather-station" class="headerlink" title="Selection of weather station"></a>Selection of weather station</h1><p>Based on the location of the city/sampling site, we could seach for the best/most close weather station for getting its ID. Here, Milan, Italy will be treated as the example, and the main procedures are listed as follows. The detailed information of weathe station globally can be downloaded here [link](<a target="_blank" rel="noopener" href="https://www.dropbox.com/s/d46u4h71fm9i4it/isd-history.csv?dl=0">Dropbox - isd-history.csv - Simplify your life</a>).</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">isd_st = pd.read_csv(<span class="hljs-string">"/mnt/d/Dropbox/data/geo/Meteo/NOAA/global/isd-history.csv"</span>)</span><br><span class="line"><span class="hljs-comment">## filtering based on country name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">'CTRY'</span>] ==<span class="hljs-string">'IT'</span>]</span><br><span class="line"><span class="hljs-comment">## filtering based on city name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">"STATION NAME"</span>].astype(<span class="hljs-built_in">str</span>).<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">"MILAN"</span>)]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## Then, we could choose the perferred monitoring station, and note its "USAF" and  "WBAN"</span></span><br><span class="line"><span class="hljs-comment">## For Milan, USAF == 160800, WBAN == 99999, then the target ID will be "160800-99999"</span></span><br><span class="line">station_ID = <span class="hljs-number">160800</span>-<span class="hljs-number">99999</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>A more visualized way could be achieved through this link [Find a station](<a target="_blank" rel="noopener" href="https://www.ncdc.noaa.gov/cdo-web/datatools/findstation">Find a Station | Data Tools | Climate Data Online (CDO) | National Climatic Data Center (NCDC)</a>).</p>
+<h1 id="FTP-downloading-and-processing"><a href="#FTP-downloading-and-processing" class="headerlink" title="FTP downloading and processing"></a>FTP downloading and processing</h1><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> ftplib <span class="hljs-keyword">import</span> FTP</span><br><span class="line"><span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path</span><br><span class="line"></span><br><span class="line">ftp = FTP(<span class="hljs-string">"ftp.ncdc.noaa.gov"</span>)</span><br><span class="line">ftp.login()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## there are multiple dataset within NOAA ISD. Here we choose NOAA ISD-Lite, which is hourly-recoreded.</span></span><br><span class="line">ftp.cwd(<span class="hljs-string">'/pub/data/noaa/isd-lite/2013/'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Get all files</span></span><br><span class="line">files = ftp.nlst()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Download the file matched with the station ID</span></span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">    <span class="hljs-keyword">if</span> file == station_ID +<span class="hljs-string">'.gz'</span>:</span><br><span class="line"><span class="hljs-comment">#         print (file)</span></span><br><span class="line">        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Downloading..."</span> + file)</span><br><span class="line">        ftp.retrbinary(<span class="hljs-string">f'RETR <span class="hljs-subst">{file}</span>'</span>, <span class="hljs-built_in">open</span>(<span class="hljs-built_in">str</span>(Path(<span class="hljs-string">r'./isd_data'</span>) / file), <span class="hljs-string">'wb'</span>).write)</span><br><span class="line"><span class="hljs-comment"># # ftp.close()</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">calc_rh</span>(<span class="hljs-params">T,TD</span>):</span></span><br><span class="line">    RH = <span class="hljs-number">100</span>*(np.exp((<span class="hljs-number">17.625</span>*TD)/(<span class="hljs-number">243.04</span>+TD))/np.exp((<span class="hljs-number">17.625</span>*T)/(<span class="hljs-number">243.04</span>+T)))</span><br><span class="line">    <span class="hljs-keyword">return</span> RH</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">read_year_meteo</span>(<span class="hljs-params">filepath</span>):</span></span><br><span class="line">    df= pd.read_csv(filepath,sep=<span class="hljs-string">'\s+'</span>,header = <span class="hljs-literal">None</span>)</span><br><span class="line">    <span class="hljs-comment">#<span class="hljs-doctag">NOTE:</span> Trace precipitation is coded as -1</span></span><br><span class="line">    <span class="hljs-comment"># SCALING FACTOR: 10</span></span><br><span class="line">    df.columns = [<span class="hljs-string">'Year'</span>,<span class="hljs-string">'Month'</span>,<span class="hljs-string">'Day'</span>,<span class="hljs-string">'Hour'</span>,<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'Cloud'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>] </span><br><span class="line">    df[<span class="hljs-string">'Date'</span>] = df[<span class="hljs-string">'Year'</span>].astype(<span class="hljs-built_in">str</span>)+<span class="hljs-string">'-'</span>+df[<span class="hljs-string">"Month"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">'-'</span>+df[<span class="hljs-string">"Day"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">' '</span>+df[<span class="hljs-string">"Hour"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">':00:00'</span></span><br><span class="line">    df         = df[[<span class="hljs-string">'Date'</span>,<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'Cloud'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>] ]</span><br><span class="line">    df = df.replace(-<span class="hljs-number">9999</span>,np.nan)</span><br><span class="line">    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> [<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>]:</span><br><span class="line">        df[t] = df[t]/<span class="hljs-number">10.0</span>  </span><br><span class="line">    df[<span class="hljs-string">'RH'</span>] = calc_rh(df[<span class="hljs-string">'Air temp'</span>],df[<span class="hljs-string">'Dew point'</span>])        </span><br><span class="line">    <span class="hljs-keyword">return</span> df</span><br><span class="line"></span><br><span class="line">milan_2013 = read_year_meteo(<span class="hljs-string">'./isd_data/160800-99999-2013'</span>) </span><br><span class="line">milan_2013.to_csv(<span class="hljs-string">"./milan_weather_data_hourly.csv"</span>, index = <span class="hljs-literal">False</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Done!</p>
+<img src="https://i.stack.imgur.com/o3sOv.jpg" title="" alt="" width="275">
+
+<p><strong>Reference</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.visualcrossing.com/resources/documentation/weather-data/how-we-process-integrated-surface-database-historical-weather-data/">How We Process the NOAA Integrated Surface Database Historical Weather Data </a></p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/eugenesiow/85f4d331491d45df4d0567f20269ce8e">Preparing the NOAA ISD, Hourly, Global Dataset for Time-series Databases</a></p>
+<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/getting-weather-data-in-3-easy-steps-8dc10cc5c859">Getting Weather Data in 3 Easy Steps</a></p>
+</body></html>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
             <a href="/2021/07/14/Windows%E7%94%B5%E8%84%91%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" itemprop="url">Windows电脑工作环境配置笔记</a>
         
     </h1>
@@ -157,7 +205,7 @@
     
         <html><head></head><body><p>在国外新购置了一台PC，性能比从国内带来的Mac笔记本要好，也可以继续玩Steam上的游戏。决定将个人学习工作环境迁移至Windows系统。在此记录相关配置步骤，以便未来之需。</p></body></html>
         <p class="article-more-link">
-            <a href="/2021/07/14/Windows%E7%94%B5%E8%84%91%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/#more">Read More</a>
+            <a href="/2021/07/14/Windows%E7%94%B5%E8%84%91%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/#more">mehr</a>
         </p>
     
     </div>
@@ -199,7 +247,7 @@
 <li>coords: a dict-like container of arrays (coordinates) that label each * point (e.g., 1-dimensional arrays of numbers, datetime objects or strings) (各维度坐标体系，如时间序列)</li>
 <li>attrs: an OrderedDict to hold arbitrary metadata (attributes) (对各属性的描述)</li></ul></body></html>
         <p class="article-more-link">
-            <a href="/2020/11/01/WRF-technique-xarray-tricks/#more">Read More</a>
+            <a href="/2020/11/01/WRF-technique-xarray-tricks/#more">mehr</a>
         </p>
     
     </div>
@@ -235,7 +283,7 @@
     
         <html><head></head><body><p>提要：定义嵌套网格是运行WRF模型的重要工作。本文基于Python 3.7，在<a target="_blank" rel="noopener" href="https://salem.readthedocs.io/en/v0.2.3/">Salem</a>工具包基础上加以改进，结合Cartopy对中国国界线进行替换，同时实现修改默认底图。</p></body></html>
         <p class="article-more-link">
-            <a href="/2020/08/04/WRF%E5%B5%8C%E5%A5%97%E7%BD%91%E6%A0%BC%E7%9A%84%E7%BB%98%E5%88%B6/#more">Read More</a>
+            <a href="/2020/08/04/WRF%E5%B5%8C%E5%A5%97%E7%BD%91%E6%A0%BC%E7%9A%84%E7%BB%98%E5%88%B6/#more">mehr</a>
         </p>
     
     </div>
@@ -271,7 +319,7 @@
     
         <html><head></head><body><p>提要：Altair是强大的可视化库，其基于Vega-lite,可快速生成简洁、美观、可互动的统计图形。本文介绍个人相关学习经历，具体包括：(1)数据载入与基本图形绘制; (2)基于web端呈现</p></body></html>
         <p class="article-more-link">
-            <a href="/2020/05/10/Altair%E5%AD%A6%E4%B9%A0/#more">Read More</a>
+            <a href="/2020/05/10/Altair%E5%AD%A6%E4%B9%A0/#more">mehr</a>
         </p>
     
     </div>
@@ -307,7 +355,7 @@
     
         <html><head></head><body><p>部分互联网资料仅提供在线预览，无法直接下载。若预览系统设计欠佳，或限于网速内容加载过慢，都会对阅读体验造成严重影响。在此分别以国家自然基金研究报告和学位论文为例，介绍两种不同的下载合成方法，供有需要的老师同学们参考。欢迎大家提出宝贵意见。</p></body></html>
         <p class="article-more-link">
-            <a href="/2020/05/10/%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/#more">Read More</a>
+            <a href="/2020/05/10/%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/#more">mehr</a>
         </p>
     
     </div>
@@ -348,7 +396,7 @@
 <li>Remapping a population density map to a coarser resolution</li>
 </ul></body></html>
         <p class="article-more-link">
-            <a href="/2019/06/01/Resampling-the-orignial-data-to-2-d-array/#more">Read More</a>
+            <a href="/2019/06/01/Resampling-the-orignial-data-to-2-d-array/#more">mehr</a>
         </p>
     
     </div>
@@ -384,7 +432,7 @@
     
         <html><head></head><body><p>Sometimes, we need to transform the original raster dataset to a different resolution (usually coarser). In this post, I will introduce the simple workflow for cell resampling using Python.</p></body></html>
         <p class="article-more-link">
-            <a href="/2019/04/07/Altering-the-resolution-raster-file-using-Pyton/#more">Read More</a>
+            <a href="/2019/04/07/Altering-the-resolution-raster-file-using-Pyton/#more">mehr</a>
         </p>
     
     </div>
@@ -420,7 +468,7 @@
     
         <html><head></head><body><p>When you’ve got the all the files from  WRF simulations, you might want to merge them without the spin-up frames (to reach a balanced state with the boundary conditions, i.e., 12 hours for a 5-day simulation). Meanwhile, the variables/grids which are not focused on can be ignore. Therefore, a general workflow in pythonic way is presented. I will also rewritten this function as my first Python Package. Please note the updates on my website.</p></body></html>
         <p class="article-more-link">
-            <a href="/2019/03/11/WRF-technique-merging-datasets/#more">Read More</a>
+            <a href="/2019/03/11/WRF-technique-merging-datasets/#more">mehr</a>
         </p>
     
     </div>
@@ -460,45 +508,7 @@
 <li>The second method which I strongly recommended with faster speed was based on <a target="_blank" rel="noopener" href="https://shapely.readthedocs.io/en/stable/manual.html">shapely</a> module.</li>
 </ul></body></html>
         <p class="article-more-link">
-            <a href="/2018/12/06/Methods-to-mask-raster-by-polygons/#more">Read More</a>
-        </p>
-    
-    </div>
-    
-    
-</article>
-
-
-
-
-    
-        <article class="article content gallery" itemscope itemprop="blogPost">
-    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
-        
-            <a href="/2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/" itemprop="url">Plotting air pollution maps using satellite data</a>
-        
-    </h1>
-    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
-        <span class="column is-narrow">
-            
-                <time datetime="2018-11-25T14:41:33.000Z" itemprop="datePublished">11月 25 2018</time>
-            
-        </span>
-        
-        <span class="column is-narrow article-category">
-            <i class="far fa-folder"></i>
-            <a class="article-category-link" href="/categories/Research/">Research</a>
-        </span>
-        
-        
-    </div>
-    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
-    
-        <html><head></head><body><p>I’m writing today about downloading, handling, and plotting satellite derived air pollution maps with cartopy and fiona using Python. One key task in this post is to clip a raster-like (2-d array) dataset with a polygon in pure Python environment (i.e., no need for ArcGIS or QGIS GUI-based software).         </p>
-<p>The satellite sensor can offer critical supplementary data of several atmospheric species, e.g., SO<sub>2</sub>, NO<sub>2</sub>, PM<sub>2.5</sub>. Comparaing to ground-based monitoring which might be sparse in some areas (e.g., Africa, South America, oceans), the satellite observation offers a full picture for better understanding the spatiotemporal patterns of some air pollutants.</p>
-<p>Below is an excerpt of a NO<sub>2</sub> column maps within  Chengyu urabn agglomeration in China.</p></body></html>
-        <p class="article-more-link">
-            <a href="/2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/#more">Read More</a>
+            <a href="/2018/12/06/Methods-to-mask-raster-by-polygons/#more">mehr</a>
         </p>
     
     </div>
@@ -514,10 +524,10 @@
         
 <nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
     <div class="pagination-previous is-invisible is-hidden-mobile">
-        <a href="/tags/Python/page/0/">Prev</a>
+        <a href="/tags/Python/page/0/">Vorheriges</a>
     </div>
     <div class="pagination-next">
-        <a href="/tags/Python/page/2/">Next</a>
+        <a href="/tags/Python/page/2/">Nächstes</a>
     </div>
     <ul class="pagination-list is-hidden-mobile">
         
@@ -642,7 +652,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -655,8 +665,8 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Seiten',
+                CATEGORIES: 'Kategorien',
                 TAGS: 'Tags',
                 UNTITLED: '(Untitled)',
             },

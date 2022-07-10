@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://i.stack.imgur.com/o3sOv.jpg">
 <meta property="article:published_time" content="2022-07-10T08:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-10T15:02:54.201Z">
+<meta property="article:modified_time" content="2022-07-10T15:05:39.391Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Atmosphere">
@@ -114,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="검색" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -156,7 +156,8 @@
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
         <html><head></head><body><p>The National Oceanic and Atmospheric Administration (NOAA) Integrated Surface Database (ISD) provides one of the richest sources of historical weather data consisting of hourly and synpoptic observation. This blog will introuce the simple way to retrieve and process the raw data into Python dataframe.</p>
-<p>&lt;–more–&gt;</p>
+<span id="more"></span>
+
 <h1 id="Selection-of-weather-station"><a href="#Selection-of-weather-station" class="headerlink" title="Selection of weather station"></a>Selection of weather station</h1><p>Based on the location of the city/sampling site, we could seach for the best/most close weather station for getting its ID. Here, Milan, Italy will be treated as the example, and the main procedures are listed as follows. The detailed information of weathe station globally can be downloaded here [link](<a target="_blank" rel="noopener" href="https://www.dropbox.com/s/d46u4h71fm9i4it/isd-history.csv?dl=0">Dropbox - isd-history.csv - Simplify your life</a>).</p>
 <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">isd_st = pd.read_csv(<span class="hljs-string">"/mnt/d/Dropbox/data/geo/Meteo/NOAA/global/isd-history.csv"</span>)</span><br><span class="line"><span class="hljs-comment">## filtering based on country name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">'CTRY'</span>] ==<span class="hljs-string">'IT'</span>]</span><br><span class="line"><span class="hljs-comment">## filtering based on city name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">"STATION NAME"</span>].astype(<span class="hljs-built_in">str</span>).<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">"MILAN"</span>)]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## Then, we could choose the perferred monitoring station, and note its "USAF" and  "WBAN"</span></span><br><span class="line"><span class="hljs-comment">## For Milan, USAF == 160800, WBAN == 99999, then the target ID will be "160800-99999"</span></span><br><span class="line">station_ID = <span class="hljs-number">160800</span>-<span class="hljs-number">99999</span></span><br></pre></td></tr></tbody></table></figure>
 
@@ -200,7 +201,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Kommentare</h3>
+    <h3 class="title is-4">댓글</h3>
     
 <script>
     var disqus_config = function () {
@@ -338,7 +339,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="아무거나 입력하세요" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -350,11 +351,11 @@
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '글',
+                PAGES: '페이지',
+                CATEGORIES: '카테고리 목록',
+                TAGS: '태그 목록',
+                UNTITLED: '(제목없음)',
             },
             CONTENT_URL: '/content.json',
         };

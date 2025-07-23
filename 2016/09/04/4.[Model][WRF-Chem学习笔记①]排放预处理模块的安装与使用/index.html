@@ -17,7 +17,7 @@
     <meta name="description" content="气象场和化学物质排放是大气化学模式的两项最重要的前驱资料。在实验之余，我将着力学习WRF-Chem的有关内容，并记录、发布。 按照WRF-Chem Tutorial中的说明，在Learning to Run WRF-Chem之前，我先学习How to Generate Emission for WRF-Chem 本文记录Exercise 1的实现过程，可供有兴趣的同学参考。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[WRF-Chem学习笔记①]排放预处理模块的安装与使用">
-<meta property="og:url" content="http://envhyf.github.io/2016/09/04/[WRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0]%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:url" content="http://envhyf.github.io/2016/09/04/4.[Model][WRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0]%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="太平塔">
 <meta property="og:description" content="气象场和化学物质排放是大气化学模式的两项最重要的前驱资料。在实验之余，我将着力学习WRF-Chem的有关内容，并记录、发布。 按照WRF-Chem Tutorial中的说明，在Learning to Run WRF-Chem之前，我先学习How to Generate Emission for WRF-Chem 本文记录Exercise 1的实现过程，可供有兴趣的同学参考。">
 <meta property="og:locale">
@@ -213,12 +213,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2016/09/05/%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A1%5D%E4%BB%85%E5%90%AB%E6%B2%99%E5%B0%98%E6%BA%90%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%BB%83%E4%B9%A0/">[WRF-Chem学习笔记②]仅含沙尘源的模拟练习</a>
+            <a href="/2016/09/05/5.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A1%5D%E4%BB%85%E5%90%AB%E6%B2%99%E5%B0%98%E6%BA%90%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%BB%83%E4%B9%A0/">[WRF-Chem学习笔记②]仅含沙尘源的模拟练习</a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2016/08/10/WRF%E5%AE%89%E8%A3%85%E6%9C%AD%E8%AE%B0/">WRF-Chem安装札记</a>
+            <a href="/2016/08/10/3.%5BModel%5DWRF-Chem%E5%AE%89%E8%A3%85%E6%9C%AD%E8%AE%B0/">WRF-Chem安装札记</a>
             
         </span>
     </div>
@@ -233,8 +233,8 @@
     
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://envhyf.github.io/2016/09/04/[WRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0]%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/';
-        this.page.identifier = '2016/09/04/[WRF-Chem学习笔记①]排放预处理模块的安装与使用/';
+        this.page.url = 'http://envhyf.github.io/2016/09/04/4.[Model][WRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0]%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/';
+        this.page.identifier = '2016/09/04/4.[Model][WRF-Chem学习笔记①]排放预处理模块的安装与使用/';
         
         this.language = 'zh';
         
@@ -260,7 +260,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>

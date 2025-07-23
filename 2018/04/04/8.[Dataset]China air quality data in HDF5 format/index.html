@@ -21,14 +21,14 @@
 <meta property="og:site_name" content="太平塔">
 <meta property="og:description" content="全国空气质量历史数据是大气环境研究的重要基础资料，而我国官方平台仅提供实时监测信息，而且还只支持IE浏览器(╮(╯_╰)╭)。 我曾尝试采用爬虫工具获取并存储逐时信息，但限于权限，未能在实验室服务器上连续长时间运行。互联网上直接提供数据或API端口的网站有很多，如环境云，PM25.in, 青悦开放环境数据中心等。其中，beijingair最具分享精神,提供了2013年至今的详尽历史数据，且完全免费">
 <meta property="og:locale">
-<meta property="og:image" content="https://i.stack.imgur.com/OPbHd.png">
+<meta property="og:image" content="http://envhyf.github.io/images/8.China_Air_Quality_Map/Fig.1.png">
 <meta property="article:published_time" content="2018-04-04T21:32:26.000Z">
-<meta property="article:modified_time" content="2023-02-23T11:57:13.000Z">
+<meta property="article:modified_time" content="2025-07-23T21:59:55.669Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Air quality">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.stack.imgur.com/OPbHd.png">
+<meta name="twitter:image" content="http://envhyf.github.io/images/8.China_Air_Quality_Map/Fig.1.png">
 
 
 
@@ -114,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="검색" href="javascript:;">
+            <a class="navbar-item search" title="Szukaj" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -179,8 +179,7 @@
 
 <h3 id="3-2-全国PM2-5年均浓度分布"><a href="#3-2-全国PM2-5年均浓度分布" class="headerlink" title="3.2 全国PM2.5年均浓度分布"></a>3.2 全国PM2.5年均浓度分布</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#library</span></span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.axes_grid1 <span class="hljs-keyword">import</span> make_axes_locatable</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.io.shapereader <span class="hljs-keyword">import</span> Reader</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.feature <span class="hljs-keyword">import</span> ShapelyFeature</span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.basemap <span class="hljs-keyword">import</span> cm <span class="hljs-keyword">as</span> base_cm</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#Load the data select the variable</span></span><br><span class="line">data_city = {<span class="hljs-string">"city"</span>:[],<span class="hljs-string">'pm25'</span>:[],<span class="hljs-string">'pm10'</span>:[]}</span><br><span class="line">pm25 = pd.read_hdf(<span class="hljs-string">"./../data/city_2017_whole_year.h5"</span>,<span class="hljs-string">'pm25'</span>, encoding = <span class="hljs-string">'utf-8'</span>)</span><br><span class="line">pm10 = pd.read_hdf(<span class="hljs-string">"./../data/city_2017_whole_year.h5"</span>,<span class="hljs-string">'pm10'</span>, encoding = <span class="hljs-string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i,t <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(pm25.columns[<span class="hljs-number">2</span>:]):</span><br><span class="line"> data_city[<span class="hljs-string">'city'</span>].append(t) </span><br><span class="line"> data_city[<span class="hljs-string">'pm25'</span>].append(pm25[t].mean())</span><br><span class="line"> data_city[<span class="hljs-string">'pm10'</span>].append(pm10[t].mean())    </span><br><span class="line">data_city = pd.DataFrame(data_city)    </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## Add the lon,lat for each city</span></span><br><span class="line"><span class="hljs-comment">## 加载所有国控站点名称，位置的xls文件，已上传至google drive，下载链接见上文</span></span><br><span class="line">Df = pd.ExcelFile(<span class="hljs-string">"./站点列表含经纬度-1497个.xlsx"</span>, )</span><br><span class="line">df = Df.parse(<span class="hljs-string">u'Sheet1'</span>)</span><br><span class="line">data_city[<span class="hljs-string">'lon'</span>] =  [df[df[<span class="hljs-string">u'城市'</span>].<span class="hljs-built_in">str</span>[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]==k[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]][<span class="hljs-string">u'经度'</span>].mean() <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> data_city[<span class="hljs-string">'city'</span>]]</span><br><span class="line">data_city[<span class="hljs-string">'lat'</span>] =  [df[df[<span class="hljs-string">u'城市'</span>].<span class="hljs-built_in">str</span>[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]==k[:<span class="hljs-number">2</span>]][<span class="hljs-string">u'纬度'</span>].mean() <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> data_city[<span class="hljs-string">'city'</span>]]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#Plotting </span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">6</span>, <span class="hljs-number">5</span>))</span><br><span class="line">ax = plt.subplot(projection=ccrs.PlateCarree())</span><br><span class="line">ax.set_extent([<span class="hljs-number">73</span>, <span class="hljs-number">135</span>, <span class="hljs-number">17</span>, <span class="hljs-number">55</span>])</span><br><span class="line">ax.coastlines(linewidth = <span class="hljs-number">0.2</span>)</span><br><span class="line">ax.add_feature(cartopy.feature.OCEAN)</span><br><span class="line">ax.add_feature(cartopy.feature.BORDERS,linewidth = <span class="hljs-number">0.4</span>)</span><br><span class="line"></span><br><span class="line">pm25_plot = ax.scatter(data_city[<span class="hljs-string">'lon'</span>],data_city[<span class="hljs-string">'lat'</span>],s = <span class="hljs-number">45</span>,zorder = <span class="hljs-number">2</span>,c = data_city[<span class="hljs-string">'pm25'</span>],\</span><br><span class="line">                        cmap=base_cm.GMT_seis_r,  lw = <span class="hljs-number">0</span>,alpha = <span class="hljs-number">0.9</span>)</span><br></pre></td></tr></tbody></table></figure>
 
-<p> 例图  </p>
-<p> <a target="_blank" rel="noopener" href="https://i.stack.imgur.com/OPbHd.png"><img src="https://i.stack.imgur.com/OPbHd.png" alt="enter image description here"></a></p>
+<p> 例图<br><img src="/images/8.China_Air_Quality_Map/Fig.1.png">   </p>
 </body></html>
     
     </div>
@@ -213,7 +212,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">댓글</h3>
+    <h3 class="title is-4">Komentarze</h3>
     
 <script>
     var disqus_config = function () {
@@ -351,7 +350,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="아무거나 입력하세요" />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Zacznij pisać..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -363,11 +362,11 @@
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: '글',
-                PAGES: '페이지',
-                CATEGORIES: '카테고리 목록',
-                TAGS: '태그 목록',
-                UNTITLED: '(제목없음)',
+                POSTS: 'Posty',
+                PAGES: 'Strony',
+                CATEGORIES: 'Kategorie',
+                TAGS: 'Tagi',
+                UNTITLED: '(Bez tytułu)',
             },
             CONTENT_URL: '/content.json',
         };

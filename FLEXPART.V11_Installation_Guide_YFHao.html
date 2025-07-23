@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Installing FLEXPART v11 with ECMWF Support</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #fdfdfd;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #005580;
+    }
+    code, pre {
+      background: #f4f4f4;
+      padding: 10px;
+      display: block;
+      overflow-x: auto;
+      border-left: 4px solid #007acc;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #e0f0ff;
+    }
+    blockquote {
+      margin: 1em 0;
+      padding-left: 1em;
+      border-left: 4px solid #ccc;
+      color: #555;
+      font-style: italic;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Installing FLEXPART v11 with ECMWF Support: A Complete Technical Guide</h1>
+
+<p>
+This post walks through a full <strong>FLEXPART v11</strong> installation for <strong>ECMWF meteorological data</strong> with <strong>NetCDF and Fortran support</strong>, including how to resolve common compilation issues. All components were built from source on a Linux HPC system with user-level access.
+</p>
+
+<hr/>
+
+<section>
+<h2>⚙️ Installation Structure</h2>
+<pre><code>export DIR=/data/user/hao_y/lib
+export INSTALL_DIR=$DIR</code></pre>
+<p>All dependencies (GCC, HDF5, NetCDF, ecCodes, etc.) will be installed under this directory tree.</p>
+</section>
+
+<hr/>
+
+<section>
+<h2>🔧 Step-by-Step Build Pipeline</h2>
+
+<h3>1. GCC 13.2.0 (with Fortran Support)</h3>
+<pre><code>wget https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.gz
+tar -xzf gcc-13.2.0.tar.gz
+cd gcc-13.2.0
+./contrib/download_prerequisites
+mkdir build && cd build
+../configure --prefix=$DIR/gcc-13.2.0 --enable-languages=c,c++,fortran,go --disable-multilib
+make -j$(nproc)
+make install</code></pre>
+
+<p><strong>Export compilers:</strong></p>
+<pre><code>export PATH=$DIR/gcc-13.2.0/bin:$PATH
+export LD_LIBRARY_PATH=$DIR/gcc-13.2.0/lib64:$LD_LIBRARY_PATH
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+export F77=gfortran
+export CFLAGS='-gdwarf-2 -gstrict-dwarf'
+export FCFLAGS=-m64
+export FFLAGS=-m64</code></pre>
+
+<h3>2. HDF5 1.14.6</h3>
+<pre><code>wget https://support.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.14.6.tar.gz
+tar -xzf hdf5-1.14.6.tar.gz
+cd hdf5-1.14.6
+./configure --prefix=$DIR/hdf5 --enable-cxx --enable-fortran --enable-shared
+make -j$(nproc)
+make install</code></pre>
+
+<h3>3. NetCDF (C + Fortran)</h3>
+
+<h4>3.1 NetCDF-C</h4>
+<pre><code>wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.9.3.tar.gz -O netcdf-c-4.9.3.tar.gz
+tar -xzf netcdf-c-4.9.3.tar.gz
+cd netcdf-c-4.9.3
+./configure --prefix=$DIR/netcdf \
+    CPPFLAGS="-I$DIR/hdf5/include" \
+    LDFLAGS="-L$DIR/hdf5/lib" \
+    --enable-netcdf-4 --disable-dap
+make -j$(nproc)
+make install</code></pre>
+
+<h4>3.2 NetCDF-Fortran</h4>
+<pre><code>wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.6.1.tar.gz -O netcdf-fortran-4.6.1.tar.gz
+tar -xzf netcdf-fortran-4.6.1.tar.gz
+cd netcdf-fortran-4.6.1
+./configure --prefix=$DIR/netcdf
+make -j$(nproc)
+make install</code></pre>
+
+<h3>4. OpenMPI (Optional)</h3>
+<pre><code>wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.6.tar.gz
+tar -xzf openmpi-4.1.6.tar.gz
+cd openmpi-4.1.6
+./configure --prefix=$DIR/libs/openmpi
+make -j$(nproc)
+make install
+
+export PATH=$DIR/libs/openmpi/bin:$PATH
+export LD_LIBRARY_PATH=$DIR/libs/openmpi/lib:$LD_LIBRARY_PATH</code></pre>
+
+<h3>5. AEC Library (for ecCodes)</h3>
+<pre><code>wget https://gitlab.dkrz.de/k202009/libaec/-/archive/v1.0.6/libaec-v1.0.6.tar.gz
+tar -xzf libaec-v1.0.6.tar.gz
+cd libaec-v1.0.6 && mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$DIR/libaec
+make -j$(nproc)
+make install</code></pre>
+
+<h3>6. ecCodes</h3>
+<pre><code>wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.33.0-Source.tar.gz
+tar -xzf eccodes-2.33.0-Source.tar.gz
+cd eccodes-2.33.0 && mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$DIR/eccodes -DCMAKE_PREFIX_PATH="$DIR/netcdf;$DIR/hdf5;$DIR/libaec" -DENABLE_NETCDF=ON -DENABLE_FORTRAN=ON -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+make install</code></pre>
+</section>
+
+<hr/>
+
+<section>
+<h2>📃 Environment Exports Summary</h2>
+<p>Add the following to your <code>.bashrc</code>:</p>
+<pre><code># GCC
+export PATH=$DIR/gcc-13.2.0/bin:$PATH
+export LD_LIBRARY_PATH=$DIR/gcc-13.2.0/lib64:$LD_LIBRARY_PATH
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+export F77=gfortran
+
+# HDF5
+export HDF5_DIR=$DIR/hdf5
+export CPATH=$HDF5_DIR/include:$CPATH
+export LIBRARY_PATH=$HDF5_DIR/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=$HDF5_DIR/lib:$LD_LIBRARY_PATH
+
+# NetCDF
+export NETCDF_DIR=$DIR/netcdf
+export CPATH=$NETCDF_DIR/include:$CPATH
+export LIBRARY_PATH=$NETCDF_DIR/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=$NETCDF_DIR/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$NETCDF_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+
+# AEC
+export CPATH=$DIR/libaec/include:$CPATH
+export LIBRARY_PATH=$DIR/libaec/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=$DIR/libaec/lib:$LD_LIBRARY_PATH
+
+# ecCodes
+export CPATH=$DIR/eccodes/include:$CPATH
+export LIBRARY_PATH=$DIR/eccodes/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=$DIR/eccodes/lib:$LD_LIBRARY_PATH
+export PATH=$DIR/eccodes/bin:$PATH
+export PKG_CONFIG_PATH=$DIR/eccodes/lib/pkgconfig:$PKG_CONFIG_PATH</code></pre>
+</section>
+
+<hr/>
+
+<section>
+<h2>🌐 FLEXPART v11 Compilation (ECMWF Mode)</h2>
+<pre><code>wget https://gitlab.phaidra.org/flexpart/flexpart/-/archive/v11/flexpart-v11.tar.gz
+tar -xzf flexpart-v11.tar.gz
+cd flexpart-v11
+
+# Edit F90 path in makefile_gfortran
+make -f makefile_gfortran -j4 eta=no ncf=yes</code></pre>
+
+<ul>
+  <li><code>eta=no</code>: Use hybrid ECMWF coordinate system</li>
+  <li><code>ncf=yes</code>: Enable NetCDF support</li>
+</ul>
+</section>
+
+<hr/>
+
+<section>
+<h2>❌ Common Errors and Fixes</h2>
+<table>
+  <tr><th>Error</th><th>Cause</th><th>Solution</th></tr>
+  <tr><td><code>cannot find -leccodes_f90</code></td><td>ecCodes built without Fortran</td><td>Add <code>-DENABLE_FORTRAN=ON</code></td></tr>
+  <tr><td><code>AEC library not found</code></td><td>libaec missing</td><td>Install <code>libaec</code> and set <code>CMAKE_PREFIX_PATH</code></td></tr>
+  <tr><td><code>GLIBCXX_3.4.30 not found</code></td><td>Old libstdc++</td><td>Use newer GCC (e.g., v13)</td></tr>
+  <tr><td><code>gfortran: command not found</code></td><td>GCC built without Fortran</td><td>Rebuild with <code>--enable-languages=c,c++,fortran</code></td></tr>
+</table>
+</section>
+
+<hr/>
+
+<section>
+<h2>📅 Final Notes</h2>
+
+Think of <code>./configure</code> as the blueprint, <code>make</code> as construction, and <code>make install</code> as moving into your house and wiring the electricity.
+
+<ul>
+  <li>Change permissions when copying config files:  
+    <code>chmod -R 755 ./options</code>, <code>chmod 644 ./options/RELEASES</code></li>
+  <li>Enable multicore runs with: <code>export OMP_NUM_THREADS=4</code></li>
+  <li>To fix segmentation fault errors (e.g., SIGSEGV): <code>ulimit -s unlimited</code></li>
+</ul>
+</section>
+
+<hr/>
+
+<section>
+<h2>📚 References</h2>
+<ol>
+  <li><a href="https://gitlab.phaidra.org/flexpart/flexpart">FLEXPART GitLab repository</a></li>
+  <li><a href="https://www.flexpart.eu/wiki/FpInstallation">FLEXPART official installation wiki</a></li>
+  <li><a href="https://confluence.ecmwf.int/display/ECC/ecCodes+Home">ECMWF ecCodes documentation</a></li>
+</ol>
+</section>
+
+</body>
+</html>

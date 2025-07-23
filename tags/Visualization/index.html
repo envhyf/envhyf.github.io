@@ -106,7 +106,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -136,6 +136,240 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
+            <a href="/2025/04/29/Visualizing-Chemical-Structures/" itemprop="url">Visualizing Chemical Structures</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2025-04-29T14:55:00.000Z" itemprop="datePublished">4月 29 2025</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.</p>
+<h1 id="1-ChemDraw"><a href="#1-ChemDraw" class="headerlink" title="1. ChemDraw"></a>1. ChemDraw</h1><p>CheDraw is a software that can be used to draw chemical structures.</p>
+<h1 id="2-RDKit"><a href="#2-RDKit" class="headerlink" title="2. RDKit"></a>2. RDKit</h1><p>from rdkit import Chem<br>from rdkit.Chem import Draw</p>
+<h1 id="Define-the-correct-Myosmine-SMILES"><a href="#Define-the-correct-Myosmine-SMILES" class="headerlink" title="Define the correct Myosmine SMILES"></a>Define the correct Myosmine SMILES</h1><p>precursor_smiles = “C1CC(=NC1)C2=CN=CC=C2”  # Correct Myosmine (C9H10N2)<br>precursor_mol = Chem.MolFromSmiles(precursor_smiles)</p>
+<h1 id="Define-predicted-fragment-SMILES"><a href="#Define-predicted-fragment-SMILES" class="headerlink" title="Define predicted fragment SMILES"></a>Define predicted fragment SMILES</h1><p>fragments_smiles = {<br>    “79.0544”: “C1CC(=NC1)”,  # Benzene radical cation C6H6-H+<br>    “104.0495”: “C1=CC=C(C=C1)C=[NH+]”,  # Pyridine-benzyl cation<br>    “106.0653”: “C1=CC=C(C=N1)C=[NH+]”,  # Methyl-pyridine<br>    “132.0683”: “CCC(=[NH+])C2=CN=CC=C2”,  # Pyridine-imidazole<br>    “147.0919”: “C1CC(=NC1)C2=CN=CC=C2”  # Correct Myosmine (precursor)<br>}</p>
+<h1 id="Convert-SMILES-to-RDKit-molecules"><a href="#Convert-SMILES-to-RDKit-molecules" class="headerlink" title="Convert SMILES to RDKit molecules"></a>Convert SMILES to RDKit molecules</h1><p>fragment_mols = {mz: Chem.MolFromSmiles(smiles) for mz, smiles in fragments_smiles.items()}</p>
+<h1 id="Draw-precursor-and-fragments"><a href="#Draw-precursor-and-fragments" class="headerlink" title="Draw precursor and fragments"></a>Draw precursor and fragments</h1><p>Draw.MolsToGridImage(<br>    [precursor_mol] + list(fragment_mols.values()),<br>    molsPerRow=3,<br>    subImgSize=(200, 200),<br>    legends=[“Precursor”] + list(fragments_smiles.keys())<br>)</p>
+<h1 id="3-SmileDrawer"><a href="#3-SmileDrawer" class="headerlink" title="3. SmileDrawer"></a>3. SmileDrawer</h1><p>SmilesDrawer 2.0 is a lightweight and powerful JavaScript library for drawing chemical structures directly from SMILES strings.<br>I receommend this method with the nice looking and the interactive feature.</p>
+<p><a target="_blank" rel="noopener" href="https://jsitor.com/VSdIPakuF">https://jsitor.com/VSdIPakuF</a></p>
+<p><a target="_blank" rel="noopener" href="https://smilesdrawer.surge.sh/playground.html">https://smilesdrawer.surge.sh/playground.html</a></p>
+<p>Method for saving into vector file</p>
+
+
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+  <!-- You can keep the <img> example if you want, but it won't be used for SVG -->
+  <img id="imgExample" data-smiles-options="{ 'width': 2400, 'height': 2400 }">
+
+  <div style="background-color: #000">
+    <svg id="svgExample" width="500" height="500"></svg>
+  </div>
+
+  <script type="text/javascript" src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+  <script>
+    // Use SmilesDrawer.Drawer directly
+    const options = {
+      width: 500,
+      height: 500,
+      bondLength: 30,
+      padding: 15,
+      canvas_id: null, // IMPORTANT: no canvas!
+      svg_id: 'svgExample', // Now target the SVG
+      theme: 'light'
+    };
+
+    const drawer = new SmilesDrawer.Drawer(options);
+
+    // Parse and draw a SMILES
+    SmilesDrawer.parse('CC1=CN2C=CC=C2C(=N1)C', function (tree) {
+      drawer.draw(tree, 'svgExample', 'light');
+    });
+  </script>
+
+
+
+
+
+</body></html>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2025/04/29/Method-Deconvolve-MS2-Spectra/" itemprop="url">Method for Deconvolving MS2 spectra</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2025-04-29T14:55:00.000Z" itemprop="datePublished">4月 29 2025</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><h1 id="Method-for-Deconvolving-MS2-Spectra"><a href="#Method-for-Deconvolving-MS2-Spectra" class="headerlink" title="Method for Deconvolving MS2 Spectra"></a>Method for Deconvolving MS2 Spectra</h1><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Mass spectrometry (MS) is a powerful analytical technique used to identify and quantify molecules based on their mass-to-charge ratio (m/z). MS2 spectra, also known as tandem mass spectra, are generated by fragmenting precursor ions and measuring the resulting product ions. Deconvolution of MS2 spectra is a crucial step in mass spectrometry data analysis, helping to separate overlapping signals and identify the true components of complex mixtures.</p>
+<h2 id="Understanding-MS2-Spectra"><a href="#Understanding-MS2-Spectra" class="headerlink" title="Understanding MS2 Spectra"></a>Understanding MS2 Spectra</h2><p>MS2 spectra typically consist of:</p>
+<ul>
+<li>Precursor ion (parent ion)</li>
+<li>Product ions (fragment ions)</li>
+<li>Neutral losses</li>
+<li>Isotopic patterns</li>
+</ul>
+<p>The deconvolution process aims to:</p>
+<ol>
+<li>Separate overlapping isotopic clusters</li>
+<li>Identify charge states</li>
+<li>Reconstruct the original precursor mass</li>
+<li>Resolve complex mixtures</li>
+</ol>
+<h2 id="Common-Deconvolution-Methods"><a href="#Common-Deconvolution-Methods" class="headerlink" title="Common Deconvolution Methods"></a>Common Deconvolution Methods</h2><h3 id="1-Peak-Picking-and-Centroiding"><a href="#1-Peak-Picking-and-Centroiding" class="headerlink" title="1. Peak Picking and Centroiding"></a>1. Peak Picking and Centroiding</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.signal <span class="hljs-keyword">import</span> find_peaks</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">find_peaks_centroid</span>(<span class="hljs-params">mz_array, intensity_array, min_height=<span class="hljs-number">100</span></span>):</span></span><br><span class="line">    peaks, properties = find_peaks(intensity_array, height=min_height)</span><br><span class="line">    centroids = []</span><br><span class="line">    <span class="hljs-keyword">for</span> peak <span class="hljs-keyword">in</span> peaks:</span><br><span class="line">        <span class="hljs-comment"># Calculate centroid using weighted average</span></span><br><span class="line">        mz_centroid = np.<span class="hljs-built_in">sum</span>(mz_array[peak-<span class="hljs-number">2</span>:peak+<span class="hljs-number">3</span>] * intensity_array[peak-<span class="hljs-number">2</span>:peak+<span class="hljs-number">3</span>]) / np.<span class="hljs-built_in">sum</span>(intensity_array[peak-<span class="hljs-number">2</span>:peak+<span class="hljs-number">3</span>])</span><br><span class="line">        centroids.append(mz_centroid)</span><br><span class="line">    <span class="hljs-keyword">return</span> np.array(centroids)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-Charge-State-Deconvolution"><a href="#2-Charge-State-Deconvolution" class="headerlink" title="2. Charge State Deconvolution"></a>2. Charge State Deconvolution</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">deconvolve_charge_states</span>(<span class="hljs-params">mz_array, intensity_array, charge_range=(<span class="hljs-params"><span class="hljs-number">1</span>, <span class="hljs-number">5</span></span>)</span>):</span></span><br><span class="line">    deconvolved_masses = []</span><br><span class="line">    <span class="hljs-keyword">for</span> charge <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(charge_range[<span class="hljs-number">0</span>], charge_range[<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>):</span><br><span class="line">        <span class="hljs-comment"># Calculate neutral mass for each charge state</span></span><br><span class="line">        neutral_mass = mz_array * charge - charge * <span class="hljs-number">1.007276</span></span><br><span class="line">        deconvolved_masses.append(neutral_mass)</span><br><span class="line">    <span class="hljs-keyword">return</span> deconvolved_masses</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-Isotopic-Pattern-Matching"><a href="#3-Isotopic-Pattern-Matching" class="headerlink" title="3. Isotopic Pattern Matching"></a>3. Isotopic Pattern Matching</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> pyteomics <span class="hljs-keyword">import</span> mass</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">match_isotopic_pattern</span>(<span class="hljs-params">mz_array, intensity_array, formula</span>):</span></span><br><span class="line">    theoretical_pattern = mass.calculate_mass(formula=formula, charge=<span class="hljs-number">1</span>)</span><br><span class="line">    <span class="hljs-comment"># Compare experimental and theoretical patterns</span></span><br><span class="line">    <span class="hljs-comment"># Return similarity score</span></span><br><span class="line">    <span class="hljs-keyword">return</span> similarity_score</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Visualization-Techniques"><a href="#Visualization-Techniques" class="headerlink" title="Visualization Techniques"></a>Visualization Techniques</h2><h3 id="1-Raw-Spectrum-Plot"><a href="#1-Raw-Spectrum-Plot" class="headerlink" title="1. Raw Spectrum Plot"></a>1. Raw Spectrum Plot</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_spectrum</span>(<span class="hljs-params">mz_array, intensity_array</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">6</span>))</span><br><span class="line">    plt.stem(mz_array, intensity_array, markerfmt=<span class="hljs-string">' '</span>)</span><br><span class="line">    plt.xlabel(<span class="hljs-string">'m/z'</span>)</span><br><span class="line">    plt.ylabel(<span class="hljs-string">'Intensity'</span>)</span><br><span class="line">    plt.title(<span class="hljs-string">'MS2 Spectrum'</span>)</span><br><span class="line">    plt.grid(<span class="hljs-literal">True</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-Deconvolved-Spectrum"><a href="#2-Deconvolved-Spectrum" class="headerlink" title="2. Deconvolved Spectrum"></a>2. Deconvolved Spectrum</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_deconvolved_spectrum</span>(<span class="hljs-params">mz_array, intensity_array, deconvolved_masses</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">6</span>))</span><br><span class="line">    plt.stem(mz_array, intensity_array, markerfmt=<span class="hljs-string">' '</span>, label=<span class="hljs-string">'Raw'</span>)</span><br><span class="line">    plt.vlines(deconvolved_masses, <span class="hljs-number">0</span>, <span class="hljs-built_in">max</span>(intensity_array), </span><br><span class="line">              colors=<span class="hljs-string">'r'</span>, linestyles=<span class="hljs-string">'dashed'</span>, label=<span class="hljs-string">'Deconvolved'</span>)</span><br><span class="line">    plt.xlabel(<span class="hljs-string">'m/z'</span>)</span><br><span class="line">    plt.ylabel(<span class="hljs-string">'Intensity'</span>)</span><br><span class="line">    plt.title(<span class="hljs-string">'Deconvolved MS2 Spectrum'</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.grid(<span class="hljs-literal">True</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Best-Practices"><a href="#Best-Practices" class="headerlink" title="Best Practices"></a>Best Practices</h2><ol>
+<li><p><strong>Data Preprocessing</strong></p>
+<ul>
+<li>Smooth the spectrum to reduce noise</li>
+<li>Remove baseline</li>
+<li>Normalize intensities</li>
+</ul>
+</li>
+<li><p><strong>Parameter Optimization</strong></p>
+<ul>
+<li>Adjust peak picking thresholds</li>
+<li>Fine-tune charge state range</li>
+<li>Optimize isotopic pattern matching parameters</li>
+</ul>
+</li>
+<li><p><strong>Quality Control</strong></p>
+<ul>
+<li>Validate deconvolution results</li>
+<li>Compare with known standards</li>
+<li>Check for systematic errors</li>
+</ul>
+</li>
+</ol>
+<h2 id="Common-Challenges-and-Solutions"><a href="#Common-Challenges-and-Solutions" class="headerlink" title="Common Challenges and Solutions"></a>Common Challenges and Solutions</h2><ol>
+<li><p><strong>Overlapping Peaks</strong></p>
+<ul>
+<li>Use advanced peak picking algorithms</li>
+<li>Implement peak deconvolution techniques</li>
+<li>Consider using machine learning approaches</li>
+</ul>
+</li>
+<li><p><strong>Noise Reduction</strong></p>
+<ul>
+<li>Apply smoothing filters</li>
+<li>Use signal-to-noise ratio thresholds</li>
+<li>Implement wavelet transforms</li>
+</ul>
+</li>
+<li><p><strong>Charge State Determination</strong></p>
+<ul>
+<li>Use isotopic pattern analysis</li>
+<li>Consider multiple charge states</li>
+<li>Implement charge state prediction algorithms</li>
+</ul>
+</li>
+</ol>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Deconvolution of MS2 spectra is a complex but essential process in mass spectrometry data analysis. By implementing appropriate algorithms and visualization techniques, researchers can extract valuable information from complex mass spectra. The Python examples provided in this post serve as a starting point for developing more sophisticated deconvolution methods tailored to specific research needs.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><p>Smith, R. D., et al. (2002). “An accurate mass tag strategy for quantitative and high-throughput proteome measurements.” Proteomics, 2(5), 513-523.</p>
+</li>
+<li><p>Horn, D. M., et al. (2000). “Automated reduction and interpretation of high resolution electrospray mass spectra of large molecules.” Journal of the American Society for Mass Spectrometry, 11(4), 320-332.</p>
+</li>
+<li><p>Zhang, Z., &amp; Marshall, A. G. (1998). “A universal algorithm for fast and automated charge state deconvolution of electrospray mass-to-charge ratio spectra.” Journal of the American Society for Mass Spectrometry, 9(3), 225-233.</p>
+</li>
+</ol>
+</body></html>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2023/05/09/Web_App_Development_Interactive_Data_Panel/" itemprop="url">Create your first web app: Interactive data panel for visualizatoin correlations</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2023-05-09T14:55:00.000Z" itemprop="datePublished">5月 9 2023</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this tutorial, I will demonstrate how to create a simple, interactive web app that visualizes correlations between variables. We will also walk you through the necessary environment setup and deployment steps.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2023/05/09/Web_App_Development_Interactive_Data_Panel/#more">Lire la Suite</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
             <a href="/2022/11/24/Plotting-map-with-d3-topojson/" itemprop="url">Plotting maps using D3 and Topojson</a>
         
     </h1>
@@ -157,7 +391,7 @@
     
         <html><head></head><body><p>In this post, I will cover a series of codes that how to make maps from scratch not using Python but more interactive tools.<br>Choropleth (等值区图)<br>Choropleth (等值区图)</p></body></html>
         <p class="article-more-link">
-            <a href="/2022/11/24/Plotting-map-with-d3-topojson/#more">mehr</a>
+            <a href="/2022/11/24/Plotting-map-with-d3-topojson/#more">Lire la Suite</a>
         </p>
     
     </div>
@@ -193,7 +427,7 @@
     
         <html><head></head><body><p>提要：定义嵌套网格是运行WRF模型的重要工作。本文基于Python 3.7，在<a target="_blank" rel="noopener" href="https://salem.readthedocs.io/en/v0.2.3/">Salem</a>工具包基础上加以改进，结合Cartopy对中国国界线进行替换，同时实现修改默认底图。</p></body></html>
         <p class="article-more-link">
-            <a href="/2020/08/04/WRF%E5%B5%8C%E5%A5%97%E7%BD%91%E6%A0%BC%E7%9A%84%E7%BB%98%E5%88%B6/#more">mehr</a>
+            <a href="/2020/08/04/WRF%E5%B5%8C%E5%A5%97%E7%BD%91%E6%A0%BC%E7%9A%84%E7%BB%98%E5%88%B6/#more">Lire la Suite</a>
         </p>
     
     </div>
@@ -231,7 +465,7 @@
 <p>The satellite sensor can offer critical supplementary data of several atmospheric species, e.g., SO<sub>2</sub>, NO<sub>2</sub>, PM<sub>2.5</sub>. Comparaing to ground-based monitoring which might be sparse in some areas (e.g., Africa, South America, oceans), the satellite observation offers a full picture for better understanding the spatiotemporal patterns of some air pollutants.</p>
 <p>Below is an excerpt of a NO<sub>2</sub> column maps within  Chengyu urabn agglomeration in China.</p></body></html>
         <p class="article-more-link">
-            <a href="/2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/#more">mehr</a>
+            <a href="/2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/#more">Lire la Suite</a>
         </p>
     
     </div>
@@ -267,7 +501,7 @@
     
         <html><head></head><body><p>Hillshade is the representation of the earth’s surface under the radiation of sun. A terrain raster data can be better visualized by adding the information of hillshades. This blog will introduce some procrdures to overlay the hillshade with terrain for a nice picture.  </p></body></html>
         <p class="article-more-link">
-            <a href="/2018/11/06/Plotting%20topography%20map%20with%20using%20Python/#more">mehr</a>
+            <a href="/2018/11/06/Plotting%20topography%20map%20with%20using%20Python/#more">Lire la Suite</a>
         </p>
     
     </div>
@@ -313,7 +547,7 @@
 <p>This document is organized into sections for easy navigation, so you can quickly find the script or code snippet that you need. Many of them were collected from <a target="_blank" rel="noopener" href="https://stackoverflow.com/">stackoverflow</a>. </p>
 <p>On 2022.03.31, I re-organize all the scripts into Python 3.x version and post again.<br>On 2023.02.12, I edited the whole content with help from ChatGPT</p></body></html>
         <p class="article-more-link">
-            <a href="/2018/07/22/Useful%20python%20scripts%20for%20daily%20use/#more">mehr</a>
+            <a href="/2018/07/22/Useful%20python%20scripts%20for%20daily%20use/#more">Lire la Suite</a>
         </p>
     
     </div>
@@ -332,7 +566,7 @@
     <div class="container">
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
-                &copy; 2023 Hao Yufang&nbsp;
+                &copy; 2025 Hao Yufang&nbsp;
                 Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
@@ -440,7 +674,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -453,10 +687,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

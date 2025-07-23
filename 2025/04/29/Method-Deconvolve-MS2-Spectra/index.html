@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>Method for Deconvolving MS2 spectra - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="Method for Deconvolving MS2 SpectraIntroductionMass spectrometry (MS) is a powerful analytical technique used to identify and quantify molecules based on their mass-to-charge ratio (m&#x2F;z). MS2 spectra,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Method for Deconvolving MS2 spectra">
+<meta property="og:url" content="http://envhyf.github.io/2025/04/29/Method-Deconvolve-MS2-Spectra/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="Method for Deconvolving MS2 SpectraIntroductionMass spectrometry (MS) is a powerful analytical technique used to identify and quantify molecules based on their mass-to-charge ratio (m&#x2F;z). MS2 spectra,">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-04-29T14:55:00.000Z">
+<meta property="article:modified_time" content="2025-04-29T12:49:29.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Visualization">
+<meta property="article:tag" content="Chemistry">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            Method for Deconvolving MS2 spectra
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2025-04-29T14:55:00.000Z" itemprop="datePublished">4月 29 2025</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><h1 id="Method-for-Deconvolving-MS2-Spectra"><a href="#Method-for-Deconvolving-MS2-Spectra" class="headerlink" title="Method for Deconvolving MS2 Spectra"></a>Method for Deconvolving MS2 Spectra</h1><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Mass spectrometry (MS) is a powerful analytical technique used to identify and quantify molecules based on their mass-to-charge ratio (m/z). MS2 spectra, also known as tandem mass spectra, are generated by fragmenting precursor ions and measuring the resulting product ions. Deconvolution of MS2 spectra is a crucial step in mass spectrometry data analysis, helping to separate overlapping signals and identify the true components of complex mixtures.</p>
+<h2 id="Understanding-MS2-Spectra"><a href="#Understanding-MS2-Spectra" class="headerlink" title="Understanding MS2 Spectra"></a>Understanding MS2 Spectra</h2><p>MS2 spectra typically consist of:</p>
+<ul>
+<li>Precursor ion (parent ion)</li>
+<li>Product ions (fragment ions)</li>
+<li>Neutral losses</li>
+<li>Isotopic patterns</li>
+</ul>
+<p>The deconvolution process aims to:</p>
+<ol>
+<li>Separate overlapping isotopic clusters</li>
+<li>Identify charge states</li>
+<li>Reconstruct the original precursor mass</li>
+<li>Resolve complex mixtures</li>
+</ol>
+<h2 id="Common-Deconvolution-Methods"><a href="#Common-Deconvolution-Methods" class="headerlink" title="Common Deconvolution Methods"></a>Common Deconvolution Methods</h2><h3 id="1-Peak-Picking-and-Centroiding"><a href="#1-Peak-Picking-and-Centroiding" class="headerlink" title="1. Peak Picking and Centroiding"></a>1. Peak Picking and Centroiding</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.signal <span class="hljs-keyword">import</span> find_peaks</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">find_peaks_centroid</span>(<span class="hljs-params">mz_array, intensity_array, min_height=<span class="hljs-number">100</span></span>):</span></span><br><span class="line">    peaks, properties = find_peaks(intensity_array, height=min_height)</span><br><span class="line">    centroids = []</span><br><span class="line">    <span class="hljs-keyword">for</span> peak <span class="hljs-keyword">in</span> peaks:</span><br><span class="line">        <span class="hljs-comment"># Calculate centroid using weighted average</span></span><br><span class="line">        mz_centroid = np.<span class="hljs-built_in">sum</span>(mz_array[peak-<span class="hljs-number">2</span>:peak+<span class="hljs-number">3</span>] * intensity_array[peak-<span class="hljs-number">2</span>:peak+<span class="hljs-number">3</span>]) / np.<span class="hljs-built_in">sum</span>(intensity_array[peak-<span class="hljs-number">2</span>:peak+<span class="hljs-number">3</span>])</span><br><span class="line">        centroids.append(mz_centroid)</span><br><span class="line">    <span class="hljs-keyword">return</span> np.array(centroids)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-Charge-State-Deconvolution"><a href="#2-Charge-State-Deconvolution" class="headerlink" title="2. Charge State Deconvolution"></a>2. Charge State Deconvolution</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">deconvolve_charge_states</span>(<span class="hljs-params">mz_array, intensity_array, charge_range=(<span class="hljs-params"><span class="hljs-number">1</span>, <span class="hljs-number">5</span></span>)</span>):</span></span><br><span class="line">    deconvolved_masses = []</span><br><span class="line">    <span class="hljs-keyword">for</span> charge <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(charge_range[<span class="hljs-number">0</span>], charge_range[<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>):</span><br><span class="line">        <span class="hljs-comment"># Calculate neutral mass for each charge state</span></span><br><span class="line">        neutral_mass = mz_array * charge - charge * <span class="hljs-number">1.007276</span></span><br><span class="line">        deconvolved_masses.append(neutral_mass)</span><br><span class="line">    <span class="hljs-keyword">return</span> deconvolved_masses</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-Isotopic-Pattern-Matching"><a href="#3-Isotopic-Pattern-Matching" class="headerlink" title="3. Isotopic Pattern Matching"></a>3. Isotopic Pattern Matching</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> pyteomics <span class="hljs-keyword">import</span> mass</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">match_isotopic_pattern</span>(<span class="hljs-params">mz_array, intensity_array, formula</span>):</span></span><br><span class="line">    theoretical_pattern = mass.calculate_mass(formula=formula, charge=<span class="hljs-number">1</span>)</span><br><span class="line">    <span class="hljs-comment"># Compare experimental and theoretical patterns</span></span><br><span class="line">    <span class="hljs-comment"># Return similarity score</span></span><br><span class="line">    <span class="hljs-keyword">return</span> similarity_score</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Visualization-Techniques"><a href="#Visualization-Techniques" class="headerlink" title="Visualization Techniques"></a>Visualization Techniques</h2><h3 id="1-Raw-Spectrum-Plot"><a href="#1-Raw-Spectrum-Plot" class="headerlink" title="1. Raw Spectrum Plot"></a>1. Raw Spectrum Plot</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_spectrum</span>(<span class="hljs-params">mz_array, intensity_array</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">6</span>))</span><br><span class="line">    plt.stem(mz_array, intensity_array, markerfmt=<span class="hljs-string">' '</span>)</span><br><span class="line">    plt.xlabel(<span class="hljs-string">'m/z'</span>)</span><br><span class="line">    plt.ylabel(<span class="hljs-string">'Intensity'</span>)</span><br><span class="line">    plt.title(<span class="hljs-string">'MS2 Spectrum'</span>)</span><br><span class="line">    plt.grid(<span class="hljs-literal">True</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-Deconvolved-Spectrum"><a href="#2-Deconvolved-Spectrum" class="headerlink" title="2. Deconvolved Spectrum"></a>2. Deconvolved Spectrum</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_deconvolved_spectrum</span>(<span class="hljs-params">mz_array, intensity_array, deconvolved_masses</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">6</span>))</span><br><span class="line">    plt.stem(mz_array, intensity_array, markerfmt=<span class="hljs-string">' '</span>, label=<span class="hljs-string">'Raw'</span>)</span><br><span class="line">    plt.vlines(deconvolved_masses, <span class="hljs-number">0</span>, <span class="hljs-built_in">max</span>(intensity_array), </span><br><span class="line">              colors=<span class="hljs-string">'r'</span>, linestyles=<span class="hljs-string">'dashed'</span>, label=<span class="hljs-string">'Deconvolved'</span>)</span><br><span class="line">    plt.xlabel(<span class="hljs-string">'m/z'</span>)</span><br><span class="line">    plt.ylabel(<span class="hljs-string">'Intensity'</span>)</span><br><span class="line">    plt.title(<span class="hljs-string">'Deconvolved MS2 Spectrum'</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.grid(<span class="hljs-literal">True</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Best-Practices"><a href="#Best-Practices" class="headerlink" title="Best Practices"></a>Best Practices</h2><ol>
+<li><p><strong>Data Preprocessing</strong></p>
+<ul>
+<li>Smooth the spectrum to reduce noise</li>
+<li>Remove baseline</li>
+<li>Normalize intensities</li>
+</ul>
+</li>
+<li><p><strong>Parameter Optimization</strong></p>
+<ul>
+<li>Adjust peak picking thresholds</li>
+<li>Fine-tune charge state range</li>
+<li>Optimize isotopic pattern matching parameters</li>
+</ul>
+</li>
+<li><p><strong>Quality Control</strong></p>
+<ul>
+<li>Validate deconvolution results</li>
+<li>Compare with known standards</li>
+<li>Check for systematic errors</li>
+</ul>
+</li>
+</ol>
+<h2 id="Common-Challenges-and-Solutions"><a href="#Common-Challenges-and-Solutions" class="headerlink" title="Common Challenges and Solutions"></a>Common Challenges and Solutions</h2><ol>
+<li><p><strong>Overlapping Peaks</strong></p>
+<ul>
+<li>Use advanced peak picking algorithms</li>
+<li>Implement peak deconvolution techniques</li>
+<li>Consider using machine learning approaches</li>
+</ul>
+</li>
+<li><p><strong>Noise Reduction</strong></p>
+<ul>
+<li>Apply smoothing filters</li>
+<li>Use signal-to-noise ratio thresholds</li>
+<li>Implement wavelet transforms</li>
+</ul>
+</li>
+<li><p><strong>Charge State Determination</strong></p>
+<ul>
+<li>Use isotopic pattern analysis</li>
+<li>Consider multiple charge states</li>
+<li>Implement charge state prediction algorithms</li>
+</ul>
+</li>
+</ol>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Deconvolution of MS2 spectra is a complex but essential process in mass spectrometry data analysis. By implementing appropriate algorithms and visualization techniques, researchers can extract valuable information from complex mass spectra. The Python examples provided in this post serve as a starting point for developing more sophisticated deconvolution methods tailored to specific research needs.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><p>Smith, R. D., et al. (2002). “An accurate mass tag strategy for quantitative and high-throughput proteome measurements.” Proteomics, 2(5), 513-523.</p>
+</li>
+<li><p>Horn, D. M., et al. (2000). “Automated reduction and interpretation of high resolution electrospray mass spectra of large molecules.” Journal of the American Society for Mass Spectrometry, 11(4), 320-332.</p>
+</li>
+<li><p>Zhang, Z., &amp; Marshall, A. G. (1998). “A universal algorithm for fast and automated charge state deconvolution of electrospray mass-to-charge ratio spectra.” Journal of the American Society for Mass Spectrometry, 9(3), 225-233.</p>
+</li>
+</ol>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Chemistry/">#Chemistry</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2025/04/29/Visualizing-Chemical-Structures/">Visualizing Chemical Structures</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/10/05/FLEXPART-trajectories-in-3D-terrain-map/">FLEXPART installation notes</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Commentaires</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2025/04/29/Method-Deconvolve-MS2-Spectra/';
+        this.page.identifier = '2025/04/29/Method-Deconvolve-MS2-Spectra/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
+                TAGS: 'Tags',
+                UNTITLED: '(Sans Titre)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

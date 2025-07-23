@@ -216,124 +216,6 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            <a href="/2025/07/23/FLEXPART-ECMWF/" itemprop="url"></a>
-        
-    </h1>
-    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
-        <span class="column is-narrow">
-            
-                <time datetime="2025-07-23T21:11:34.310Z" itemprop="datePublished">7月 23 2025</time>
-            
-        </span>
-        
-        
-    </div>
-    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
-    
-        <html><head></head><body><h1 id="Installing-FLEXPART-v11-with-ECMWF-Support-A-Complete-Technical-Guide"><a href="#Installing-FLEXPART-v11-with-ECMWF-Support-A-Complete-Technical-Guide" class="headerlink" title="Installing FLEXPART v11 with ECMWF Support: A Complete Technical Guide"></a>Installing FLEXPART v11 with ECMWF Support: A Complete Technical Guide</h1><p>This post walks through a full <strong>FLEXPART v11</strong> installation for <strong>ECMWF meteorological data</strong> with <strong>NetCDF and Fortran support</strong>, including resolving common compilation issues. All components were built from source on a Linux HPC system with user-level access.</p>
-<hr>
-<h2 id="⚙️-Installation-Structure"><a href="#⚙️-Installation-Structure" class="headerlink" title="⚙️ Installation Structure"></a>⚙️ Installation Structure</h2><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">export</span> DIR=/data/user/hao_y/lib</span><br><span class="line"><span class="hljs-built_in">export</span> INSTALL_DIR=<span class="hljs-variable">$DIR</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>All components (GCC, HDF5, NetCDF, ecCodes, etc.) will be installed under this directory tree.</p>
-<hr>
-<h2 id="🔧-Step-by-Step-Build-Pipeline"><a href="#🔧-Step-by-Step-Build-Pipeline" class="headerlink" title="🔧 Step-by-Step Build Pipeline"></a>🔧 Step-by-Step Build Pipeline</h2><h3 id="1-GCC-13-2-0-with-Fortran-Support"><a href="#1-GCC-13-2-0-with-Fortran-Support" class="headerlink" title="1. GCC 13.2.0 (with Fortran Support)"></a>1. GCC 13.2.0 (with Fortran Support)</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.gz</span><br><span class="line">tar -xzf gcc-13.2.0.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> gcc-13.2.0</span><br><span class="line">./contrib/download_prerequisites</span><br><span class="line">mkdir build &amp;&amp; <span class="hljs-built_in">cd</span> build</span><br><span class="line">../configure --prefix=<span class="hljs-variable">$DIR</span>/gcc-13.2.0 --enable-languages=c,c++,fortran,go --disable-multilib</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>Export compilers:</strong></p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$DIR</span>/gcc-13.2.0/bin:<span class="hljs-variable">$PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/gcc-13.2.0/lib64:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> CC=gcc</span><br><span class="line"><span class="hljs-built_in">export</span> CXX=g++</span><br><span class="line"><span class="hljs-built_in">export</span> FC=gfortran</span><br><span class="line"><span class="hljs-built_in">export</span> F77=gfortran</span><br><span class="line"><span class="hljs-built_in">export</span> CFLAGS=<span class="hljs-string">'-gdwarf-2 -gstrict-dwarf'</span></span><br><span class="line"><span class="hljs-built_in">export</span> FCFLAGS=-m64</span><br><span class="line"><span class="hljs-built_in">export</span> FFLAGS=-m64</span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h3 id="2-HDF5-1-14-6"><a href="#2-HDF5-1-14-6" class="headerlink" title="2. HDF5 1.14.6"></a>2. HDF5 1.14.6</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://support.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.14.6.tar.gz</span><br><span class="line">tar -xzf hdf5-1.14.6.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> hdf5-1.14.6</span><br><span class="line">./configure --prefix=<span class="hljs-variable">$DIR</span>/hdf5 --enable-cxx --enable-fortran --enable-shared</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h3 id="3-NetCDF-C-Fortran"><a href="#3-NetCDF-C-Fortran" class="headerlink" title="3. NetCDF (C + Fortran)"></a>3. NetCDF (C + Fortran)</h3><h4 id="3-1-NetCDF-C"><a href="#3-1-NetCDF-C" class="headerlink" title="3.1 NetCDF-C"></a>3.1 NetCDF-C</h4><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.9.3.tar.gz -O netcdf-c-4.9.3.tar.gz</span><br><span class="line">tar -xzf netcdf-c-4.9.3.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> netcdf-c-4.9.3</span><br><span class="line">./configure --prefix=<span class="hljs-variable">$DIR</span>/netcdf \</span><br><span class="line">    CPPFLAGS=<span class="hljs-string">"-I<span class="hljs-variable">$DIR</span>/hdf5/include"</span> \</span><br><span class="line">    LDFLAGS=<span class="hljs-string">"-L<span class="hljs-variable">$DIR</span>/hdf5/lib"</span> \</span><br><span class="line">    --enable-netcdf-4 --disable-dap</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="3-2-NetCDF-Fortran"><a href="#3-2-NetCDF-Fortran" class="headerlink" title="3.2 NetCDF-Fortran"></a>3.2 NetCDF-Fortran</h4><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.6.1.tar.gz -O netcdf-fortran-4.6.1.tar.gz</span><br><span class="line">tar -xzf netcdf-fortran-4.6.1.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> netcdf-fortran-4.6.1</span><br><span class="line">./configure --prefix=<span class="hljs-variable">$DIR</span>/netcdf</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h3 id="4-OpenMPI-Optional-for-MPI-mode"><a href="#4-OpenMPI-Optional-for-MPI-mode" class="headerlink" title="4. OpenMPI (Optional for MPI mode)"></a>4. OpenMPI (Optional for MPI mode)</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.6.tar.gz</span><br><span class="line">tar -xzf openmpi-4.1.6.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> openmpi-4.1.6</span><br><span class="line">./configure --prefix=<span class="hljs-variable">$DIR</span>/libs/openmpi</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br><span class="line"><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$DIR</span>/libs/openmpi/bin:<span class="hljs-variable">$PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/libs/openmpi/lib:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h3 id="5-AEC-Library-Required-by-ecCodes"><a href="#5-AEC-Library-Required-by-ecCodes" class="headerlink" title="5. AEC Library (Required by ecCodes)"></a>5. AEC Library (Required by ecCodes)</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://gitlab.dkrz.de/k202009/libaec/-/archive/v1.0.6/libaec-v1.0.6.tar.gz</span><br><span class="line">tar -xzf libaec-v1.0.6.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> libaec-v1.0.6 &amp;&amp; mkdir build &amp;&amp; <span class="hljs-built_in">cd</span> build</span><br><span class="line">cmake .. -DCMAKE_INSTALL_PREFIX=<span class="hljs-variable">$DIR</span>/libaec</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h3 id="6-ecCodes-with-Fortran-and-NetCDF"><a href="#6-ecCodes-with-Fortran-and-NetCDF" class="headerlink" title="6. ecCodes (with Fortran and NetCDF)"></a>6. ecCodes (with Fortran and NetCDF)</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.33.0-Source.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Unpack and build</span></span><br><span class="line">mkdir build &amp;&amp; <span class="hljs-built_in">cd</span> build</span><br><span class="line">cmake .. -DCMAKE_INSTALL_PREFIX=<span class="hljs-variable">$DIR</span>/eccodes -DCMAKE_PREFIX_PATH=<span class="hljs-string">"<span class="hljs-variable">$DIR</span>/netcdf;<span class="hljs-variable">$DIR</span>/hdf5;<span class="hljs-variable">$DIR</span>/libaec"</span> -DENABLE_NETCDF=ON -DENABLE_FORTRAN=ON -DCMAKE_BUILD_TYPE=Release</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h2 id="📃-Environment-Exports-Summary"><a href="#📃-Environment-Exports-Summary" class="headerlink" title="📃 Environment Exports Summary"></a>📃 Environment Exports Summary</h2><p>Set these variables in your <code>.bashrc</code> or shell:</p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$DIR</span>/gcc-13.2.0/bin:<span class="hljs-variable">$PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/gcc-13.2.0/lib64:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> CC=gcc</span><br><span class="line"><span class="hljs-built_in">export</span> CXX=g++</span><br><span class="line"><span class="hljs-built_in">export</span> FC=gfortran</span><br><span class="line"><span class="hljs-built_in">export</span> F77=gfortran</span><br><span class="line"><span class="hljs-built_in">export</span> FFLAGS=-m64</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># HDF5</span></span><br><span class="line"><span class="hljs-built_in">export</span> HDF5_DIR=<span class="hljs-variable">$DIR</span>/hdf5</span><br><span class="line"><span class="hljs-built_in">export</span> CPATH=<span class="hljs-variable">$HDF5_DIR</span>/include:<span class="hljs-variable">$CPATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LIBRARY_PATH=<span class="hljs-variable">$HDF5_DIR</span>/lib:<span class="hljs-variable">$LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$HDF5_DIR</span>/lib:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># NetCDF</span></span><br><span class="line"><span class="hljs-built_in">export</span> NETCDF_DIR=<span class="hljs-variable">$DIR</span>/netcdf</span><br><span class="line"><span class="hljs-built_in">export</span> CPATH=<span class="hljs-variable">$NETCDF_DIR</span>/include:<span class="hljs-variable">$CPATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LIBRARY_PATH=<span class="hljs-variable">$NETCDF_DIR</span>/lib:<span class="hljs-variable">$LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$NETCDF_DIR</span>/lib:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> PKG_CONFIG_PATH=<span class="hljs-variable">$NETCDF_DIR</span>/lib/pkgconfig:<span class="hljs-variable">$PKG_CONFIG_PATH</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># AEC</span></span><br><span class="line"><span class="hljs-built_in">export</span> CPATH=<span class="hljs-variable">$DIR</span>/libaec/include:<span class="hljs-variable">$CPATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/libaec/lib:<span class="hljs-variable">$LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/libaec/lib:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ecCodes</span></span><br><span class="line"><span class="hljs-built_in">export</span> CPATH=<span class="hljs-variable">$DIR</span>/eccodes/include:<span class="hljs-variable">$CPATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/eccodes/lib:<span class="hljs-variable">$LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/eccodes/lib:<span class="hljs-variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$DIR</span>/eccodes/bin:<span class="hljs-variable">$PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> PKG_CONFIG_PATH=<span class="hljs-variable">$DIR</span>/eccodes/lib/pkgconfig:<span class="hljs-variable">$PKG_CONFIG_PATH</span></span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h2 id="🌐-FLEXPART-v11-Compilation-ECMWF-Mode"><a href="#🌐-FLEXPART-v11-Compilation-ECMWF-Mode" class="headerlink" title="🌐 FLEXPART v11 Compilation (ECMWF Mode)"></a>🌐 FLEXPART v11 Compilation (ECMWF Mode)</h2><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://gitlab.phaidra.org/flexpart/flexpart/-/archive/v11/flexpart-v11.tar.gz</span><br><span class="line">tar -xzf flexpart-v11.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> flexpart-v11</span><br><span class="line"><span class="hljs-comment"># the place to change in the makefile_gfortran is the  F90 = /data/user/hao_y/lib/gcc-13.2.0/bin/gfortran  </span></span><br><span class="line">make -f makefile_gfortran -j4 eta=no ncf=yes</span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li><code>eta=no</code>: Use hybrid ECMWF coordinate system</li>
-<li><code>ncf=yes</code>: Enable NetCDF support</li>
-</ul>
-<hr>
-<h2 id="❌-Common-Errors-and-Fixes"><a href="#❌-Common-Errors-and-Fixes" class="headerlink" title="❌ Common Errors and Fixes"></a>❌ Common Errors and Fixes</h2><table>
-<thead>
-<tr>
-<th>Error</th>
-<th>Cause</th>
-<th>Solution</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>cannot find -leccodes_f90</code></td>
-<td>ecCodes built without Fortran</td>
-<td>Add <code>-DENABLE_FORTRAN=ON</code></td>
-</tr>
-<tr>
-<td><code>AEC library not found</code></td>
-<td>libaec missing</td>
-<td>Install <code>libaec</code> and add to <code>CMAKE_PREFIX_PATH</code></td>
-</tr>
-<tr>
-<td><code>GLIBCXX_3.4.30 not found</code></td>
-<td>Old <code>libstdc++</code> in system</td>
-<td>Build newer GCC (&gt;=13) and use its lib path</td>
-</tr>
-<tr>
-<td><code>gfortran: command not found</code></td>
-<td>GCC built without Fortran</td>
-<td>Rebuild with <code>--enable-languages=c,c++,fortran</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="📅-Final-Notes"><a href="#📅-Final-Notes" class="headerlink" title="📅 Final Notes"></a>📅 Final Notes</h2><blockquote>
-<p>Think of <code>./configure</code> as the blueprint, <code>make</code> as construction, and <code>make install</code> as moving into your house and wiring the electricity.<br>You now have a clean, custom-built FLEXPART environment with all dependencies resolved, ready to simulate ECMWF-based transport at scale.</p>
-</blockquote>
-<blockquote>
-<p>when copy the setting from another PC into the release folder, you need to change the permission of the folder by typing <code>chmod -R 755 ./options</code> and <code>chmod 644./options/RELEASES</code> or any other files.</p>
-</blockquote>
-<blockquote>
-<p>For multi-core processing, you can use the <code>export OMP_NUM_THREADS=4</code> to set 4 cores (can set for more) and then with <code>./FLEXPART</code> command to run FLEXPART with multiple processes. </p>
-</blockquote>
-<blockquote>
-<p>Sometimes, we will find error of “Program received signal SIGSEGV: Segmentation fault - invalid memory reference.” By typing <code>ulimit -s unlimted</code>, we can solve this problem.</p>
-</blockquote>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ol>
-<li><p>FLEXPART GitLab repository<br><a target="_blank" rel="noopener" href="https://gitlab.phaidra.org/flexpart/flexpart">https://gitlab.phaidra.org/flexpart/flexpart</a><br>(Main source code and Makefiles for FLEXPART v10/v11)</p>
-</li>
-<li><p>FLEXPART Installation Guide (official wiki)<br><a target="_blank" rel="noopener" href="https://www.flexpart.eu/wiki/FpInstallation">https://www.flexpart.eu/wiki/FpInstallation</a><br>(Overview of FLEXPART compilation across versions and systems)</p>
-</li>
-<li><p>ECMWF ecCodes documentation<br><a target="_blank" rel="noopener" href="https://confluence.ecmwf.int/display/ECC/ecCodes+Home">https://confluence.ecmwf.int/display/ECC/ecCodes+Home</a><br>(Build instructions, environment variables, and sample readers)</p>
-</li>
-</ol>
-</body></html>
-    
-    </div>
-    
-    
-</article>
-
-
-
-
-    
-        <article class="article content gallery" itemscope itemprop="blogPost">
-    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
-        
             <a href="/2025/07/23/MS2_analysis_tool/" itemprop="url"></a>
         
     </h1>
@@ -352,6 +234,42 @@
 <p><a target="_blank" rel="noopener" href="https://fiehnlab.ucdavis.edu/projects/ms2analyzer">https://fiehnlab.ucdavis.edu/projects/ms2analyzer</a></p>
 <h2 id="Polaris-drug-discovery"><a href="#Polaris-drug-discovery" class="headerlink" title="Polaris drug discovery"></a>Polaris drug discovery</h2><p><a target="_blank" rel="noopener" href="https://polarishub.io/competitions/asap-discovery/antiviral-drug-discovery-2025">https://polarishub.io/competitions/asap-discovery/antiviral-drug-discovery-2025</a></p>
 </body></html>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2025/07/22/42.%5BModel%5DGEOS_Chem_Classic_South_Asia_Simulation_Tutorial/" itemprop="url">GEOS-Chem Installation and Run log</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2025-07-22T11:32:26.000Z" itemprop="datePublished">7月 22 2025</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this post, I document the complete process of installing and configuring the <strong>GEOS-Chem Classic model</strong>, including environmental setup, compilation, and runtime configuration. The log is based on my experience running GEOS-Chem on a Linux HPC system, and covers both the challenges I encountered and the solutions I implemented. </p></body></html>
+        <p class="article-more-link">
+            <a href="/2025/07/22/42.%5BModel%5DGEOS_Chem_Classic_South_Asia_Simulation_Tutorial/#more">Lire la Suite</a>
+        </p>
     
     </div>
     
@@ -632,7 +550,7 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            <a href="/2023/02/23/From-Shapefile-to-Geojson/" itemprop="url">The work transformed from shapefile to geojson file</a>
+            <a href="/2023/02/23/22.From-Shapefile-to-Geojson/" itemprop="url">The work transformed from shapefile to geojson file</a>
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
@@ -661,7 +579,7 @@
 </li>
 </ol></body></html>
         <p class="article-more-link">
-            <a href="/2023/02/23/From-Shapefile-to-Geojson/#more">Lire la Suite</a>
+            <a href="/2023/02/23/22.From-Shapefile-to-Geojson/#more">Lire la Suite</a>
         </p>
     
     </div>

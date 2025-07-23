@@ -17,17 +17,17 @@
     <meta name="description" content="部分互联网资料仅提供在线预览，无法直接下载。若预览系统设计欠佳，或限于网速内容加载过慢，都会对阅读体验造成严重影响。在此分别以国家自然基金研究报告和学位论文为例，介绍两种不同的下载合成方法，供有需要的老师同学们参考。欢迎大家提出宝贵意见。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="小工具开发：网络预览文献资料的下载合成">
-<meta property="og:url" content="http://envhyf.github.io/2020/05/10/%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/index.html">
+<meta property="og:url" content="http://envhyf.github.io/2020/05/10/20.%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/index.html">
 <meta property="og:site_name" content="太平塔">
 <meta property="og:description" content="部分互联网资料仅提供在线预览，无法直接下载。若预览系统设计欠佳，或限于网速内容加载过慢，都会对阅读体验造成严重影响。在此分别以国家自然基金研究报告和学位论文为例，介绍两种不同的下载合成方法，供有需要的老师同学们参考。欢迎大家提出宝贵意见。">
 <meta property="og:locale">
-<meta property="og:image" content="https://i.stack.imgur.com/2b7IY.png">
+<meta property="og:image" content="http://envhyf.github.io/images/20.Report_downloader/Fig.1.png">
 <meta property="article:published_time" content="2020-05-10T04:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-04T08:21:17.000Z">
+<meta property="article:modified_time" content="2025-07-23T22:26:06.314Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.stack.imgur.com/2b7IY.png">
+<meta name="twitter:image" content="http://envhyf.github.io/images/20.Report_downloader/Fig.1.png">
 
 
 
@@ -167,7 +167,7 @@
 <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 主要参考网页 https://www.devdungeon.com/content/grab-image-clipboard-python-pillow</span></span><br><span class="line"><span class="hljs-keyword">from</span> selenium <span class="hljs-keyword">import</span> webdriver</span><br><span class="line"><span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> sleep</span><br><span class="line"><span class="hljs-keyword">import</span> pyperclip,pyautogui</span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 下载环节</span></span><br><span class="line">chrome_options = webdriver.ChromeOptions()</span><br><span class="line">prefs = {<span class="hljs-string">'download.default_directory'</span> : <span class="hljs-string">'/user/defined/path'</span>}</span><br><span class="line">chrome_options.add_experimental_option(<span class="hljs-string">'prefs'</span>, prefs)</span><br><span class="line">driver = webdriver.Chrome(executable_path=<span class="hljs-string">"./geckodriver/chromedriver"</span>, chrome_options=chrome_options)</span><br><span class="line"><span class="hljs-comment">## 此url具体位置如下图</span></span><br><span class="line">driver.get(<span class="hljs-string">"https://thesis.lib.pku.edu.cn/onlinePDF?dbid=72&amp;objid=53_57_54_50_56_49&amp;flag=online"</span>)</span><br><span class="line"><span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> np.arange(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>):</span><br><span class="line">    img_url = driver.find_element_by_id(<span class="hljs-string">'ViewContainer_BG_0'</span>).get_attribute(<span class="hljs-string">'src'</span>)[:-<span class="hljs-number">10</span>]</span><br><span class="line">    driver.get(img_url+<span class="hljs-string">"_%s.jpg"</span> %<span class="hljs-string">"{:05d}"</span>.<span class="hljs-built_in">format</span>(t))</span><br><span class="line">    <span class="hljs-comment">#  Move to the specified location, right click</span></span><br><span class="line">    pyautogui.rightClick(x=<span class="hljs-number">600</span>, y=<span class="hljs-number">500</span>)</span><br><span class="line">    <span class="hljs-comment"># V</span></span><br><span class="line">    pyautogui.typewrite([<span class="hljs-string">'V'</span>])</span><br><span class="line">    pyautogui.hotkey(<span class="hljs-string">'ctrlleft'</span>,<span class="hljs-string">'V'</span>)</span><br><span class="line">    sleep(<span class="hljs-number">0.8</span>)</span><br><span class="line">    pyautogui.press(<span class="hljs-string">'enter'</span>)</span><br><span class="line">    sleep(<span class="hljs-number">0.8</span>)</span><br><span class="line">    pyautogui.press(<span class="hljs-string">'enter'</span>)</span><br><span class="line">driver.close()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 图片调整环节</span></span><br><span class="line"><span class="hljs-comment">## 有些图片是横置的，逆时针旋转90度</span></span><br><span class="line"><span class="hljs-keyword">import</span> os</span><br><span class="line"><span class="hljs-keyword">import</span> natsort</span><br><span class="line"><span class="hljs-keyword">from</span> fpdf <span class="hljs-keyword">import</span> FPDF</span><br><span class="line"><span class="hljs-keyword">import</span> cv2</span><br><span class="line">files = os.listdir(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>)</span><br><span class="line">files = natsort.natsorted(files, reverse = <span class="hljs-literal">False</span>)</span><br><span class="line">files = files[<span class="hljs-number">0</span>:]</span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">    <span class="hljs-keyword">if</span> file[-<span class="hljs-number">3</span>:]==<span class="hljs-string">'jpg'</span>:</span><br><span class="line">        img   = cv2.imread(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>+file)</span><br><span class="line">        h,w,c = img.shape</span><br><span class="line">        <span class="hljs-keyword">if</span> h&lt;w:</span><br><span class="line">            imgrot = cv2.rotate(img,cv2.ROTATE_90_COUNTERCLOCKWISE)</span><br><span class="line">            cv2.imwrite(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>+file,imgrot)         </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 合成PDF    </span></span><br><span class="line">pdf = FPDF()</span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files[<span class="hljs-number">0</span>:]:</span><br><span class="line">    <span class="hljs-keyword">if</span> file[-<span class="hljs-number">3</span>:]==<span class="hljs-string">'jpg'</span>:</span><br><span class="line">        pdf.add_page()  </span><br><span class="line">        pdf.image(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>+file,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">210</span>,<span class="hljs-number">297</span>)  </span><br><span class="line">pdf.output(<span class="hljs-string">"FILENAME.pdf"</span>, <span class="hljs-string">"F"</span>)        </span><br></pre></td></tr></tbody></table></figure>
 
 <p>在北大图书馆检索后，点击目标文献，在该页码打开chrome开发者工具，寻找到下列标记字段，右键选择“copy link element”即为预览页url。</p>
-<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/2b7IY.png"><img src="https://i.stack.imgur.com/2b7IY.png" alt="enter image description here"></a></p>
+<p><a href="/images/20.Report_downloader/Fig.1.png"><img src="/images/20.Report_downloader/Fig.1.png" alt="enter image description here"></a></p>
 </body></html>
     
     </div>
@@ -182,12 +182,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2020/05/10/Altair%E5%AD%A6%E4%B9%A0/">可视化工具Altair学习</a>
+            <a href="/2020/05/10/21.Altair%E5%AD%A6%E4%B9%A0/">可视化工具Altair学习</a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2019/06/01/Resampling-the-orignial-data-to-2-d-array/">Resampling the orignial data to 2-d array in specific grid system</a>
+            <a href="/2019/06/01/19.%5BCode%5DResampling-the-orignial-data-to-2-d-array/">Resampling the orignial data to 2-d array in specific grid system</a>
             
         </span>
     </div>
@@ -202,8 +202,8 @@
     
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://envhyf.github.io/2020/05/10/%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/';
-        this.page.identifier = '2020/05/10/小工具开发：网络预览文献资料的下载合成/';
+        this.page.url = 'http://envhyf.github.io/2020/05/10/20.%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/';
+        this.page.identifier = '2020/05/10/20.小工具开发：网络预览文献资料的下载合成/';
         
         this.language = 'zh';
         

@@ -17,20 +17,20 @@
     <meta name="description" content="I’m writing today about downloading, handling, and plotting satellite derived air pollution maps with cartopy and fiona using Python. One key task in this post is to clip a raster-like (2-d array) dat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Plotting air pollution maps using satellite data">
-<meta property="og:url" content="http://envhyf.github.io/2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/index.html">
+<meta property="og:url" content="http://envhyf.github.io/2018/11/25/14.[Code]Plotting-satellite-derived-air-pollution-maps-using-Python/index.html">
 <meta property="og:site_name" content="太平塔">
 <meta property="og:description" content="I’m writing today about downloading, handling, and plotting satellite derived air pollution maps with cartopy and fiona using Python. One key task in this post is to clip a raster-like (2-d array) dat">
 <meta property="og:locale">
-<meta property="og:image" content="https://i.stack.imgur.com/a14mC.png">
-<meta property="og:image" content="https://i.stack.imgur.com/b8dRv.png">
+<meta property="og:image" content="http://envhyf.github.io/images/14.Satellite_aq_map/Fig.1.png">
+<meta property="og:image" content="http://envhyf.github.io/images/14.Satellite_aq_map/Fig.2.png">
 <meta property="article:published_time" content="2018-11-25T14:41:33.000Z">
-<meta property="article:modified_time" content="2018-11-26T00:47:16.000Z">
+<meta property="article:modified_time" content="2025-07-23T22:14:23.907Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Air quality">
 <meta property="article:tag" content="Visualization">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.stack.imgur.com/a14mC.png">
+<meta name="twitter:image" content="http://envhyf.github.io/images/14.Satellite_aq_map/Fig.1.png">
 
 
 
@@ -116,7 +116,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -178,10 +178,10 @@
 <p>The mask array as the rastered polygon is shown like this.</p>
 <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fig = plt.figure()</span><br><span class="line">ax = back_main_clean(fig,extent)</span><br><span class="line"><span class="hljs-keyword">for</span> spine <span class="hljs-keyword">in</span> plt.gca().spines.values():</span><br><span class="line">	spine.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">ax.outline_patch.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">ax.pcolormesh(mask)</span><br><span class="line">plt.tight_layout()</span><br></pre></td></tr></tbody></table></figure>
 
-<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/a14mC.png"><img src="https://i.stack.imgur.com/a14mC.png" alt="enter image description here"></a></p>
+<p><a href="/images/14.Satellite_aq_map/Fig.1.png"><img src="/images/14.Satellite_aq_map/Fig.1.png" alt="enter image description here"></a></p>
 <h2 id="Visualization"><a href="#Visualization" class="headerlink" title="Visualization"></a>Visualization</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.axes_grid1 <span class="hljs-keyword">import</span> make_axes_locatable</span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = back_main_clean(fig,extent) <span class="hljs-comment"># the background map was prior-defined by specific uses.</span></span><br><span class="line">lon_x,lat_y = np.meshgrid(lon_,lat_)</span><br><span class="line"></span><br><span class="line">value_mask = np.ma.masked_array(no2_mask, np.isnan(no2_mask))</span><br><span class="line">value_mask = np.ma.masked_less(value_mask, <span class="hljs-number">0.0</span>)</span><br><span class="line">my_cmap = plt.cm.get_cmap(<span class="hljs-string">'Spectral_r'</span>)</span><br><span class="line">my_cmap.set_under(<span class="hljs-string">'w'</span>)</span><br><span class="line">cc = ax.pcolormesh(lon_x,lat_y,value_mask/<span class="hljs-number">100.0</span>,cmap =my_cmap,alpha = <span class="hljs-number">0.7</span>,transform=ccrs.PlateCarree(),zorder =<span class="hljs-number">2</span>,vmax = <span class="hljs-number">25</span>)<span class="hljs-comment">#</span></span><br><span class="line"></span><br><span class="line">cbaxes = fig.add_axes([<span class="hljs-number">0.58</span>, <span class="hljs-number">0.12</span>, <span class="hljs-number">0.16</span>, <span class="hljs-number">0.015</span>]) </span><br><span class="line">cbar = fig.colorbar(cc, cax=cbaxes, ticks=[<span class="hljs-number">4</span>,<span class="hljs-number">12</span>,<span class="hljs-number">20</span>],orientation=<span class="hljs-string">'horizontal'</span>)</span><br><span class="line">cbar.ax.set_title(<span class="hljs-string">r'$\mathregular{NO_2\ [10^{15}molec/cm^2]}$'</span>, fontsize = <span class="hljs-number">8</span>)</span><br><span class="line">cbar.ax.tick_params(color=<span class="hljs-string">'k'</span>, direction=<span class="hljs-string">'in'</span>,labelsize=<span class="hljs-number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> spine <span class="hljs-keyword">in</span> plt.gca().spines.values():</span><br><span class="line">    spine.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">ax.outline_patch.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">plt.tight_layout()</span><br></pre></td></tr></tbody></table></figure>
 
-<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/b8dRv.png"><img src="https://i.stack.imgur.com/b8dRv.png" alt="enter image description here"></a></p>
+<p><a href="/images/14.Satellite_aq_map/Fig.2.png"><img src="/images/14.Satellite_aq_map/Fig.2.png" alt="enter image description here"></a></p>
 </body></html>
     
     </div>
@@ -200,12 +200,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2018/12/06/Methods-to-mask-raster-by-polygons/">Two method to mask the raster data by specific geometry</a>
+            <a href="/2018/12/06/15.%5BCode%5DMethods-to-mask-raster-by-polygons/">Two method to mask the raster data by specific geometry</a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2018/11/06/Plotting%20topography%20map%20with%20using%20Python/">Plotting topography map with hillside</a>
+            <a href="/2018/11/06/12.%5BModel%5DFLEXPART-WRF%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E5%90%8E%E5%A4%84%E7%90%86/">Post processing of FLEXPART-WRF output</a>
             
         </span>
     </div>
@@ -216,12 +216,12 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Kommentare</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://envhyf.github.io/2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/';
-        this.page.identifier = '2018/11/25/Plotting-satellite-derived-air-pollution-maps-using-Python/';
+        this.page.url = 'http://envhyf.github.io/2018/11/25/14.[Code]Plotting-satellite-derived-air-pollution-maps-using-Python/';
+        this.page.identifier = '2018/11/25/14.[Code]Plotting-satellite-derived-air-pollution-maps-using-Python/';
         
         this.language = 'zh';
         
@@ -247,7 +247,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -354,7 +354,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -367,10 +367,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

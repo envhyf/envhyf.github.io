@@ -21,13 +21,15 @@
 <meta property="og:site_name" content="太平塔">
 <meta property="og:description" content="In this post, I document the complete process of installing and configuring the GEOS-Chem Classic model, including environmental setup, compilation, and runtime configuration. The log is based on my e">
 <meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/GEOS-Chem_installation/Fig.1.png">
 <meta property="article:published_time" content="2025-07-22T11:32:26.000Z">
-<meta property="article:modified_time" content="2025-07-23T22:43:30.612Z">
+<meta property="article:modified_time" content="2025-07-24T11:32:41.000Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Air quality">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Model">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/GEOS-Chem_installation/Fig.1.png">
 
 
 
@@ -156,131 +158,72 @@
     
         <html><head></head><body><p>In this post, I document the complete process of installing and configuring the <strong>GEOS-Chem Classic model</strong>, including environmental setup, compilation, and runtime configuration. The log is based on my experience running GEOS-Chem on a Linux HPC system, and covers both the challenges I encountered and the solutions I implemented. </p>
 <span id="more"></span>  
-<h2 id="1-Toolchain-and-Dependencies-Installation"><a href="#1-Toolchain-and-Dependencies-Installation" class="headerlink" title="1. Toolchain and Dependencies Installation"></a>1. Toolchain and Dependencies Installation</h2><p><strong>1.1. GCC and Fortran Compiler</strong></p>
-<ul>
-<li>Built <code>gcc-13.2.0</code> with <code>--enable-languages=c,c++,fortran</code></li>
-<li>Confirmed gfortran available at:<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/user/hao_y/lib/gcc-13.2.0/bin/gfortran</span><br></pre></td></tr></tbody></table></figure></li>
-</ul>
-<p><strong>1.2. HDF5, NetCDF, and Related Libraries</strong></p>
-<ul>
-<li>Built from source:<ul>
-<li><code>libaec</code></li>
-<li><code>zlib</code></li>
-<li><code>hdf5</code></li>
-<li><code>netcdf-c</code></li>
-<li><code>netcdf-fortran</code></li>
-<li><code>openmpi</code></li>
-</ul>
-</li>
-<li>Set environment variables appropriately.</li>
-</ul>
-<hr>
-<h2 id="2-GEOS-Chem-and-HEMCO-Build"><a href="#2-GEOS-Chem-and-HEMCO-Build" class="headerlink" title="2. GEOS-Chem and HEMCO Build"></a>2. GEOS-Chem and HEMCO Build</h2><p><strong>2.1. Cloning and Setup</strong></p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="hljs-built_in">clone</span> --recurse-submodules https://github.com/geoschem/GCClassic.git GCClassic</span><br><span class="line"><span class="hljs-built_in">cd</span> GCClassic</span><br></pre></td></tr></tbody></table></figure>
-<ul>
-<li>Unpacked, and placed inside <code>CodeDir/</code></li>
-</ul>
-<p><strong>2.2. Run Directory Creation</strong></p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcclassic createRunDir -r fullchem -s sasia -z 0.25 -t 20180701 -e 20180702</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-Environmental-Setup"><a href="#1-Environmental-Setup" class="headerlink" title="1. Environmental Setup"></a>1. Environmental Setup</h2><p>GEOS-Chem requires a proper build environment.</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">export</span> DIR=/data/user/hao_y/lib</span><br><span class="line"><span class="hljs-built_in">export</span> HDF5_DIR=<span class="hljs-variable">$DIR</span>/hdf5</span><br><span class="line"><span class="hljs-built_in">export</span> NETCDF_DIR=<span class="hljs-variable">$DIR</span>/netcdf</span><br><span class="line"><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$DIR</span>/gcc-13.2.0/bin:<span class="hljs-variable">$HDF5_DIR</span>/bin:<span class="hljs-variable">$NETCDF_DIR</span>/bin:<span class="hljs-variable">$PATH</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$DIR</span>/gcc-13.2.0/lib64:<span class="hljs-variable">$HDF5_DI</span></span><br></pre></td></tr></tbody></table></figure>
 
+<h2 id="2-GEOS-Chem-Classic-initiiation"><a href="#2-GEOS-Chem-Classic-initiiation" class="headerlink" title="2. GEOS-Chem Classic initiiation"></a>2. GEOS-Chem Classic initiiation</h2><h3 id="2-1-Clone-and-Initialize"><a href="#2-1-Clone-and-Initialize" class="headerlink" title="2.1 Clone and Initialize"></a>2.1 Clone and Initialize</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="hljs-built_in">clone</span> --recurse-submodules https://github.com/geoschem/GCClassic.git</span><br><span class="line"><span class="hljs-built_in">cd</span> GCClassic/run</span><br><span class="line">./createRunDir.sh</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="2-2-Run-Directory-Configuration"><a href="#2-2-Run-Directory-Configuration" class="headerlink" title="2.2 Run Directory Configuration"></a>2.2 Run Directory Configuration</h3><p>My setting is as follows:</p>
 <ul>
-<li>Output: <code>gc_025x03125_AS_geosfp_fullchem_complexSOA/</code></li>
+<li>Simulation: Full chemistry</li>
+<li>Complex SOA with semivolatile POA</li>
+<li>Meteorology: GEOS-FP</li>
+<li>Resolution: 0.25° × 0.3125°</li>
+<li>Domain: Asia (manually adjusted to South Asia later)</li>
+<li>Vertical Levels: 72 (native)</li>
 </ul>
-<p><strong>2.3. Compiling GEOS-Chem Classic</strong></p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake .. -DCMAKE_INSTALL_PREFIX=... -DCMAKE_Fortran_COMPILER=gfortran</span><br><span class="line">make -j32</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="2-3-Compilation"><a href="#2-3-Compilation" class="headerlink" title="2.3 Compilation"></a>2.3 Compilation</h3><p>Go into the run directory and install</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">cd</span> runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/</span><br><span class="line"><span class="hljs-built_in">cd</span> build</span><br><span class="line">cmake ../CodeDir -DRUNDIR=..</span><br><span class="line">make -j 16</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
+<p>After building, adjust these configuration files:<br><code>geoschem_config.yml</code>,<code>HISTORY.rc</code>,<code>HEMCO_Config.rc</code></p>
+<h2 id="3-Input-Data-Handling"><a href="#3-Input-Data-Handling" class="headerlink" title="3. Input Data Handling"></a>3. Input Data Handling</h2><h3 id="3-1-Dry-Run-and-AWS-Setup"><a href="#3-1-Dry-Run-and-AWS-Setup" class="headerlink" title="3.1 Dry Run and AWS Setup"></a>3.1 Dry Run and AWS Setup</h3><p>To determine required meteorological and restart data:</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">./gcclassic --dryrun | tee log.dryrun</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># install the AWS service command line service tool.</span></span><br><span class="line">curl <span class="hljs-string">"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"</span> -o <span class="hljs-string">"awscliv2.zip"</span></span><br><span class="line">unzip awscliv2.zip</span><br><span class="line">./aws/install -i ~/aws-cli -b ~/bin</span><br><span class="line"></span><br><span class="line">aws s3 ls --no-sign-request s3://geos-chem/</span><br><span class="line">./download_data.py log.dryrun geoschem+aws</span><br></pre></td></tr></tbody></table></figure>
 
-<hr>
-<h2 id="3-Input-Data-Management"><a href="#3-Input-Data-Management" class="headerlink" title="3. Input Data Management"></a>3. Input Data Management</h2><p><strong>3.1. Data Download</strong></p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-check-certificate -r -np -nH --cut-dirs=3 -R index.html https://geos-chem.s3.amazonaws.com/.../</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="3-2-Download-the-data"><a href="#3-2-Download-the-data" class="headerlink" title="3.2 Download the data"></a>3.2 Download the data</h3><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./download_data.py log.dryrun geoschem+aws</span><br></pre></td></tr></tbody></table></figure>
 
-<ul>
-<li>Downloaded <code>GEOSFP</code> meteorology, emissions, and chemistry inputs.</li>
-</ul>
-<p><strong>3.2. GFED Biomass Burning Config</strong></p>
-<ul>
-<li>Enabled <code>GFED_3hourly: true</code></li>
-<li>Disabled <code>GFED_daily</code></li>
-</ul>
-<p><strong>3.3. Other Emissions</strong></p>
-<ul>
-<li>Turned ON:<ul>
-<li><code>POET_EOH</code></li>
-<li><code>GEIA_NH3</code></li>
-<li><code>SEABIRD_NH3</code></li>
-<li><code>Offline SOILNOX</code>, <code>SEASALT</code>, <code>BIOGENICVOC</code></li>
-<li>All oxidant modules and methane (<code>GMI_OH</code>, <code>GMD_SFC_CH4</code>)</li>
-</ul>
-</li>
-</ul>
-<p><strong>3.4. Grid Configuration (South Asia nested)</strong></p>
-<figure class="highlight yaml hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-attr">grid:</span></span><br><span class="line">  <span class="hljs-attr">resolution:</span> <span class="hljs-number">0.</span><span class="hljs-string">25x0.3125</span></span><br><span class="line">  <span class="hljs-attr">number_of_levels:</span> <span class="hljs-number">72</span></span><br><span class="line">  <span class="hljs-attr">longitude:</span></span><br><span class="line">    <span class="hljs-attr">range:</span> [<span class="hljs-number">66.0</span>, <span class="hljs-number">95.0</span>]</span><br><span class="line">    <span class="hljs-attr">center_at_180:</span> <span class="hljs-literal">true</span></span><br><span class="line">  <span class="hljs-attr">latitude:</span></span><br><span class="line">    <span class="hljs-attr">range:</span> [<span class="hljs-number">5.0</span>, <span class="hljs-number">40.0</span>]</span><br><span class="line">    <span class="hljs-attr">half_size_polar_boxes:</span> <span class="hljs-literal">true</span></span><br><span class="line">  <span class="hljs-attr">nested_grid_simulation:</span></span><br><span class="line">    <span class="hljs-attr">activate:</span> <span class="hljs-literal">true</span></span><br><span class="line">    <span class="hljs-attr">buffer_zone_NSEW:</span> [<span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>]</span><br></pre></td></tr></tbody></table></figure>
 
-<hr>
-<h2 id="4-SLURM-Run-Script-run-gcclassic-slurm"><a href="#4-SLURM-Run-Script-run-gcclassic-slurm" class="headerlink" title="4. SLURM Run Script (run_gcclassic.slurm)"></a>4. SLURM Run Script (<code>run_gcclassic.slurm</code>)</h2><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#!/bin/bash</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -c 32</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -N 1</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -t 6-00:00</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -p general</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --mem=64000</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --job-name=gcclassic_run</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --output=gcclassic_%j.out</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --error=gcclassic_%j.err</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --mail-type=END</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">ulimit</span> -s unlimited</span><br><span class="line"><span class="hljs-built_in">source</span> /path/to/gcclassic.gnu10.env</span><br><span class="line"><span class="hljs-built_in">export</span> OMP_NUM_THREADS=<span class="hljs-variable">$SLURM_CPUS_PER_TASK</span></span><br><span class="line">srun -c <span class="hljs-variable">$OMP_NUM_THREADS</span> time -p ./gcclassic</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="3-3-Fixing-restart-file-timestamp-errors"><a href="#3-3-Fixing-restart-file-timestamp-errors" class="headerlink" title="3.3 Fixing  restart file timestamp errors"></a>3.3 Fixing  restart file timestamp errors</h3><p>Sometimes AWS pulls a misaligned restart file. Manually download the correct one, for example:</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://geoschemdata.wustl.edu/ExternalShare/geos-chem/10yr_benchmarks/14.0.0/GCClassic/Restarts/2018/GEOSChem.Restart.20181001_0000z.nc4</span><br></pre></td></tr></tbody></table></figure>
+<p>Place it into the <code>Restarts/</code> directory of your run folder.</p>
+<h2 id="4-SLURM-Run-Script-run-gcclassic-slurm"><a href="#4-SLURM-Run-Script-run-gcclassic-slurm" class="headerlink" title="4. SLURM Run Script (run_gcclassic.slurm)"></a>4. SLURM Run Script (<code>run_gcclassic.slurm</code>)</h2><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#SBATCH -c 256                 # Request 16 cores</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -N 1                   # Use 1 node</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -t 6-00:00             # Max runtime of 12 hours</span></span><br><span class="line"><span class="hljs-comment">#SBATCH -p general             # &lt;-- Replace iwith actual partition name</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --mem=400000            # Request 400 GB memory</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --job-name=gcclassic_run</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --output=gcclassic_%j.out</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --error=gcclassic_%j.err</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --mail-type=END</span></span><br><span class="line"><span class="hljs-comment">#SBATCH --mail-user=yufang.hao@psi.ch  # &lt;-- Add this if you want email alerts</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">###############################################################################</span></span><br><span class="line"><span class="hljs-comment">### GEOS-Chem Classic run script for SLURM (MERLIN cluster)</span></span><br><span class="line"><span class="hljs-comment">###############################################################################</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Load your GCC 13.2.0 environment</span></span><br><span class="line"><span class="hljs-built_in">source</span> ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Optionally load other environment modules if needed (HDF5, NetCDF, etc.)</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Remove stack size limit to prevent segfaults</span></span><br><span class="line"><span class="hljs-built_in">ulimit</span> -s unlimited</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># (Optional) log current limits</span></span><br><span class="line"><span class="hljs-built_in">ulimit</span> -a</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Set OpenMP threads</span></span><br><span class="line"><span class="hljs-built_in">export</span> OMP_STACKSIZE=1G</span><br><span class="line"><span class="hljs-built_in">export</span> OMP_NUM_THREADS=<span class="hljs-variable">$SLURM_CPUS_PER_TASK</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Run GEOS-Chem Classic</span></span><br><span class="line">srun -c <span class="hljs-variable">$OMP_NUM_THREADS</span> time -p ./gcclassic &gt;&gt; GC.log</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Exit</span></span><br><span class="line"><span class="hljs-built_in">exit</span> 0</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
 
-<hr>
-<h2 id="5-Debugging-and-Errors"><a href="#5-Debugging-and-Errors" class="headerlink" title="5. Debugging and Errors"></a>5. Debugging and Errors</h2><p><strong>5.1. Initial SIGSEGV (Segmentation Fault)</strong></p>
+<h2 id="5-Debugging-and-Errors"><a href="#5-Debugging-and-Errors" class="headerlink" title="5. Debugging and Errors"></a>5. Debugging and Errors</h2><h3 id="5-1-Segmentation-Fault"><a href="#5-1-Segmentation-Fault" class="headerlink" title="5.1 Segmentation Fault"></a>5.1 Segmentation Fault</h3><p>If encoutering:<br>Investigated via <code>gdb</code>, pinpointed to <code>cldj_fjx_sub_mod.F90</code>, line 1457:</p>
+<figure class="highlight fortran hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DD(I,J,L,K) = -E(I,J)*C(J,L,K)</span><br></pre></td></tr></tbody></table></figure>
+<p>Likely due to unallocated or incorrectly dimensioned array.</p>
+<p>I found increase the memory could be helpful, so in the </p>
 <ul>
-<li>Investigated via <code>gdb</code>, pinpointed to <code>cldj_fjx_sub_mod.F90</code>, line 1457:<figure class="highlight fortran hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DD(I,J,L,K) = -E(I,J)*C(J,L,K)</span><br></pre></td></tr></tbody></table></figure></li>
-<li>Likely due to unallocated or incorrectly dimensioned array.</li>
-</ul>
-<p><strong>5.2. Memory Management</strong></p>
-<ul>
-<li>Increased <code>--mem=64000</code> (64 GB)</li>
+<li>Increased <code>--mem=64000</code> (64 GB) to <code>--mem=400000</code>.</li>
 <li>Ensured <code>ulimit -s unlimited</code> applied</li>
 </ul>
-<hr>
-<h2 id="6-Monitoring-Job"><a href="#6-Monitoring-Job" class="headerlink" title="6. Monitoring Job"></a>6. Monitoring Job</h2><p><strong>6.1. Submit Job</strong></p>
+<h2 id="6-Output-Control-and-Optimization"><a href="#6-Output-Control-and-Optimization" class="headerlink" title="6. Output Control and Optimization"></a>6. Output Control and Optimization</h2><p><strong>6.1. Optmization of exectuable speed</strong></p>
+<ol>
+<li>In <code>HISTORY.rc</code>, I disabled species output to save time and space.</li>
+<li>In <code>geoschem_config.yml</code>, <figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">autoreduce_solver:</span><br><span class="line">  activate: <span class="hljs-literal">true</span></span><br></pre></td></tr></tbody></table></figure>
+This can help reduce runtime by simplifying the chemical solver dynamically.</li>
+</ol>
+<h2 id="7-Job-Monitoring"><a href="#7-Job-Monitoring" class="headerlink" title="7. Job Monitoring"></a>7. Job Monitoring</h2><p>Submit:  </p>
 <figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbatch run_gcclassic.slurm</span><br></pre></td></tr></tbody></table></figure>
 
-<p><strong>6.2. Check Status</strong></p>
+<p>Monitor:</p>
 <figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">squeue -u <span class="hljs-variable">$USER</span></span><br><span class="line">scontrol show job &lt;JOBID&gt;</span><br></pre></td></tr></tbody></table></figure>
 
-<p><strong>6.3. Check Logs</strong></p>
+<p>Stop</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scancel &lt;JOBID&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Check logs:</p>
 <figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat gcclassic_&lt;JOBID&gt;.out</span><br><span class="line">cat gcclassic_&lt;JOBID&gt;.err</span><br></pre></td></tr></tbody></table></figure>
 
-<hr>
-<h2 id="To-Do-Next"><a href="#To-Do-Next" class="headerlink" title="To Do Next"></a>To Do Next</h2><ul>
-<li>Validate array bounds in <code>cldj_fjx_sub_mod.F90</code></li>
-<li>Consider further reducing domain or grid resolution if memory issues persist</li>
-<li>Track peak memory via job accounting if enabled</li>
-</ul>
-<h1 id="GEOS-Chem-step-by-step-installation-and-running-note"><a href="#GEOS-Chem-step-by-step-installation-and-running-note" class="headerlink" title="GEOS-Chem step-by-step installation and running note"></a>GEOS-Chem step-by-step installation and running note</h1><p>For study purpose, I am installing the GEOS-Chem in the cluster on the merlin7 (the cluster of my institute).</p>
-<p>Here, I noted the steps and setting, and problem solving solution along the process.</p>
-<h2 id="1-GEOS-chem"><a href="#1-GEOS-chem" class="headerlink" title="1. GEOS-chem"></a>1. GEOS-chem</h2><h3 id="1-1-Environmental-Setup"><a href="#1-1-Environmental-Setup" class="headerlink" title="1.1 Environmental Setup"></a>1.1 Environmental Setup</h3><figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export DIR=/data/user/hao_y/lib</span><br><span class="line">export HDF5_DIR=$DIR/hdf5</span><br><span class="line">export NETCDF_DIR=$DIR/netcdf</span><br><span class="line">export PATH=$DIR/gcc-13.2.0/bin:$HDF5_DIR/bin:$NETCDF_DIR/bin:$PATH</span><br><span class="line">export LD_LIBRARY_PATH=$DIR/gcc-13.2.0/lib64:$HDF5_DIR/lib:$NETCDF_DIR/lib:$LD_LIBRARY_PATH</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="1-2-GEOS-Chem-Classic-initiiation"><a href="#1-2-GEOS-Chem-Classic-initiiation" class="headerlink" title="1.2 GEOS-Chem Classic initiiation"></a>1.2 GEOS-Chem Classic initiiation</h3><p>First download the source code</p>
-<figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --recurse-submodules https://github.com/geoschem/GCClassic.git</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Then, created a run directory using the interactive setup:</p>
-<figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd GCClassic/run</span><br><span class="line">./createRunDir.sh</span><br></pre></td></tr></tbody></table></figure>
-<p>Simulation: Full chemistry<br>Complex SOA with semivolatile POA</p>
-<p>Meteorology: GEOS-FP<br>Resolution: 0.25° × 0.3125°<br>Domain: Asia (manually adjusted to South Asia later)<br>Vertical Levels: 72 (native)</p>
-<p>Go into the run directory where I just set from</p>
-<figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/</span><br><span class="line">cd build</span><br><span class="line">cmake ../CodeDir -DRUNDIR=..</span><br><span class="line">make -j 16</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure>
-<p>Then, can go to the geoschem_config.yml, HISTORY.rc, HEMCO_CONFIG.rc, and other files to adjust the simulation settings.</p>
-<h3 id="1-3-Downaloding-the-input"><a href="#1-3-Downaloding-the-input" class="headerlink" title="1.3 Downaloding the input"></a>1.3 Downaloding the input</h3><p>A efficent way is throught the dry run</p>
-<p>./gcclassic –dryrun | tee log.dryrun<br>install the AWS service command line service tool.<br>curl “<a target="_blank" rel="noopener" href="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot;">https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"</a> -o “awscliv2.zip”<br>unzip awscliv2.zip<br>./aws/install -i ~/aws-cli -b ~/bin</p>
-<p>aws s3 ls –no-sign-request s3://geos-chem/<br>./download_data.py log.dryrun geoschem+aws</p>
-<p>geos-chem restart file Cannot find field with valid time stamp</p>
-<p>solution here<br><a target="_blank" rel="noopener" href="https://geos-chem.readthedocs.io/en/stable/gcclassic-user-guide/restart-files-gc.html">https://geos-chem.readthedocs.io/en/stable/gcclassic-user-guide/restart-files-gc.html</a></p>
-<p>I found that in the aws method wrong restart is downlaoded<br><a target="_blank" rel="noopener" href="http://geoschemdata.wustl.edu/ExternalShare/geos-chem/10yr_benchmarks/14.0.0/GCClassic/Restarts/2018/GEOSChem.Restart.20181001_0000z.nc4">http://geoschemdata.wustl.edu/ExternalShare/geos-chem/10yr_benchmarks/14.0.0/GCClassic/Restarts/2018/GEOSChem.Restart.20181001_0000z.nc4</a></p>
-<p>by wget, I put it into the specific file </p>
-<h2 id="2-Running-experiment"><a href="#2-Running-experiment" class="headerlink" title="2. Running experiment"></a>2. Running experiment</h2><p>Currently, sent the job to the merlin7 cluster with user defined sbatch file.</p>
-<p>#!/bin/bash</p>
-<p>#SBATCH -c 48                 # Request 16 cores<br>#SBATCH -N 1                   # Use 1 node<br>#SBATCH -t 6-00:00             # Max runtime of 12 hours<br>#SBATCH -p general             # &lt;– Replace iwith actual partition name<br>#SBATCH –mem=400000            # Request 400 GB memory<br>#SBATCH –job-name=gcclassic_run<br>#SBATCH –output=gcclassic_%j.out<br>#SBATCH –error=gcclassic_%j.err<br>#SBATCH –mail-type=END<br>#SBATCH --mail-user=<a href="mailto:yufang.hao@psi.ch">yufang.hao@psi.ch</a>  # &lt;– Add this if you want email alerts</p>
-<p>###############################################################################</p>
-<h3 id="GEOS-Chem-Classic-run-script-for-SLURM-MERLIN-cluster"><a href="#GEOS-Chem-Classic-run-script-for-SLURM-MERLIN-cluster" class="headerlink" title="GEOS-Chem Classic run script for SLURM (MERLIN cluster)"></a>GEOS-Chem Classic run script for SLURM (MERLIN cluster)</h3><p>###############################################################################</p>
-<h1 id="Load-your-GCC-13-2-0-environment"><a href="#Load-your-GCC-13-2-0-environment" class="headerlink" title="Load your GCC 13.2.0 environment"></a>Load your GCC 13.2.0 environment</h1><p>source ~/.bashrc</p>
-<h1 id="Optionally-load-other-environment-modules-if-needed-HDF5-NetCDF-etc"><a href="#Optionally-load-other-environment-modules-if-needed-HDF5-NetCDF-etc" class="headerlink" title="Optionally load other environment modules if needed (HDF5, NetCDF, etc.)"></a>Optionally load other environment modules if needed (HDF5, NetCDF, etc.)</h1><h1 id="Remove-stack-size-limit-to-prevent-segfaults"><a href="#Remove-stack-size-limit-to-prevent-segfaults" class="headerlink" title="Remove stack size limit to prevent segfaults"></a>Remove stack size limit to prevent segfaults</h1><p>ulimit -s unlimited</p>
-<h1 id="Optional-log-current-limits"><a href="#Optional-log-current-limits" class="headerlink" title="(Optional) log current limits"></a>(Optional) log current limits</h1><p>ulimit -a</p>
-<h1 id="Set-OpenMP-threads"><a href="#Set-OpenMP-threads" class="headerlink" title="Set OpenMP threads"></a>Set OpenMP threads</h1><p>export OMP_STACKSIZE=1G<br>export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK</p>
-<h1 id="Run-GEOS-Chem-Classic"><a href="#Run-GEOS-Chem-Classic" class="headerlink" title="Run GEOS-Chem Classic"></a>Run GEOS-Chem Classic</h1><p>srun -c $OMP_NUM_THREADS time -p ./gcclassic &gt;&gt; GC.log</p>
-<h1 id="Exit"><a href="#Exit" class="headerlink" title="Exit"></a>Exit</h1><p>exit 0</p>
-<p>Some issue I found </p>
-<p>Program received signal SIGSEGV: Segmentation fault - invalid memory reference.</p>
-<p>Backtrace for this error:<br>#0  0x14fdba49bdbf in ???<br>#1  0xae61ef in __hco_driver_mod_MOD_hco_final<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/HEMCO/src/Core/hco_driver_mod.F90:359<br>#2  0x49d55b in __hco_interface_gc_mod_MOD_hcoi_gc_final<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/GeosCore/hco_interface_gc_mod.F90:1241<br>#3  0x45d3e7 in _<em>emissions_mod_MOD_emissions_final<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/GeosCore/emissions_mod.F90:323<br>#4  0x41f860 in cleanup</em><br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/GeosCore/cleanup.F90:14<br>#5  0x86e1d4 in __error_mod_MOD_geos_chem_stop<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/GeosUtil/error_mod.F90:535<br>#6  0x86e4fe in __error_mod_MOD_error_stop<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/GeosUtil/error_mod.F90:446<br>#7  0x407128 in geos_chem<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/Interfaces/GCClassic/main.F90:515<br>#8  0x404a26 in main<br>    at /data/user/hao_y/models/GEOS-Chem/runs/gc_025_SAsia_2018/gc_025x03125_AS_geosfp_fullchem_complexSOA/CodeDir/src/GEOS-Chem/Interfaces/GCClassic/main.F90:32<br>real 12.92<br>user 7.67<br>sys 3.13<br>srun: error: cn006: task 0: Exited with exit code 139</p>
-<p>By using the debug mode, I could find the problem is related with the dimension ?? ai help me to complete this part, I </p>
-<p><a target="_blank" rel="noopener" href="https://geos-chem.readthedocs.io/en/14.2.2/geos-chem-shared-docs/supplemental-guides/error-guide.html">https://geos-chem.readthedocs.io/en/14.2.2/geos-chem-shared-docs/supplemental-guides/error-guide.html</a></p>
+<p>A simple example of the results<br><img src="/images/GEOS-Chem_installation/Fig.1.png">  </p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><p>GEOS-Chem User Guides and Documentation<br>GEOS-Chem Official Website: <a target="_blank" rel="noopener" href="https://geos-chem.org/">https://geos-chem.org</a><br>User Documentation: <a target="_blank" rel="noopener" href="https://geos-chem.readthedocs.io/">https://geos-chem.readthedocs.io</a></p>
+</li>
+<li><p>GEOS-Chem GitHub Repository<br>Source code and run directory setup: <a target="_blank" rel="noopener" href="https://github.com/geoschem/GCClassic">https://github.com/geoschem/GCClassic</a></p>
+</li>
+<li><p>GEOS-Chem Input Data on AWS<br><a target="_blank" rel="noopener" href="https://registry.opendata.aws/geos-chem">https://registry.opendata.aws/geos-chem</a></p>
+</li>
+<li><p>AWS CLI Installation Guide<br><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html">https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html</a></p>
+</li>
+<li><p>GEOS-Chem Error Troubleshooting Guide<br><a target="_blank" rel="noopener" href="https://geos-chem.readthedocs.io/en/14.2.2/geos-chem-shared-docs/supplemental-guides/error-guide.html">https://geos-chem.readthedocs.io/en/14.2.2/geos-chem-shared-docs/supplemental-guides/error-guide.html</a></p>
+</li>
+</ol>
 </body></html>
     
     </div>
@@ -299,12 +242,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2025/07/23/MS2_analysis_tool/"></a>
+            <a href="/2025/07/23/Visualizing_Molecules_Structures/"></a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2025/04/29/Visualizing-Chemical-Structures/">Visualizing Chemical Structures</a>
+            <a href="/2025/06/20/41.%5BModel%5DFLEXPART.V11_ECMWF_supported_installation/">Installing FLEXPART v11 with ECMWF Support</a>
             
         </span>
     </div>
@@ -469,7 +412,7 @@
                 PAGES: 'Seiten',
                 CATEGORIES: 'Kategorien',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

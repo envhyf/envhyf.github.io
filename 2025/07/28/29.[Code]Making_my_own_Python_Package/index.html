@@ -2,7 +2,7 @@
 <html class="has-navbar-fixed-top">
 <head>
     <meta charset="utf-8">
-<title>Visualizing Chemical Structures - 太平塔</title>
+<title>太平塔</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
@@ -14,20 +14,21 @@
 
 
 
-    <meta name="description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal. 1. ChemDrawCheDraw is a software that can be used to draw chemical structures. 2. RDKitfrom">
+    <meta name="description" content="Making your own Python package public availableIn this post, I will note the general procedures for packaging my own Python projects&#x2F;functions and upload to both Github and also Python Package Index (">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Visualizing Chemical Structures">
-<meta property="og:url" content="http://envhyf.github.io/2025/04/29/Visualizing-Chemical-Structures/index.html">
+<meta property="og:title" content="太平塔">
+<meta property="og:url" content="http://envhyf.github.io/2025/07/28/29.[Code]Making_my_own_Python_Package/index.html">
 <meta property="og:site_name" content="太平塔">
-<meta property="og:description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal. 1. ChemDrawCheDraw is a software that can be used to draw chemical structures. 2. RDKitfrom">
+<meta property="og:description" content="Making your own Python package public availableIn this post, I will note the general procedures for packaging my own Python projects&#x2F;functions and upload to both Github and also Python Package Index (">
 <meta property="og:locale">
-<meta property="article:published_time" content="2025-04-29T14:55:00.000Z">
-<meta property="article:modified_time" content="2025-07-23T19:15:12.921Z">
+<meta property="og:image" content="https://i.stack.imgur.com/QX0Yb.jpg">
+<meta property="og:image" content="https://i.stack.imgur.com/MdkQr.jpg">
+<meta property="og:image" content="https://i.stack.imgur.com/p8zpQ.jpg">
+<meta property="article:published_time" content="2025-07-27T23:19:57.143Z">
+<meta property="article:modified_time" content="2025-07-24T13:05:58.000Z">
 <meta property="article:author" content="Hao Yufang">
-<meta property="article:tag" content="Python">
-<meta property="article:tag" content="Visualization">
-<meta property="article:tag" content="Chemistry">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.stack.imgur.com/QX0Yb.jpg">
 
 
 
@@ -113,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="Search" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -135,88 +136,32 @@
     <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            Visualizing Chemical Structures
+            
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
         <span class="column is-narrow">
             
-                <time datetime="2025-04-29T14:55:00.000Z" itemprop="datePublished">4月 29 2025</time>
+                <time datetime="2025-07-27T23:19:57.143Z" itemprop="datePublished">7月 28 2025</time>
             
-        </span>
-        
-        <span class="column is-narrow article-category">
-            <i class="far fa-folder"></i>
-            <a class="article-category-link" href="/categories/Tech/">Tech</a>
         </span>
         
         
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><p>For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.</p>
-<h1 id="1-ChemDraw"><a href="#1-ChemDraw" class="headerlink" title="1. ChemDraw"></a>1. ChemDraw</h1><p>CheDraw is a software that can be used to draw chemical structures.</p>
-<h1 id="2-RDKit"><a href="#2-RDKit" class="headerlink" title="2. RDKit"></a>2. RDKit</h1><p>from rdkit import Chem<br>from rdkit.Chem import Draw</p>
-<h1 id="Define-the-correct-Myosmine-SMILES"><a href="#Define-the-correct-Myosmine-SMILES" class="headerlink" title="Define the correct Myosmine SMILES"></a>Define the correct Myosmine SMILES</h1><p>precursor_smiles = “C1CC(=NC1)C2=CN=CC=C2”  # Correct Myosmine (C9H10N2)<br>precursor_mol = Chem.MolFromSmiles(precursor_smiles)</p>
-<h1 id="Define-predicted-fragment-SMILES"><a href="#Define-predicted-fragment-SMILES" class="headerlink" title="Define predicted fragment SMILES"></a>Define predicted fragment SMILES</h1><p>fragments_smiles = {<br>    “79.0544”: “C1CC(=NC1)”,  # Benzene radical cation C6H6-H+<br>    “104.0495”: “C1=CC=C(C=C1)C=[NH+]”,  # Pyridine-benzyl cation<br>    “106.0653”: “C1=CC=C(C=N1)C=[NH+]”,  # Methyl-pyridine<br>    “132.0683”: “CCC(=[NH+])C2=CN=CC=C2”,  # Pyridine-imidazole<br>    “147.0919”: “C1CC(=NC1)C2=CN=CC=C2”  # Correct Myosmine (precursor)<br>}</p>
-<h1 id="Convert-SMILES-to-RDKit-molecules"><a href="#Convert-SMILES-to-RDKit-molecules" class="headerlink" title="Convert SMILES to RDKit molecules"></a>Convert SMILES to RDKit molecules</h1><p>fragment_mols = {mz: Chem.MolFromSmiles(smiles) for mz, smiles in fragments_smiles.items()}</p>
-<h1 id="Draw-precursor-and-fragments"><a href="#Draw-precursor-and-fragments" class="headerlink" title="Draw precursor and fragments"></a>Draw precursor and fragments</h1><p>Draw.MolsToGridImage(<br>    [precursor_mol] + list(fragment_mols.values()),<br>    molsPerRow=3,<br>    subImgSize=(200, 200),<br>    legends=[“Precursor”] + list(fragments_smiles.keys())<br>)</p>
-<h1 id="3-SmileDrawer"><a href="#3-SmileDrawer" class="headerlink" title="3. SmileDrawer"></a>3. SmileDrawer</h1><p>SmilesDrawer 2.0 is a lightweight and powerful JavaScript library for drawing chemical structures directly from SMILES strings.<br>I receommend this method with the nice looking and the interactive feature.</p>
-<p><a target="_blank" rel="noopener" href="https://jsitor.com/VSdIPakuF">https://jsitor.com/VSdIPakuF</a></p>
-<p><a target="_blank" rel="noopener" href="https://smilesdrawer.surge.sh/playground.html">https://smilesdrawer.surge.sh/playground.html</a></p>
-<p>Method for saving into vector file</p>
+        <html><head></head><body><h2 id="Making-your-own-Python-package-public-available"><a href="#Making-your-own-Python-package-public-available" class="headerlink" title="Making your own Python package public available"></a>Making your own Python package public available</h2><p>In this post, I will note the general procedures for packaging my own Python projects/functions and upload to both Github and also Python Package Index (PyPI). As an example, I will simply build an Python package called <strong>PalAniSh</strong> (Palette of Animation of Shanghai) which contains color palette on those classical animations that Shanghai Animation Film Studio produced. </p>
+<span id="more"></span>
 
+<h2 id="1-Color-Palette-generation"><a href="#1-Color-Palette-generation" class="headerlink" title="1. Color Palette generation"></a>1. Color Palette generation</h2><p>Herein, I used three screenshots from the animation called “The Proud General” made in 1956. All raw images as source of color palette were derived from Bilibili with video links below. The extraction and combination of colors were implemented using web-based tool <a target="_blank" rel="noopener" href="https://color.adobe.com/create/image">Adobe color</a> or Colormind (<a target="_blank" rel="noopener" href="http://colormind.io/image">http://colormind.io/image</a>).</p>
+<p>The basis of the code can be seen as follows:</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> </span><br></pre></td></tr></tbody></table></figure>
 
-
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-
-  <!-- You can keep the <img> example if you want, but it won't be used for SVG -->
-  <img id="imgExample" data-smiles-options="{ 'width': 2400, 'height': 2400 }">
-
-  <div style="background-color: #000">
-    <svg id="svgExample" width="500" height="500"></svg>
-  </div>
-
-  <script type="text/javascript" src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
-  <script>
-    // Use SmilesDrawer.Drawer directly
-    const options = {
-      width: 500,
-      height: 500,
-      bondLength: 30,
-      padding: 15,
-      canvas_id: null, // IMPORTANT: no canvas!
-      svg_id: 'svgExample', // Now target the SVG
-      theme: 'light'
-    };
-
-    const drawer = new SmilesDrawer.Drawer(options);
-
-    // Parse and draw a SMILES
-    SmilesDrawer.parse('CC1=CN2C=CC=C2C(=N1)C', function (tree) {
-      drawer.draw(tree, 'svgExample', 'light');
-    });
-  </script>
-
-
-
-
-
-</body></html>
-    
-    </div>
-    
-    <div class="columns is-variable is-1 is-multiline is-mobile">
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Chemistry/">#Chemistry</a></span>
+<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/QX0Yb.jpg"><img src="https://i.stack.imgur.com/QX0Yb.jpg" alt="enter image description here"></a></p>
+<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/MdkQr.jpg"><img src="https://i.stack.imgur.com/MdkQr.jpg" alt="enter image description here"></a></p>
+<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/p8zpQ.jpg"><img src="https://i.stack.imgur.com/p8zpQ.jpg" alt="enter image description here"></a></p>
+<p>Then, I will save those color lists into json file for future uses.</p>
+<h2 id="2-Python-package-build-and-upload"><a href="#2-Python-package-build-and-upload" class="headerlink" title="2. Python package build and upload"></a>2. Python package build and upload</h2></body></html>
     
     </div>
     
@@ -224,12 +169,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2025/06/20/41.%5BModel%5DFLEXPART.V11_ECMWF_supported_installation/">Installing FLEXPART v11 with ECMWF Support</a>
+            <a href="/2025/07/28/Orbitrack_Develop_log/"></a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2024/10/05/FLEXPART-trajectories-in-3D-terrain-map/">FLEXPART installation notes</a>
+            <a href="/2025/07/24/Method-Deconvolve-MS2-Spectra/"></a>
             
         </span>
     </div>
@@ -240,12 +185,12 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Kommentare</h3>
+    <h3 class="title is-4">Comments</h3>
     
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://envhyf.github.io/2025/04/29/Visualizing-Chemical-Structures/';
-        this.page.identifier = '2025/04/29/Visualizing-Chemical-Structures/';
+        this.page.url = 'http://envhyf.github.io/2025/07/28/29.[Code]Making_my_own_Python_Package/';
+        this.page.identifier = '2025/07/28/29.[Code]Making_my_own_Python_Package/';
         
         this.language = 'zh';
         
@@ -378,7 +323,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -391,10 +336,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Untitled)',
             },
             CONTENT_URL: '/content.json',
         };

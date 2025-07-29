@@ -14,23 +14,23 @@
 
 
 
-    <meta name="description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal. 1. ChemDrawChemDraw is a software that can be used to draw chemical structures (though  comm">
+    <meta name="description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Visualizing Chemical Structures 绘制化学物质的结构式">
 <meta property="og:url" content="http://envhyf.github.io/2024/05/29/Visualizing-Chemical-Structures/index.html">
 <meta property="og:site_name" content="太平塔">
-<meta property="og:description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal. 1. ChemDrawChemDraw is a software that can be used to draw chemical structures (though  comm">
+<meta property="og:description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.">
 <meta property="og:locale">
-<meta property="og:image" content="http://envhyf.github.io/2024/05/29/images/chem_structure/C9H10N2_fragments.png">
-<meta property="og:image" content="http://envhyf.github.io/2024/05/29/images/chem_structure/C9H10N2_structure_pyrazine.svg">
+<meta property="og:image" content="http://envhyf.github.io/images/chem_structure/C9H10N2_fragments.png">
+<meta property="og:image" content="http://envhyf.github.io/images/chem_structure/C9H10N2_structure_pyrazine.svg">
 <meta property="article:published_time" content="2024-05-29T16:05:00.000Z">
-<meta property="article:modified_time" content="2025-07-27T12:53:37.000Z">
+<meta property="article:modified_time" content="2025-07-29T20:59:07.000Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Visualization">
 <meta property="article:tag" content="Chemistry">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://envhyf.github.io/2024/05/29/images/chem_structure/C9H10N2_fragments.png">
+<meta name="twitter:image" content="http://envhyf.github.io/images/chem_structure/C9H10N2_fragments.png">
 
 
 
@@ -116,7 +116,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="검색" href="javascript:;">
+            <a class="navbar-item search" title="Search" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -158,13 +158,15 @@
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
         <html><head></head><body><p>For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.</p>
+<span id="more"></span>
+
 <h1 id="1-ChemDraw"><a href="#1-ChemDraw" class="headerlink" title="1. ChemDraw"></a>1. ChemDraw</h1><p><a target="_blank" rel="noopener" href="https://revvitysignals.com/products/research/chemdraw">ChemDraw</a> is a software that can be used to draw chemical structures (though  commerical).</p>
 <h1 id="2-RDKit"><a href="#2-RDKit" class="headerlink" title="2. RDKit"></a>2. RDKit</h1><p>RDKit Python library can reproduce the structurs based on the smiles code.</p>
 <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> rdkit <span class="hljs-keyword">import</span> Chem</span><br><span class="line"><span class="hljs-keyword">from</span> rdkit.Chem <span class="hljs-keyword">import</span> Draw</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define the correct Myosmine SMILES</span></span><br><span class="line">precursor_smiles = <span class="hljs-string">"C1CC(=NC1)C2=CN=CC=C2"</span>  <span class="hljs-comment"># Correct Myosmine (C9H10N2)</span></span><br><span class="line">precursor_mol = Chem.MolFromSmiles(precursor_smiles)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define predicted fragment SMILES</span></span><br><span class="line">fragments_smiles = {</span><br><span class="line">    <span class="hljs-string">"79.0544"</span>: <span class="hljs-string">"C1CC(=NC1)"</span>,  <span class="hljs-comment"># Benzene radical cation C6H6-H+</span></span><br><span class="line">    <span class="hljs-string">"104.0495"</span>: <span class="hljs-string">"C1=CC=C(C=C1)C=[NH+]"</span>,  <span class="hljs-comment"># Pyridine-benzyl cation</span></span><br><span class="line">    <span class="hljs-string">"106.0653"</span>: <span class="hljs-string">"C1=CC=C(C=N1)C=[NH+]"</span>,  <span class="hljs-comment"># Methyl-pyridine</span></span><br><span class="line">    <span class="hljs-string">"132.0683"</span>: <span class="hljs-string">"CCC(=[NH+])C2=CN=CC=C2"</span>,  <span class="hljs-comment"># Pyridine-imidazole</span></span><br><span class="line">    <span class="hljs-string">"147.0919"</span>: <span class="hljs-string">"C1CC(=NC1)C2=CN=CC=C2"</span>  <span class="hljs-comment"># Correct Myosmine (precursor)</span></span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment"># Convert SMILES to RDKit molecules</span></span><br><span class="line">fragment_mols = {mz: Chem.MolFromSmiles(smiles) <span class="hljs-keyword">for</span> mz, smiles <span class="hljs-keyword">in</span> fragments_smiles.items()}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Draw precursor and fragments</span></span><br><span class="line">Draw.MolsToGridImage(</span><br><span class="line">    [precursor_mol] + <span class="hljs-built_in">list</span>(fragment_mols.values()),</span><br><span class="line">    molsPerRow=<span class="hljs-number">3</span>,</span><br><span class="line">    subImgSize=(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>),</span><br><span class="line">    legends=[<span class="hljs-string">"Precursor"</span>] + <span class="hljs-built_in">list</span>(fragments_smiles.keys())</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="./../images/chem_structure/C9H10N2_fragments.png" alt="alt text"></p>
+<p><img src="/images/chem_structure/C9H10N2_fragments.png" alt="alt text"></p>
 <p>Save the structures to SVG vector file.</p>
 <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> rdkit <span class="hljs-keyword">import</span> Chem</span><br><span class="line"><span class="hljs-keyword">from</span> rdkit.Chem <span class="hljs-keyword">import</span> Draw</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define the molecule</span></span><br><span class="line">precursor_smiles = <span class="hljs-string">"CC1=CN2C=CC=C2C(=N1)C"</span></span><br><span class="line">precursor_mol = Chem.MolFromSmiles(precursor_smiles)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Generate SVG as a string</span></span><br><span class="line">drawer = Draw.MolDraw2DSVG(<span class="hljs-number">600</span>, <span class="hljs-number">600</span>)  <span class="hljs-comment"># width, height in pixels</span></span><br><span class="line">drawer.DrawMolecule(precursor_mol)</span><br><span class="line">drawer.FinishDrawing()</span><br><span class="line">svg = drawer.GetDrawingText()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Save SVG to file</span></span><br><span class="line"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"C9H10N2_structure_pyrazine.svg"</span>, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> f:</span><br><span class="line">    f.write(svg)</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="./../images/chem_structure/C9H10N2_structure_pyrazine.svg" alt="alt text"></p>
+<p><img src="/images/chem_structure/C9H10N2_structure_pyrazine.svg" alt="alt text"></p>
 <h1 id="3-SmileDrawer"><a href="#3-SmileDrawer" class="headerlink" title="3. SmileDrawer"></a>3. SmileDrawer</h1><p><a target="_blank" rel="noopener" href="https://github.com/reymond-group/smilesDrawer?tab=readme-ov-file">SmileDrawer</a> is a lightweight JS library that renders chemical structures from SMILES strings in the browser. It supports canvas and SVG, with optional export and styling.    </p>
 <p>I receommend this method with the nice looking and the interactive feature.</p>
 <p>Relevant link: </p>
@@ -211,7 +213,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">댓글</h3>
+    <h3 class="title is-4">Comments</h3>
     
 <script>
     var disqus_config = function () {
@@ -242,7 +244,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -349,7 +351,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="아무거나 입력하세요" />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -361,11 +363,11 @@
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: '글',
-                PAGES: '페이지',
-                CATEGORIES: '카테고리 목록',
-                TAGS: '태그 목록',
-                UNTITLED: '(제목없음)',
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
             },
             CONTENT_URL: '/content.json',
         };

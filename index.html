@@ -106,7 +106,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Suche" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -129,84 +129,6 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            <a href="/2025/07/29/Orbitrack_Development_Log_Episode1/" itemprop="url"></a>
-        
-    </h1>
-    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
-        <span class="column is-narrow">
-            
-                <time datetime="2025-07-29T20:59:07.181Z" itemprop="datePublished">7月 29 2025</time>
-            
-        </span>
-        
-        
-    </div>
-    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
-    
-        <html><head></head><body><p>OrbiTrack Dev Log #1: Parsing and Calibrating Orbitrap MS1 Data</p>
-<h2 id="Raw-data-reading"><a href="#Raw-data-reading" class="headerlink" title="Raw data reading"></a>Raw data reading</h2><h2 id="Module-1-MS-reading"><a href="#Module-1-MS-reading" class="headerlink" title="Module 1. MS reading"></a>Module 1. MS reading</h2><p>def get_last_retention_time(file_path):<br>    “””<br>    Function to read a file and extract the last retention time.</p>
-<pre><code>Args:
-- file_path (str): Path to the file.
-
-Returns:
-- last_retention_time (float): The last retention time found in the file.
-"""
-last_retention_time = None  # Initialize as None
-
-with open(file_path, 'r') as f:
-    for line in f:
-        if line.startswith("I"):  # Look for the lines with retention time info
-            parts = line.strip().split('\t')[1:]
-            if len(parts) == 2:
-                key, value = parts
-                if key == "RetTime":
-                    last_retention_time = float(value)  # Update with the latest retention time
-
-return last_retention_time
-</code></pre>
-<p>def get_retention_time_indices(file_path, start_retention_time, end_retention_time):<br>    retention_time_indices = []<br>    current_segment_index = -1  # Initialize segment index<br>    retention_time_value = []<br>    with open(file_path, ‘r’) as f:<br>        for line in f:<br>            if line.startswith(“S”):  # Check for segment start<br>                current_segment_index += 1  # Increment segment index<br>            elif line.startswith(“I”):<br>                parts = line.strip().split(‘\t’)[1:]<br>                if len(parts) == 2:<br>                    key, value = parts</p>
-<pre><code>                if key == "RetTime":
-                    retention_time = float(value)
-                    if start_retention_time &lt;= retention_time &lt;= end_retention_time:
-                        retention_time_indices.append(current_segment_index)
-                        retention_time_value.append(retention_time)
-return retention_time_indices,retention_time_value
-</code></pre>
-<p>def read_ms1_segments_between_retention_times(file_path, retention_time_indices):<br>    segments = []<br>    current_segment = []<br>    current_segment_index = -1<br>    with open(file_path, ‘r’) as f:<br>        for line in f:<br>            if line.startswith(“S”):<br>                current_segment_index += 1<br>                if current_segment_index in retention_time_indices:<br>                    if current_segment:<br>                        segments.append(current_segment)<br>                        current_segment = []<br>            elif line.strip() and current_segment_index in retention_time_indices:<br>                current_segment.append(line.strip().split())<br>    if current_segment:<br>        segments.append(current_segment)<br>    return segments<br>def save_segments_as_dataframes(segments,thres):<br>    dataframes = []<br>    for idx, segment in enumerate(segments):<br>        retention_time = float(segment[0][2])<br>        df = pd.DataFrame(segment[3:], columns=[“m/z”, “intensity”, “unknown1”, “unknown2”])<br>        # Convert columns to numeric (excluding the first two columns)<br>        df.iloc[:, 2:] = df.iloc[:, 2:].apply(pd.to_numeric)<br>        # Keep only the first two columns<br>        df = df.iloc[:, :2]<br>        df[‘m/z’] = df[‘m/z’].astype(float)<br>        df[‘intensity’] = df[‘intensity’].astype(float)<br>        df = df[df[‘intensity’]&gt;thres]<br>        df = df.reset_index(drop = True)<br>        df[‘rt’] = retention_time<br>        # Save the DataFrame<br>        dataframes.append(df)<br>    return dataframes<br>def merge_segments(dataframes):<br>    merged_df = pd.concat(dataframes, ignore_index=True)<br>    return merged_df</p>
-<h1 id="1-INPUT-FILE"><a href="#1-INPUT-FILE" class="headerlink" title="========== 1. INPUT FILE =========="></a>========== 1. INPUT FILE ==========</h1><p>file_path = “./../../../../../Africa/Angola/Data/Raw/Orbitrap/Angola_mixed_samples_20250620020218.ms1”</p>
-<h1 id="2-Orbitrap-Real-Time-Series"><a href="#2-Orbitrap-Real-Time-Series" class="headerlink" title="========== 2. Orbitrap Real Time Series =========="></a>========== 2. Orbitrap Real Time Series ==========</h1><p>end_time = ‘2025-06-20 16:40:00’  # Define end time for the time series<br>start_time = pd.to_datetime(end_time) - pd.Timedelta(minutes=get_last_retention_time(file_path))  # Calculate start time based on the file retention time</p>
-<h1 id="3-Pre-filtering-Threshold-for-Noisy-Ions"><a href="#3-Pre-filtering-Threshold-for-Noisy-Ions" class="headerlink" title="========== 3. Pre-filtering Threshold for Noisy Ions =========="></a>========== 3. Pre-filtering Threshold for Noisy Ions ==========</h1><p>pre_filtering_threshold = 1000  # Default threshold set to 1000 to filter out noisy ions</p>
-<h1 id="4-Processing-Mode-Selection"><a href="#4-Processing-Mode-Selection" class="headerlink" title="========== 4. Processing Mode Selection =========="></a>========== 4. Processing Mode Selection ==========</h1><h1 id="Options-“full-ts”-for-full-time-series-or-“subset”-for-a-specific-peak-list-subset"><a href="#Options-“full-ts”-for-full-time-series-or-“subset”-for-a-specific-peak-list-subset" class="headerlink" title="Options: “full_ts” for full time series or “subset” for a specific peak list subset"></a>Options: “full_ts” for full time series or “subset” for a specific peak list subset</h1><h1 id="mode-‘full-ts’-Use-full-time-series-mode"><a href="#mode-‘full-ts’-Use-full-time-series-mode" class="headerlink" title="mode = ‘full_ts’  # Use full time series mode"></a>mode = ‘full_ts’  # Use full time series mode</h1><h1 id="start-retention-time-end-retention-time-0-get-last-retention-time-file-path-Set-for-full-time-series"><a href="#start-retention-time-end-retention-time-0-get-last-retention-time-file-path-Set-for-full-time-series" class="headerlink" title="start_retention_time, end_retention_time = 0, get_last_retention_time(file_path)  # Set for full time series"></a>start_retention_time, end_retention_time = 0, get_last_retention_time(file_path)  # Set for full time series</h1><p>mode = ‘sub_set’<br>start_retention_time, end_retention_time = 3.51, 13#get_last_retention_time(file_path) # Define subset range (retention times of the place we are interested)</p>
-<h1 id="5-Parameters-for-M-Z-Calibration"><a href="#5-Parameters-for-M-Z-Calibration" class="headerlink" title="========== 5. Parameters for M/Z Calibration =========="></a>========== 5. Parameters for M/Z Calibration ==========</h1><p>ideal_calibrants_mass = [<br>    172.88347, 322.77771, 472.67196, 108.9638, 166.9163<br>]  # 5 calibrants for m/z calibration</p>
-<p>calibration_tolerance_ppm = 20  # Set calibration tolerance to 20 ppm<br>overlapped_scan_option = 1  # Handle overlapping regions in neighboring segment scans (1 to enable handling)</p>
-<h1 id="6-Parameters-for-Filtering-and-Clustering"><a href="#6-Parameters-for-Filtering-and-Clustering" class="headerlink" title="========== 6. Parameters for Filtering and Clustering =========="></a>========== 6. Parameters for Filtering and Clustering ==========</h1><h1 id="Pre-filtering-based-on-“Air-beam”-Na2I-range"><a href="#Pre-filtering-based-on-“Air-beam”-Na2I-range" class="headerlink" title="Pre-filtering based on “Air-beam” (Na2I range)"></a>Pre-filtering based on “Air-beam” (Na2I range)</h1><p>Na2I_lower_bound, Na2I_upper_bound = 0, 50 * 1E6  # Filter to remove bad air-beam ions</p>
-<h1 id="Data-size-threshold-for-KDE-clustering-chunk"><a href="#Data-size-threshold-for-KDE-clustering-chunk" class="headerlink" title="Data size threshold for KDE clustering chunk"></a>Data size threshold for KDE clustering chunk</h1><p>data_size_threshold = 500  # Minimum data size for performing KDE clustering</p>
-<h1 id="KDE-Parameters-for-clustering-noisy-ions"><a href="#KDE-Parameters-for-clustering-noisy-ions" class="headerlink" title="KDE Parameters (for clustering noisy ions)"></a>KDE Parameters (for clustering noisy ions)</h1><p>kde_bandwidth = 0.0005  # KDE bandwidth for peak density estimation<br>kde_percentile = 5  # Remove ions below the 5th percentile of density score (to filter out rare/noisy ions)</p>
-<h1 id="DBSCAN-Clustering-Parameters"><a href="#DBSCAN-Clustering-Parameters" class="headerlink" title="DBSCAN Clustering Parameters"></a>DBSCAN Clustering Parameters</h1><p>eps_value = 0.5  # Epsilon value for DBSCAN (maximum clustering distance in ppm)<br>clustering_thre = 0.025  # Retain clusters appearing more than 2.5% of Na2I showing frequency</p>
-<h1 id="7-EESI-TOF-reference"><a href="#7-EESI-TOF-reference" class="headerlink" title="========== 7. EESI-TOF reference =========="></a>========== 7. EESI-TOF reference ==========</h1><h1 id="tof-spectrum-pd-read-excel-“-Input-EESI-TOF-reference-EESI-LTOF-raw-curve-Punjab-xlsx”"><a href="#tof-spectrum-pd-read-excel-“-Input-EESI-TOF-reference-EESI-LTOF-raw-curve-Punjab-xlsx”" class="headerlink" title="tof_spectrum            = pd.read_excel(“./../Input/EESI-TOF_reference/EESI_LTOF_raw_curve_Punjab.xlsx”)"></a>tof_spectrum            = pd.read_excel(“./../Input/EESI-TOF_reference/EESI_LTOF_raw_curve_Punjab.xlsx”)</h1><h1 id="tof-add-ion-threshold-50-50-ppm-means-there-is-no-Orbitrap-ions-within-50-ppm-window-of-a-EESI-TOF-identifed-peak-apex"><a href="#tof-add-ion-threshold-50-50-ppm-means-there-is-no-Orbitrap-ions-within-50-ppm-window-of-a-EESI-TOF-identifed-peak-apex" class="headerlink" title="tof_add_ion_threshold   = 50 # 50 ppm means there is no Orbitrap ions within 50 ppm window of a EESI-TOF identifed peak apex"></a>tof_add_ion_threshold   = 50 # 50 ppm means there is no Orbitrap ions within 50 ppm window of a EESI-TOF identifed peak apex</h1><h1 id="inorganic-ion-file-‘-Input-EESI-TOF-reference-EESI-TOF-common-inorganic-ions-csv’"><a href="#inorganic-ion-file-‘-Input-EESI-TOF-reference-EESI-TOF-common-inorganic-ions-csv’" class="headerlink" title="inorganic_ion_file      = ‘./../Input/EESI-TOF_reference/EESI_TOF_common_inorganic_ions.csv’"></a>inorganic_ion_file      = ‘./../Input/EESI-TOF_reference/EESI_TOF_common_inorganic_ions.csv’</h1><h1 id="tof-peak-list-template-‘-Input-EESI-TOF-reference-ToFware-peak-list-template-txt’"><a href="#tof-peak-list-template-‘-Input-EESI-TOF-reference-ToFware-peak-list-template-txt’" class="headerlink" title="tof_peak_list_template  = ‘./../Input/EESI-TOF_reference/ToFware_peak_list_template.txt’"></a>tof_peak_list_template  = ‘./../Input/EESI-TOF_reference/ToFware_peak_list_template.txt’</h1><h1 id="8-Peak-List-Output-and-refining-parameters"><a href="#8-Peak-List-Output-and-refining-parameters" class="headerlink" title="========== 8. Peak List Output and refining parameters =========="></a>========== 8. Peak List Output and refining parameters ==========</h1><p>peak_list_prefix = ‘./output/ToF_peak_list/20250720_Angola_Orbitrap+TOF_peak_list’<br>refining_distance,refining_ratio = 25, 4</p>
-<p>retention_time_indices,rt_values = get_retention_time_indices(file_path, start_retention_time, end_retention_time)<br>segments = read_ms1_segments_between_retention_times(file_path, retention_time_indices)<br>df_segments = save_segments_as_dataframes(segments, pre_filtering_threshold)<br>merged_spectrum =  merge_segments(df_segments)<br>merged_spectrum =  merged_spectrum.sort_values(by = ‘m/z’, ascending=True)<br>merged_spectrum  = merged_spectrum.reset_index(drop=True)</p>
-<p>tolerance_ppm = 20 ## need to re-adjust based on the actual data<br>peak_results = {}<br>masses = [172.88347, 322.77771, 472.67196,622.566700,108.9638,166.9163]#<br>for mass in masses:<br>    peaks = find_peak_near_mass(merged_spectrum, mass, tolerance_ppm)<br>    peak_results[mass] = peaks<br>showing_freq = len(peak_results[masses[0]])<br>print (showing_freq)</p>
-<p>subplot_titles = [‘Na2I’, ‘Na3I2’, ‘Na4I3’,’Na2[15]NO3’, ‘Na3[34]SO4’]<br>masses = [172.88347, 322.77771, 472.67196,108.9638,166.9163][0:]<br>colors = [‘#447f44’, ‘#cd4040’, ‘#636efa’, ‘#ddc927’, ‘#9271dd’,’#2d85cc’]<br>subplot_titles = []<br>for i in range(len(masses)):<br>    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]][‘m/z’]), masses[i])<br>    mean_ppm = np.mean(ppm_differences)<br>    subplot_titles.append(f”{[‘Na2I’, ‘Na3I2’, ‘Na4I3’, ‘Na2[15]NO3’, ‘Na3[34]SO4’][i]}: {mean_ppm:.2f} ppm”)<br>fig = make_subplots(rows=1, cols=5, subplot_titles=subplot_titles)<br>for i in range(len(masses)):<br>    fig.add_trace(<br>        go.Histogram(x=peak_results[masses[i]][‘m/z’], marker=dict(color=colors[i % len(colors)])),<br>        row=1, col=i+1<br>    )<br>    fig.add_vline(x=masses[i], line_width=2, line_dash=”dash”, line_color=”grey”, row=1, col=i+1)</p>
-<pre><code>fig.update_xaxes(title_text="m/z", showline=True, linecolor='black', range=[masses[i]-0.0025, masses[i]+0.0025], col=i+1, row=1)
-fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, row=1)
-</code></pre>
-<p>fig.update_layout(<br>    height=400,<br>    width=1500,<br>    title_text=”Calibrant Raw M/Z Distribution”,<br>    plot_bgcolor=’white’,<br>    showlegend=False<br>)<br>fig.show()</p>
-<p><img src="/images/Orbitrack_log/fig.1_mz_raw_position.png"></p>
-<p><img src="/images/Orbitrack_log/calibrant_mass_distribution_matplotlib.png"></p>
-</body></html>
-    
-    </div>
-    
-    
-</article>
-
-
-
-
-    
-        <article class="article content gallery" itemscope itemprop="blogPost">
-    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
-        
             <a href="/2025/07/28/29.%5BCode%5DMaking_my_own_Python_Package/" itemprop="url"></a>
         
     </h1>
@@ -223,7 +145,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
     
         <html><head></head><body><h2 id="Making-your-own-Python-package-public-available"><a href="#Making-your-own-Python-package-public-available" class="headerlink" title="Making your own Python package public available"></a>Making your own Python package public available</h2><p>In this post, I will note the general procedures for packaging my own Python projects/functions and upload to both Github and also Python Package Index (PyPI). As an example, I will simply build an Python package called <strong>PalAniSh</strong> (Palette of Animation of Shanghai) which contains color palette on those classical animations that Shanghai Animation Film Studio produced. </p></body></html>
         <p class="article-more-link">
-            <a href="/2025/07/28/29.%5BCode%5DMaking_my_own_Python_Package/#more">Read More</a>
+            <a href="/2025/07/28/29.%5BCode%5DMaking_my_own_Python_Package/#more">mehr</a>
         </p>
     
     </div>
@@ -328,7 +250,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
     
         <html><head></head><body><p>In this post, I document the complete process of installing and configuring the <strong>GEOS-Chem Classic model</strong>, including environmental setup, compilation, and runtime configuration. The log is based on my experience running GEOS-Chem on a Linux HPC system, and covers both the challenges I encountered and the solutions I implemented. </p></body></html>
         <p class="article-more-link">
-            <a href="/2025/07/22/42.%5BModel%5DGEOS_Chem_Classic_South_Asia_Simulation_Tutorial/#more">Read More</a>
+            <a href="/2025/07/22/42.%5BModel%5DGEOS_Chem_Classic_South_Asia_Simulation_Tutorial/#more">mehr</a>
         </p>
     
     </div>
@@ -364,7 +286,49 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
     
         <html><head></head><body><p>This post walks through a full <strong>FLEXPART v11</strong> installation for <strong>ECMWF meteorological data</strong> with <strong>NetCDF and Fortran support</strong>, including resolving common compilation issues. All components were built from source on a Linux HPC system with user-level access.</p></body></html>
         <p class="article-more-link">
-            <a href="/2025/06/20/41.%5BModel%5DFLEXPART.V11_ECMWF_supported_installation/#more">Read More</a>
+            <a href="/2025/06/20/41.%5BModel%5DFLEXPART.V11_ECMWF_supported_installation/#more">mehr</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/10/22/Orbitrack_Development_Log_Episode1/" itemprop="url">OrbiTrack Dev Log</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-10-22T16:45:00.000Z" itemprop="datePublished">10月 22 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>The ultra-high resolution of Orbitrap mass spectrometry enables an unprecedented level of chemical detail. In my current research, we employ a direct infusion–Orbitrap approach for non-targeted analysis. However, due to the lack of dedicated tools tailored for this application, I developed a new software package called OrbiTrack. It supports two key workflows:</p>
+<p>(1) Guiding ion fitting in EESI-TOF using high-resolution chemical information acquired at 120k resolution on the Orbitrap.</p>
+<p>(2) Directly utilizing non-targeted Orbitrap data by integrating full time-series MS1 outputs for real-time or online analysis.</p>
+<p><img src="/images/Orbitrack_log/Orbitrack_Objectives.png"></p>
+<p>This blog series will present the OrbiTrack framework step by step, explaining the underlying principles and sharing the original scripts for each component. </p>
+<p>Feedback and suggestions from the community are most welcome.</p>
+<p>In this first post, I will introduce Part 1: loading Orbitrap raw MS1 data by user-defined time period.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2024/10/22/Orbitrack_Development_Log_Episode1/#more">mehr</a>
         </p>
     
     </div>
@@ -404,7 +368,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
 <li>Plotting air mass trajectories in 3D</li>
 <li>Creating illustrative particle dispersion effects</li></ul></body></html>
         <p class="article-more-link">
-            <a href="/2024/10/05/30.FLEXPART-trajectories-in-3D-terrain-map/#more">Read More</a>
+            <a href="/2024/10/05/30.FLEXPART-trajectories-in-3D-terrain-map/#more">mehr</a>
         </p>
     
     </div>
@@ -440,7 +404,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
     
         <html><head></head><body><p>For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.</p></body></html>
         <p class="article-more-link">
-            <a href="/2024/05/29/Visualizing-Chemical-Structures/#more">Read More</a>
+            <a href="/2024/05/29/Visualizing-Chemical-Structures/#more">mehr</a>
         </p>
     
     </div>
@@ -476,7 +440,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
     
         <html><head></head><body><p>In this tutorial, I will demonstrate how to create a simple, interactive web app that visualizes correlations between variables. We will also walk you through the necessary environment setup and deployment steps.</p></body></html>
         <p class="article-more-link">
-            <a href="/2023/05/09/28.%5BCode%5DWeb_App_Development_Interactive_Data_Panel/#more">Read More</a>
+            <a href="/2023/05/09/28.%5BCode%5DWeb_App_Development_Interactive_Data_Panel/#more">mehr</a>
         </p>
     
     </div>
@@ -520,7 +484,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
 </li>
 </ol></body></html>
         <p class="article-more-link">
-            <a href="/2023/02/23/27.%5BCode%5DFrom-Shapefile-to-Geojson/#more">Read More</a>
+            <a href="/2023/02/23/27.%5BCode%5DFrom-Shapefile-to-Geojson/#more">mehr</a>
         </p>
     
     </div>
@@ -536,10 +500,10 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
         
 <nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
     <div class="pagination-previous is-invisible is-hidden-mobile">
-        <a href="/page/0/">Prev</a>
+        <a href="/page/0/">Vorheriges</a>
     </div>
     <div class="pagination-next">
-        <a href="/page/2/">Next</a>
+        <a href="/page/2/">Nächstes</a>
     </div>
     <ul class="pagination-list is-hidden-mobile">
         
@@ -668,7 +632,7 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -681,10 +645,10 @@ fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, 
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Seiten',
+                CATEGORIES: 'Kategorien',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>QGIS: 依照现有图片资料绘制矢量文件 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="有时，我们无法直接获取某些地理数据的精确位置信息，仅能从网络中下载他人的地图作品。因而，我请教了一名规划师同学，参考网络图像，通过适配地理范围，手工获取其实际地理属性。本文以我国集中采暖南北分界线的绘制为例，简述QGIS软件的具体实现步骤。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QGIS: 依照现有图片资料绘制矢量文件">
+<meta property="og:url" content="http://envhyf.github.io/2019/02/28/16.[Software]QGIS%E6%93%8D%E4%BD%9C-%E4%BE%9D%E6%8D%AE%E5%9B%BE%E5%83%8F%E7%BB%98%E5%88%B6%E7%9F%A2%E9%87%8F%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="有时，我们无法直接获取某些地理数据的精确位置信息，仅能从网络中下载他人的地图作品。因而，我请教了一名规划师同学，参考网络图像，通过适配地理范围，手工获取其实际地理属性。本文以我国集中采暖南北分界线的绘制为例，简述QGIS软件的具体实现步骤。">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/16.Vector_on_shape/Fig.-2.png">
+<meta property="og:image" content="https://i.stack.imgur.com/7u3xr.png">
+<meta property="og:image" content="http://envhyf.github.io/2019/02/28/images/16.Vector_on_shape/Fig.-1.png">
+<meta property="og:image" content="https://i.stack.imgur.com/7Ntd6.png">
+<meta property="og:image" content="http://envhyf.github.io/images/16.Vector_on_shape/Fig.0.png">
+<meta property="og:image" content="http://envhyf.github.io/images/16.Vector_on_shape/Fig.1.png">
+<meta property="article:published_time" content="2019-02-28T15:26:26.000Z">
+<meta property="article:modified_time" content="2025-07-23T22:19:53.389Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="GIS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/16.Vector_on_shape/Fig.-2.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            QGIS: 依照现有图片资料绘制矢量文件
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2019-02-28T15:26:26.000Z" itemprop="datePublished">2月 28 2019</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>有时，我们无法直接获取某些地理数据的精确位置信息，仅能从网络中下载他人的地图作品。因而，我请教了一名规划师同学，参考网络图像，通过适配地理范围，手工获取其实际地理属性。本文以我国集中采暖南北分界线的绘制为例，简述QGIS软件的具体实现步骤。</p>
+<span id="more"></span>
+
+<p>上世纪50年代，由于能源缺乏，我国以南北地理界限（秦岭-淮河线）为划分依据，在苏联的帮助下，在该线以北建立了集中供暖系统，沿用至今。下图可见，我国的集中供暖系统并不以省为界限，如四川省的甘孜和阿坝位于供暖线以北，江苏省的徐州位于供暖线以北，而河南省的信阳则没有集中供暖。    </p>
+<img src="/images/16.Vector_on_shape/Fig.-2.png" width="400">
+
+<p>这条分界线具有多重地理学意义，它还是</p>
+<ul>
+<li>我国800毫米等降水量线</li>
+<li>1月份0℃等温线</li>
+<li>温带季风与亚热带季风气候分界线</li>
+<li>温带落叶阔叶林与亚热带常绿阔叶林带分界线</li>
+<li>湿润与半湿润区分界线<br>(摘录自 <a target="_blank" rel="noopener" href="http://www.cma.gov.cn/kppd/kppdrt/201712/t20171215_458231.html">国家气象局 气象科普园</a>)。</li>
+</ul>
+<p>同时，该分界线同时具有特殊的历史意义，其东段是我国南北朝、金朝/蒙元-南宋时期的南北政权边界。</p>
+<h2 id="1-安装Freehand-raster-georeferencer"><a href="#1-安装Freehand-raster-georeferencer" class="headerlink" title="1. 安装Freehand raster georeferencer"></a>1. 安装Freehand raster georeferencer</h2><p>QGIS的<a target="_blank" rel="noopener" href="http://gvellut.github.io/FreehandRasterGeoreferencer/">Freehand第三方工具包</a>可载入图片图层并简单处理，主要用途应是卫星遥感图像的像元分析。该工具包的功能界面非常简洁，工具栏 <img src="https://i.stack.imgur.com/7u3xr.png" width="250">从左至右，功能依次为“载入”，“移动”，“旋转”，“放缩”，“复合操作”，“透明度减小”，“透明度增加”，“输出” 。</p>
+<h2 id="2-绘制Polyline"><a href="#2-绘制Polyline" class="headerlink" title="2. 绘制Polyline"></a>2. 绘制Polyline</h2><p>我们分别导入中国分省地图shapefile文件和jpeg格式底图。利用Freehand不断调整合图像位置、大小，使二者基本重合（tip: 按住“⌘”或”ctrl”可按原始比例缩放），如下图。可以看出南方各省份吻合较好，但台湾与海南有较大的偏差，可能是原始图片投影系统上的差异。此处作为案例，未深究其原因。</p>
+<img src="./../images/16.Vector_on_shape/Fig.-1.png" width="400">
+
+<p>选择”Layer”-&gt;”Creat Layer”-&gt;”New Shapefile Layer”新建point格式的矢量文件，利用 <img src="https://i.stack.imgur.com/7Ntd6.png" width="150">依照图片勾勒界限，如下图：</p>
+<img src="/images/16.Vector_on_shape/Fig.0.png" width="400">
+
+<h2 id="3-后续应用"><a href="#3-后续应用" class="headerlink" title="3. 后续应用"></a>3. 后续应用</h2><p>利用Python语言读取编写好的矢量文件，通过Cartopy, Fiona, Shapely等工具包可做进一步分析。</p>
+<p>例如，以该线为依据将我国空气质量监测站点进行分类，探究分采暖/非采暖城市间大气污染特征的差异。该工作可由简单的代码指令完成，如下：</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="hljs-string">'ignore'</span>)</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> shape</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> LineString</span><br><span class="line"><span class="hljs-comment"># loading the boundary layer</span></span><br><span class="line"><span class="hljs-keyword">import</span> fiona</span><br><span class="line">fname = <span class="hljs-string">'./N-S_boundary.shp'</span></span><br><span class="line">line1 = fiona.<span class="hljs-built_in">open</span>(fname)</span><br><span class="line">line1 = shape(line1.<span class="hljs-built_in">next</span>()[<span class="hljs-string">'geometry'</span>])</span><br><span class="line"><span class="hljs-comment"># set a end point which is the southernmost for all stations.</span></span><br><span class="line">end_point  = (dy[dy[<span class="hljs-string">'lat'</span>]==dy[<span class="hljs-string">'lat'</span>].<span class="hljs-built_in">min</span>()][<span class="hljs-string">'lon'</span>].values[<span class="hljs-number">0</span>],dy[dy[<span class="hljs-string">'lat'</span>]==dy[<span class="hljs-string">'lat'</span>].<span class="hljs-built_in">min</span>()][<span class="hljs-string">'lat'</span>].values[<span class="hljs-number">0</span>])</span><br><span class="line"><span class="hljs-comment"># loop all monitoring stations for classification</span></span><br><span class="line">dy[<span class="hljs-string">'NS'</span>]= np.nan</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(dy),<span class="hljs-number">1</span>):</span><br><span class="line">    start_point = (dy[<span class="hljs-string">'lon'</span>].iloc[i],dy[<span class="hljs-string">'lat'</span>].iloc[i])</span><br><span class="line">    line2       = LineString([start_point, end_point])</span><br><span class="line">    <span class="hljs-keyword">if</span> line1.intersection(line2).is_empty:</span><br><span class="line">        dy[<span class="hljs-string">"NS"</span>].iloc[i]=<span class="hljs-string">'S'</span></span><br><span class="line">    <span class="hljs-keyword">else</span>:</span><br><span class="line">        dy[<span class="hljs-string">"NS"</span>].iloc[i]=<span class="hljs-string">'N'</span>        </span><br></pre></td></tr></tbody></table></figure>
+<p>按供暖分界线区分后，大气采样站点的分布如图所示</p>
+<img src="/images/16.Vector_on_shape/Fig.1.png" width="500">
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/GIS/">#GIS</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2019/03/11/17.%5BModel%5DWRF-technique-merging-datasets/">WRF post processing 1: Merging datafiles for specific spots</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2018/12/06/15.%5BCode%5DMethods-to-mask-raster-by-polygons/">Two method to mask the raster data by specific geometry</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2019/02/28/16.[Software]QGIS%E6%93%8D%E4%BD%9C-%E4%BE%9D%E6%8D%AE%E5%9B%BE%E5%83%8F%E7%BB%98%E5%88%B6%E7%9F%A2%E9%87%8F%E6%96%87%E4%BB%B6/';
+        this.page.identifier = '2019/02/28/16.[Software]QGIS操作-依据图像绘制矢量文件/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

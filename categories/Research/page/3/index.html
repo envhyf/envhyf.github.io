@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>Category: Research - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta property="og:type" content="website">
+<meta property="og:title" content="太平塔">
+<meta property="og:url" content="http://envhyf.github.io/categories/Research/page/3/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:locale">
+<meta property="article:author" content="Hao Yufang">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section section-heading">
+    <div class="container">
+        <div class="content">
+            <h5><i class="far fa-folder"></i>Research</h5>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2018/04/04/8.%5BDataset%5DChina%20air%20quality%20data%20in%20HDF5%20format/" itemprop="url">中国空气质量历史数据整理(HDF5格式)</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2018-04-04T21:32:26.000Z" itemprop="datePublished">4月 4 2018</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>全国空气质量历史数据是大气环境研究的重要基础资料，而我国<a target="_blank" rel="noopener" href="http://106.37.208.233:20035/">官方平台</a>仅提供实时监测信息，而且还只支持IE浏览器(╮(╯_╰)╭)。</p>
+<p>我曾尝试采用爬虫工具获取并存储逐时信息，但限于权限，未能在实验室服务器上连续长时间运行。互联网上直接提供数据或API端口的网站有很多，如<a target="_blank" rel="noopener" href="http://www.envicloud.cn/pages/product.html#apis">环境云</a>，<a target="_blank" rel="noopener" href="http://pm25.in/">PM25.in</a>, <a target="_blank" rel="noopener" href="http://data.epmap.org/">青悦开放环境数据中心</a>等。其中，<a target="_blank" rel="noopener" href="http://beijingair.sinaapp.com/">beijingair</a>最具分享精神,提供了2013年至今的详尽历史数据，且完全免费。</p>
+<p>由衷感谢<a target="_blank" rel="noopener" href="http://weibo.com/xiaoleiwang">@王_晓磊</a>的出色工作和无私分享，极大地推动了我国环境数据的公开与透明。其数据格式为每日一份csv文件存储当日所有站点/城市的逐时信息。在长时间尺度的数据分析时，需逐一阅读各原始文件。此处，我考虑将全年数据文件整合为多维度数据存储格式(HDF5)文件，便于调用和处理。</p></body></html>
+        <p class="article-more-link">
+            <a href="/2018/04/04/8.%5BDataset%5DChina%20air%20quality%20data%20in%20HDF5%20format/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2017/06/22/6.%5BCode%5DPython%E7%81%AB%E7%82%B9%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E6%9E%90%E5%A4%84%E7%90%86/" itemprop="url">MODIS卫星火点数据的简易处理与可视化分析</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2017-06-22T14:26:26.000Z" itemprop="datePublished">6月 22 2017</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>提要：此文介绍利用Python语言处理NASA MODIS火点数据（Global Monthly Fire Location Product，MCD14ML），可实现的基本功能包括:（1）特定时期的火点信息提取;（2）特定区域内的火点信息提取;（3）火点密度空间分布的计算与可视化表达</p></body></html>
+        <p class="article-more-link">
+            <a href="/2017/06/22/6.%5BCode%5DPython%E7%81%AB%E7%82%B9%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E6%9E%90%E5%A4%84%E7%90%86/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2016/09/05/5.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A1%5D%E4%BB%85%E5%90%AB%E6%B2%99%E5%B0%98%E6%BA%90%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%BB%83%E4%B9%A0/" itemprop="url">[WRF-Chem学习笔记②]仅含沙尘源的模拟练习</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2016-09-05T14:26:26.000Z" itemprop="datePublished">9月 5 2016</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>本文是我学习官网练习的记录，其模拟区域为北非，中东以及欧洲部分地区，无嵌套设置。共分为5个练习，分别为: </p>
+<blockquote>
+<ol>
+<li>初始场添加沙尘排放源的模拟</li>
+<li>采用GOCART全球气溶胶排放清单的模拟</li>
+<li>加入生物源排放的化学模拟(MEGAN引入)</li>
+<li>加入气溶胶直接/间接辐射效应的模拟</li>
+<li>WRF-Chem数值预报实验</li>
+</ol>
+</blockquote>
+<p>下文记录Exercise 1的流程和注意事项</p></body></html>
+        <p class="article-more-link">
+            <a href="/2016/09/05/5.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A1%5D%E4%BB%85%E5%90%AB%E6%B2%99%E5%B0%98%E6%BA%90%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%BB%83%E4%B9%A0/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2016/09/04/4.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0%5D%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" itemprop="url">[WRF-Chem学习笔记①]排放预处理模块的安装与使用</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2016-09-04T14:26:26.000Z" itemprop="datePublished">9月 4 2016</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>气象场和化学物质排放是大气化学模式的两项最重要的前驱资料。在实验之余，我将着力学习WRF-Chem的有关内容，并记录、发布。</p>
+<p>按照<a target="_blank" rel="noopener" href="http://ruc.noaa.gov/wrf/WG11/Tutorial.html">WRF-Chem Tutorial</a>中的说明，在<a target="_blank" rel="noopener" href="http://ruc.noaa.gov/wrf/WG11/tutorialexercises.htm">Learning to Run WRF-Chem</a>之前，我先学习<a target="_blank" rel="noopener" href="http://ruc.noaa.gov/wrf/WG11/tutorialemissions.htm">How to Generate Emission for WRF-Chem</a></p>
+<p>本文记录Exercise 1的实现过程，可供有兴趣的同学参考。</p></body></html>
+        <p class="article-more-link">
+            <a href="/2016/09/04/4.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0%5D%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2016/08/10/3.%5BModel%5DWRF%E5%AE%89%E8%A3%85%E6%9C%AD%E8%AE%B0/" itemprop="url">WRF安装札记</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2016-08-10T21:32:26.000Z" itemprop="datePublished">8月 10 2016</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>实验室的服务器的四块硬盘全坏，而未进行备份，不得不将以前的内容全部重装一次。Python部分有Anaconda的分发包，比较容易。但常用的WRF模型却研究了好久。  </p>
+<p>之前，服务器采用的是ifort编译器。重装后，系统中只有gcc, 版本也比较旧(4.1.2)。 WRF编译失败，我认为原因可能是gcc太旧了。 因而，我考虑升级gcc的版本，同时由于本人不是root用户，也不能借助<code>yum install gcc</code>的简单办法，只得step by step地做。  </p>
+<p>本文记录了自gcc升级至WRF-Chem成功安装的全部流程，作为今后类似工作的参考。</p></body></html>
+        <p class="article-more-link">
+            <a href="/2016/08/10/3.%5BModel%5DWRF%E5%AE%89%E8%A3%85%E6%9C%AD%E8%AE%B0/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2015/09/08/2.%5BKnowledge%5D%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92-%E5%A4%A7%E6%B0%94%E5%8C%96%E5%AD%A6%E5%9F%BA%E7%A1%80%E6%95%99%E6%9D%90-1/" itemprop="url">翻译计划: 大气化学电子教材-第一章PartA</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2015-09-08T13:41:33.000Z" itemprop="datePublished">9月 8 2015</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><h2 id="前沿"><a href="#前沿" class="headerlink" title="前沿"></a>前沿</h2><p>大气化学是一门关于大气中化学物质的排放、相互作用、物理及化学转化的综合性学科。同时，其对大气关键的物理过程亦会涉及。本计划所翻译的<a target="_blank" rel="noopener" href="http://elte.prompt.hu/sites/default/files/tananyagok/AtmosphericChemistry/index.html">电子课本</a>对大气化学领域近年来的研究进展(该课本编撰于2013年)进行陈述，如数学模型的并行计算研究，空气污染物对全球气候变化的影响等。原著作者期望本书的内容将为本科生与硕士生提供帮助，以之为专业课程的基础性参考资料。</p>
+<h2 id="第一章-大气层的结构和组成"><a href="#第一章-大气层的结构和组成" class="headerlink" title="第一章 大气层的结构和组成"></a>第一章 大气层的结构和组成</h2><p>大气层的总质量接近5.3x10<sup>18</sup>kg，而地球水圈(包括海洋、湖泊、河流、地下水以及冰雪)的总质量为1.4x10<sup>21</sup>kg，岩石圈总质量则为5.98x10<sup>24</sup>kg。大气层的上边界没有严格的定义。大气层中的物质随高度的上升而急剧减少，并最终融入星际空间之中。包含着大量气体及颗粒组分的大气圈层围绕在地球的外部，随地球一同绕日旋转。</p>
+<p>地球大气层的密度分布极不均匀。距离地面5.5 Km以下的空气占据着大气层一半的质量，而大气层约99%的质量分布在距地30 Km以内。地球大气层的范围和地球磁气圈的范围一致(图1.1)，这一形态由地球本体磁场与太阳风<sup>[1]</sup>的相互作用而最终形成。     </p>
+<p><img src="/images/2.%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92/Fig.1.png"></p>
+<center>图1.1 地球外层的电离层由地球本体磁场与太阳风相互作用而形成 </center></body></html>
+        <p class="article-more-link">
+            <a href="/2015/09/08/2.%5BKnowledge%5D%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92-%E5%A4%A7%E6%B0%94%E5%8C%96%E5%AD%A6%E5%9F%BA%E7%A1%80%E6%95%99%E6%9D%90-1/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+    
+        
+<nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
+    <div class="pagination-previous">
+        <a href="/categories/Research/page/2/">Prev</a>
+    </div>
+    <div class="pagination-next is-invisible is-hidden-mobile">
+        <a href="/categories/Research/page/4/">Next</a>
+    </div>
+    <ul class="pagination-list is-hidden-mobile">
+        
+        <li><a class="pagination-link" href="/categories/Research/">1</a></li>
+        
+        <li><a class="pagination-link" href="/categories/Research/page/2/">2</a></li>
+        
+        <li><a class="pagination-link is-current" href="/categories/Research/page/3/">3</a></li>
+        
+    </ul>
+</nav>
+    
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

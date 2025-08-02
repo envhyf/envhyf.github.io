@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>[WRF-Chem学习笔记①]排放预处理模块的安装与使用 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="气象场和化学物质排放是大气化学模式的两项最重要的前驱资料。在实验之余，我将着力学习WRF-Chem的有关内容，并记录、发布。 按照WRF-Chem Tutorial中的说明，在Learning to Run WRF-Chem之前，我先学习How to Generate Emission for WRF-Chem 本文记录Exercise 1的实现过程，可供有兴趣的同学参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[WRF-Chem学习笔记①]排放预处理模块的安装与使用">
+<meta property="og:url" content="http://envhyf.github.io/2016/09/04/4.[Model][WRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0]%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="气象场和化学物质排放是大气化学模式的两项最重要的前驱资料。在实验之余，我将着力学习WRF-Chem的有关内容，并记录、发布。 按照WRF-Chem Tutorial中的说明，在Learning to Run WRF-Chem之前，我先学习How to Generate Emission for WRF-Chem 本文记录Exercise 1的实现过程，可供有兴趣的同学参考。">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/4.WRF_note/Fig.1.png">
+<meta property="og:image" content="http://envhyf.github.io/images/4.WRF_note/Fig.2.png">
+<meta property="article:published_time" content="2016-09-04T14:26:26.000Z">
+<meta property="article:modified_time" content="2025-07-23T21:49:20.064Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Model">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/4.WRF_note/Fig.1.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            [WRF-Chem学习笔记①]排放预处理模块的安装与使用
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2016-09-04T14:26:26.000Z" itemprop="datePublished">9月 4 2016</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>气象场和化学物质排放是大气化学模式的两项最重要的前驱资料。在实验之余，我将着力学习WRF-Chem的有关内容，并记录、发布。</p>
+<p>按照<a target="_blank" rel="noopener" href="http://ruc.noaa.gov/wrf/WG11/Tutorial.html">WRF-Chem Tutorial</a>中的说明，在<a target="_blank" rel="noopener" href="http://ruc.noaa.gov/wrf/WG11/tutorialexercises.htm">Learning to Run WRF-Chem</a>之前，我先学习<a target="_blank" rel="noopener" href="http://ruc.noaa.gov/wrf/WG11/tutorialemissions.htm">How to Generate Emission for WRF-Chem</a></p>
+<p>本文记录Exercise 1的实现过程，可供有兴趣的同学参考。</p>
+<span id="more"></span>
+
+<p>运行WRF和WRF-Chem的一个重要区别: 排放源清单的输入。<strong>Exercise 1__将会介绍建立WRF-Chem可读取的源清单文件的最基本方法(转置现有全球清单)，其核心工具为__PREP_CHEM_SOURCES</strong>。</p>
+<h2 id="安装过程"><a href="#安装过程" class="headerlink" title=" 安装过程"></a><font color="blue"> 安装过程</font></h2><h3 id="HDF5安装"><a href="#HDF5安装" class="headerlink" title=" HDF5安装"></a><font color="black"> HDF5安装</font></h3><p>该程序的顺利运行需要依赖HDF5, NetCDF, zlib等标准库。之前在安装WRF-Chem时已经安装了NetCDF和zlib，这里只列出HDF5和szip的安装步骤。</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#1. szip安装</span></span><br><span class="line">wget http://www.hdfgroup.org/ftp/lib-external/szip/2.1/src/szip-2.1.tar.gz</span><br><span class="line">tar -xvzf szip-2.1.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> szip-2.1</span><br><span class="line">./configure --prefix=/The_path/you/want/to/install/</span><br><span class="line">make &amp; make check &amp; make install</span><br><span class="line"><span class="hljs-comment">#2. HDF5安装</span></span><br><span class="line">wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux-centos7-x86_64-gcc485/hdf5-1.8.17-linux-centos7-x86_64-gcc485-shared.tar.gz</span><br><span class="line"><span class="hljs-comment">#解压并进入文件夹</span></span><br><span class="line">./configure --prefix=/disk2/hyf/lib/hdf5 --enable-fortran \</span><br><span class="line"> --with-szlib=/szip/install/path\</span><br><span class="line"> --with-zlib=/zlib/install/path  <span class="hljs-comment">## 此处注意与后文prep_chem_source的编译器应对应上，否则lib中的文件无法编译成功</span></span><br><span class="line">make &amp; make check &amp; make install</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="排放预处理程序安装"><a href="#排放预处理程序安装" class="headerlink" title=" 排放预处理程序安装"></a><font color="black"> 排放预处理程序安装</font></h3><p>下载并解压后，进入<code>/bin/build</code>文件夹，修改与编译器对应的配置文件，如我将采用gfortran编译器编译，则<code>vim include.mk.gfortran</code>, 修改其中的NETCDF与HDF5库对应位置，按以下命令进行编译:</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`make OPT=gfortran CHEM=RADM_WRF_FIM`</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中<code>OPT=</code>对应编译器类别(i.e, intel, pgi,gfortran, …)，<code>CHEM=</code>对应特定化学机理，此处选择__RADM__机理。这将决定WRF-Chem读取源清单文件的化学物质分类格式。  </p>
+<p>值得注意的是，按上述操作，将在编译__edgar_emission.f90__过程出错，WRF论坛中也有用户提交了同样的报错，幸有大神回复并解决，解决方法是调整某些行的字符串的长度，可参考<a target="_blank" rel="noopener" href="http://forum.wrfforum.com/viewtopic.php?f=39&amp;t=9199">该网页</a>进行修改。</p>
+<p>修改完成后，再次编译，若出现<code>Finished building === ../prep_chem_sources_RADM_WRF_FIM_.exe</code>，说明编译成功!<br>ヽ(✿ﾟ▽ﾟ)ノ</p>
+<p>PS: 安装完成后，编辑~/.bashrc   </p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 添加以下几行</span></span><br><span class="line"><span class="hljs-built_in">export</span> HDF5=<span class="hljs-string">"<span class="hljs-variable">$DIR</span>/hdf5"</span> <span class="hljs-comment"># $DIR为所有库存放位置</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$LD_LIBRARY_PATH</span>:<span class="hljs-variable">$HDF5</span>/lib</span><br><span class="line"><span class="hljs-built_in">export</span> NETCDF=<span class="hljs-string">"<span class="hljs-variable">$DIR</span>/netcdf"</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$LD_LIBRARY_PATH</span>:<span class="hljs-variable">$NETCDF</span>/lib</span><br></pre></td></tr></tbody></table></figure>
+
+
+<h2 id="案例"><a href="#案例" class="headerlink" title=" 案例"></a><font color="blue"> 案例</font></h2><h3 id="排放预处理程序安装-1"><a href="#排放预处理程序安装-1" class="headerlink" title=" 排放预处理程序安装"></a><font color="black"> 排放预处理程序安装</font></h3><p>按照Exercise 1中的input文件，替换<code>prep_chem_src\bin</code>文件夹下原有的input文件，并按照自己的global_emission文件夹修改读取原始排放数据的路径。   </p>
+<p>运行<code>$./prep_chem_sources_RADM_WRF_FIM_.exe</code>           </p>
+<p>运行成功后，会出现五个输出文件，其中有三个后缀名为<code>.bin</code>的文件，分别为:</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WRF-TUTORIAL-T-2010-07-14-000000-g1-ab.bin <span class="hljs-comment">##  人为源排放清单</span></span><br><span class="line">WRF-TUTORIAL-T-2010-07-14-000000-g1-bb.bin <span class="hljs-comment">##  生物质燃烧清单</span></span><br><span class="line">WRF-TUTORIAL-T-2010-07-14-000000-g1-gocartBG.bin <span class="hljs-comment">## GOCART的全球背景化学场资料</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>将<code>prep_chem_src\bin</code>文件夹中三个<code>.bin</code>后缀的输出文件移动到<code>WRF-Chem</code>文件夹中, 此处我在<code>WRFV3\test\</code>文件夹内新建<code>em_ex1</code>文件夹，内容复制同目录下的<code>em_real</code>。 </p>
+<p>运行<code>./convert_emiss.exe</code></p>
+<p>按照论坛上大家的观点，目前WRF-Chem 3.4版本以上会报错，<a target="_blank" rel="noopener" href="http://forum.wrfforum.com/viewtopic.php?f=41&amp;t=8921">参考1</a><a target="_blank" rel="noopener" href="http://forum.wrfforum.com/viewtopic.php?f=41&amp;t=5863">参考2</a>。 </p>
+<p>若运行成功，则会生成三个排放源文件，其中</p>
+<p>(1) __wrfchemi_d01__文件对应设计模拟区域内各类污染物的排放清单结果,包括CO, NH3, PM10, PM2.5及各类有机物(按照RACM机理分类)。<br>(2) __wrffirechemi_d01__文件对应生物质燃烧排放情况.<br>(3)__wrfchemi_gocart_bg_d01__文件对应二甲基硫(DMS), NO3, OH, H2O2的背景浓度分布。DMS单位为nM/L,其他物种单位为体积混合比(volume mixing ratio)。 </p>
+<p>依据上述的步骤      </p>
+<blockquote>
+<p> <code>原始全球清单 → 模拟区域排放二进制文件 → WRF-Chem可读取的nc格式排放源文件</code><br>完成了排放源资料的制作</p>
+</blockquote>
+<h3 id="初始场与边界场文件的生成"><a href="#初始场与边界场文件的生成" class="headerlink" title=" 初始场与边界场文件的生成"></a><font color="black"> 初始场与边界场文件的生成</font></h3><p>此处链接同模拟区域、时间的<code>met_em.xxx</code>文件(由WPS模型完成)<a href="ftp://aftp.fsl.noaa.gov/divisions/taq/wrfchemv35_tutorial/met_em_v3.5.tar.gz">链接</a>，运行<code>./real.exe</code>, 生成初始场和边界场文件,内部包括了化学物质和气象资料信息。</p>
+<h3 id="输出文件生成"><a href="#输出文件生成" class="headerlink" title=" 输出文件生成"></a><font color="black"> 输出文件生成</font></h3><p>运行<code>./wrf.exe</code>，生成wrfout文件。下图为PM2.5的分布情形，可以看出如阿尔卑斯山、安纳陀利亚高原等高海拔地区浓度相对低。</p>
+<p><img src="/images/4.WRF_note/Fig.1.png">    </p>
+<p>附图: 参考<a target="_blank" rel="noopener" href="http://wiki.rac.manchester.ac.uk/community/WRF/">曼彻斯特大学教程</a>，绘制WRF-Chem运行流程如下:  </p>
+<p>此处需要运行<code>./real.exe</code>两次，目前我还没有弄明白。</p>
+<p><img src="/images/4.WRF_note/Fig.2.png">   </p>
+<p>参考资料 </p>
+<p><a target="_blank" rel="noopener" href="https://sites.google.com/a/utexas.edu/qinjian-jin/codes/climate-models">convert_emiss.exe</a>  </p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Linux/">#Linux</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Model/">#Model</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2016/09/05/5.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A1%5D%E4%BB%85%E5%90%AB%E6%B2%99%E5%B0%98%E6%BA%90%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%BB%83%E4%B9%A0/">[WRF-Chem学习笔记②]仅含沙尘源的模拟练习</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2016/08/10/3.%5BModel%5DWRF%E5%AE%89%E8%A3%85%E6%9C%AD%E8%AE%B0/">WRF安装札记</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2016/09/04/4.[Model][WRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A0]%E6%8E%92%E6%94%BE%E9%A2%84%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/';
+        this.page.identifier = '2016/09/04/4.[Model][WRF-Chem学习笔记①]排放预处理模块的安装与使用/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

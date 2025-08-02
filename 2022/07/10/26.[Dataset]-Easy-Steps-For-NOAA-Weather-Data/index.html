@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>2 Easy Steps to Download Historical Weather Data - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="The National Oceanic and Atmospheric Administration (NOAA) Integrated Surface Database (ISD) provides one of the richest sources of historical weather data consisting of hourly and synpoptic observati">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2 Easy Steps to Download Historical Weather Data">
+<meta property="og:url" content="http://envhyf.github.io/2022/07/10/26.[Dataset]-Easy-Steps-For-NOAA-Weather-Data/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="The National Oceanic and Atmospheric Administration (NOAA) Integrated Surface Database (ISD) provides one of the richest sources of historical weather data consisting of hourly and synpoptic observati">
+<meta property="og:locale">
+<meta property="og:image" content="https://i.stack.imgur.com/o3sOv.jpg">
+<meta property="article:published_time" content="2022-07-10T08:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-10T15:08:48.205Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Atmosphere">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.stack.imgur.com/o3sOv.jpg">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            2 Easy Steps to Download Historical Weather Data
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2022-07-10T08:00:00.000Z" itemprop="datePublished">7月 10 2022</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>The National Oceanic and Atmospheric Administration (NOAA) Integrated Surface Database (ISD) provides one of the richest sources of historical weather data consisting of hourly and synpoptic observation. This blog will introuce the simple way to retrieve and process the raw data into Python dataframe.</p>
+<span id="more"></span>
+
+<h1 id="Selection-of-weather-station"><a href="#Selection-of-weather-station" class="headerlink" title="Selection of weather station"></a>Selection of weather station</h1><p>Based on the location of the city/sampling site, we could seach for the best/most close weather station for getting its ID. Here, Milan, Italy will be treated as the example, and the main procedures are listed as follows. The detailed information of weathe station globally can be downloaded here <a target="_blank" rel="noopener" href="https://www.dropbox.com/s/d46u4h71fm9i4it/isd-history.csv?dl=0">link</a>.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">isd_st = pd.read_csv(<span class="hljs-string">"/mnt/d/Dropbox/data/geo/Meteo/NOAA/global/isd-history.csv"</span>)</span><br><span class="line"><span class="hljs-comment">## filtering based on country name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">'CTRY'</span>] ==<span class="hljs-string">'IT'</span>]</span><br><span class="line"><span class="hljs-comment">## filtering based on city name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">"STATION NAME"</span>].astype(<span class="hljs-built_in">str</span>).<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">"MILAN"</span>)]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## Then, we could choose the perferred monitoring station, and note its "USAF" and  "WBAN"</span></span><br><span class="line"><span class="hljs-comment">## For Milan, USAF == 160800, WBAN == 99999, then the target ID will be "160800-99999"</span></span><br><span class="line">station_ID = <span class="hljs-number">160800</span>-<span class="hljs-number">99999</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>A more visualized way could be achieved through this link <a target="_blank" rel="noopener" href="https://www.ncdc.noaa.gov/cdo-web/datatools/findstation">Find a station</a>.</p>
+<h1 id="FTP-downloading-and-processing"><a href="#FTP-downloading-and-processing" class="headerlink" title="FTP downloading and processing"></a>FTP downloading and processing</h1><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> ftplib <span class="hljs-keyword">import</span> FTP</span><br><span class="line"><span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path</span><br><span class="line"></span><br><span class="line">ftp = FTP(<span class="hljs-string">"ftp.ncdc.noaa.gov"</span>)</span><br><span class="line">ftp.login()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## there are multiple dataset within NOAA ISD. Here we choose NOAA ISD-Lite, which is hourly-recoreded.</span></span><br><span class="line">ftp.cwd(<span class="hljs-string">'/pub/data/noaa/isd-lite/2013/'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Get all files</span></span><br><span class="line">files = ftp.nlst()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Download the file matched with the station ID</span></span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">    <span class="hljs-keyword">if</span> file == station_ID +<span class="hljs-string">'.gz'</span>:</span><br><span class="line"><span class="hljs-comment">#         print (file)</span></span><br><span class="line">        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Downloading..."</span> + file)</span><br><span class="line">        ftp.retrbinary(<span class="hljs-string">f'RETR <span class="hljs-subst">{file}</span>'</span>, <span class="hljs-built_in">open</span>(<span class="hljs-built_in">str</span>(Path(<span class="hljs-string">r'./isd_data'</span>) / file), <span class="hljs-string">'wb'</span>).write)</span><br><span class="line"><span class="hljs-comment"># # ftp.close()</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calc_rh</span>(<span class="hljs-params">T,TD</span>):</span><br><span class="line">    RH = <span class="hljs-number">100</span>*(np.exp((<span class="hljs-number">17.625</span>*TD)/(<span class="hljs-number">243.04</span>+TD))/np.exp((<span class="hljs-number">17.625</span>*T)/(<span class="hljs-number">243.04</span>+T)))</span><br><span class="line">    <span class="hljs-keyword">return</span> RH</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">read_year_meteo</span>(<span class="hljs-params">filepath</span>):</span><br><span class="line">    df= pd.read_csv(filepath,sep=<span class="hljs-string">'\s+'</span>,header = <span class="hljs-literal">None</span>)</span><br><span class="line">    <span class="hljs-comment">#<span class="hljs-doctag">NOTE:</span> Trace precipitation is coded as -1</span></span><br><span class="line">    <span class="hljs-comment"># SCALING FACTOR: 10</span></span><br><span class="line">    df.columns = [<span class="hljs-string">'Year'</span>,<span class="hljs-string">'Month'</span>,<span class="hljs-string">'Day'</span>,<span class="hljs-string">'Hour'</span>,<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'Cloud'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>] </span><br><span class="line">    df[<span class="hljs-string">'Date'</span>] = df[<span class="hljs-string">'Year'</span>].astype(<span class="hljs-built_in">str</span>)+<span class="hljs-string">'-'</span>+df[<span class="hljs-string">"Month"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">'-'</span>+df[<span class="hljs-string">"Day"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">' '</span>+df[<span class="hljs-string">"Hour"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">':00:00'</span></span><br><span class="line">    df         = df[[<span class="hljs-string">'Date'</span>,<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'Cloud'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>] ]</span><br><span class="line">    df = df.replace(-<span class="hljs-number">9999</span>,np.nan)</span><br><span class="line">    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> [<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>]:</span><br><span class="line">        df[t] = df[t]/<span class="hljs-number">10.0</span>  </span><br><span class="line">    df[<span class="hljs-string">'RH'</span>] = calc_rh(df[<span class="hljs-string">'Air temp'</span>],df[<span class="hljs-string">'Dew point'</span>])        </span><br><span class="line">    <span class="hljs-keyword">return</span> df</span><br><span class="line"></span><br><span class="line">milan_2013 = read_year_meteo(<span class="hljs-string">'./isd_data/160800-99999-2013'</span>) </span><br><span class="line">milan_2013.to_csv(<span class="hljs-string">"./milan_weather_data_hourly.csv"</span>, index = <span class="hljs-literal">False</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Done!</p>
+<img src="https://i.stack.imgur.com/o3sOv.jpg" title="" alt="" width="275">
+
+<p><strong>Reference</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.visualcrossing.com/resources/documentation/weather-data/how-we-process-integrated-surface-database-historical-weather-data/">How We Process the NOAA Integrated Surface Database Historical Weather Data </a></p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/eugenesiow/85f4d331491d45df4d0567f20269ce8e">Preparing the NOAA ISD, Hourly, Global Dataset for Time-series Databases</a></p>
+<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/getting-weather-data-in-3-easy-steps-8dc10cc5c859">Getting Weather Data in 3 Easy Steps</a></p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Atmosphere/">#Atmosphere</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2023/01/03/27.%5BDataset%5DEarth-Science-Tools-and-Data/">Dataset and Tools Collection for Earth Science</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2022/03/01/25.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%84%8F%E5%A4%A7%E5%88%A9%E6%96%87%E5%8C%96%E7%AE%80%E5%8F%B2/">读书笔记-意大利文化简史</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2022/07/10/26.[Dataset]-Easy-Steps-For-NOAA-Weather-Data/';
+        this.page.identifier = '2022/07/10/26.[Dataset]-Easy-Steps-For-NOAA-Weather-Data/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

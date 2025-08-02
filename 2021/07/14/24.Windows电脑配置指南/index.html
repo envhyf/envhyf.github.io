@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>Windows电脑工作环境配置笔记 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="在国外新购置了一台PC，性能比从国内带来的Mac笔记本要好，也可以继续玩Steam上的游戏。决定将个人学习工作环境迁移至Windows系统。在此记录相关配置步骤，以便未来之需。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows电脑工作环境配置笔记">
+<meta property="og:url" content="http://envhyf.github.io/2021/07/14/24.Windows%E7%94%B5%E8%84%91%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="在国外新购置了一台PC，性能比从国内带来的Mac笔记本要好，也可以继续玩Steam上的游戏。决定将个人学习工作环境迁移至Windows系统。在此记录相关配置步骤，以便未来之需。">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/windows_system_setup/bash_dir_colors.png">
+<meta property="article:published_time" content="2021-07-14T19:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-02T11:39:03.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/windows_system_setup/bash_dir_colors.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            Windows电脑工作环境配置笔记
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2021-07-14T19:00:00.000Z" itemprop="datePublished">7月 14 2021</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>在国外新购置了一台PC，性能比从国内带来的Mac笔记本要好，也可以继续玩Steam上的游戏。决定将个人学习工作环境迁移至Windows系统。在此记录相关配置步骤，以便未来之需。</p>
+<span id="more"></span>
+
+<h2 id="1-常用软件安装"><a href="#1-常用软件安装" class="headerlink" title=" 1. 常用软件安装"></a><font color="blue"> 1. 常用软件安装</font></h2><p>首先安装常用软件，尽量选择免费开源软件替代相似功能的商业软件。</p>
+<ul>
+<li><p>Markdown文本编辑：<a target="_blank" rel="noopener" href="https://marktext.app/">Mark text</a>   </p>
+</li>
+<li><p>视频播放工具：<a target="_blank" rel="noopener" href="https://mpv.io/">mpv</a></p>
+</li>
+<li><p>图片浏览工具：<a target="_blank" rel="noopener" href="https://imageglass.org/">ImageGlass</a></p>
+</li>
+<li><p>PDF文本阅读：<a target="_blank" rel="noopener" href="https://www.sumatrapdfreader.org/free-pdf-reader">Sumatra PDF</a> (Ctrl+a 高亮文本)</p>
+</li>
+<li><p>小工具合集：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/powertoys/install">PowerToys</a> （Win+Shift+C 取色器)</p>
+</li>
+<li><p>截图工具：<a target="_blank" rel="noopener" href="https://www.snipaste.com/">Snipaste</a> (F1截图快捷键）</p>
+</li>
+<li><p>拼音输入法：<a target="_blank" rel="noopener" href="https://rime.im/">RIME</a> (安装后初始为繁体字，F4进入设置菜单调整为简体)</p>
+</li>
+<li><p>番茄时钟: <a target="_blank" rel="noopener" href="https://splode.github.io/pomotroid/">Pomotroid</a>    </p>
+</li>
+<li><p>FTP数据传输管理: <a target="_blank" rel="noopener" href="https://winscp.net/eng/index.php">WinSCP</a></p>
+</li>
+</ul>
+<h2 id="2-Python-VSCODE-WSL"><a href="#2-Python-VSCODE-WSL" class="headerlink" title=" 2. Python+VSCODE+WSL"></a><font color="blue"> 2. Python+VSCODE+WSL</font></h2><p>Python及Jupyter notebook/lab是我主要的数据分析工具。VS CODE编辑器是功能强大，插件丰富的开发工具，未来会多尝试在该环境下工作。WSL即Windows subsystem for Linux，是Windows环境下Linux子系统，无需安装双系统，且可以在Linux环境可直接访问Windows文件系统，相比虚拟机有更好的运行性能。</p>
+<p>具体下载安装环节包括</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.anaconda.com/">Anaconda </a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/insiders/">VS Code Insiders</a> (此处安装Insider，而非标准版VS Code。原因是因为在加载remote development等插件时总是报错，自己没找到解决方法)</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.microsoft.com/fr-ch/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1#activetab=pivot:overviewtab">Ubuntu 20.04 LTS</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.microsoft.com/fr-ch/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab">Windows Terminal</a></p>
+</li>
+</ul>
+<p>安装上述软件工具后，在VS Code中安装remote-WSL、jupyter、VS Code Jupyter Notebook Previewer、Visual Studio IntelliCode、Chinese Language pack等必要插件。</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">##  terminal环境下wsl切换至linuxcurl -O https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh环境，完成基本配置</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 安装必要编译环境</span></span><br><span class="line"><span class="hljs-built_in">sudo</span> apt update</span><br><span class="line"><span class="hljs-built_in">sudo</span> apt install build-essentia</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 安装zsh, oh-my-zsh, powerline</span></span><br><span class="line"><span class="hljs-built_in">sudo</span> apt-get install zsh</span><br><span class="line">git <span class="hljs-built_in">clone</span> https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh</span><br><span class="line"><span class="hljs-built_in">cp</span> ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc</span><br><span class="line">chsh -s /bin/zsh</span><br><span class="line"><span class="hljs-built_in">sudo</span> apt-get install powerline fonts-powerline</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">##WSL环境安装anaconda3</span></span><br><span class="line"><span class="hljs-built_in">cd</span> /tmp</span><br><span class="line">curl -O https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh</span><br><span class="line">bash ./Anaconda3-2021.05-Linux-x86_64.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>接下来实现在wsl环境开启Jupter lab，在Windows环境chrome浏览器打开，直接开启jupyter notebook/lab，系统报错均为”Start : This command cannot be run due to the error: The system cannot find the file specified.”, 但并影响使用。</p>
+<p>根据<a href="(https://stackoverflow.com/questions/62814002/start-this-command-cannot-be-run-due-to-the-error-the-system-cannot-find-the)">此问题</a>的回答，Ubuntu 20.04系统会出现该问题。</p>
+<p>有关terminal环境下文件夹出现绿色背景，影响美观，参考<a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/94498/what-causes-this-green-background-in-ls-output">该问答</a>进行修改。</p>
+<p>bash环境下<code>vi ~/.dir_colors</code>修改OTHER_WRITABLE从”34;42”至“34;49”，如下</p>
+<p><img src="/images/windows_system_setup/bash_dir_colors.png"></p>
+<p>zsh环境下则不为所动，添加以下内容至~/.zshrc，并source之</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">if</span> [[ -f ~/.dircolors ]] ; <span class="hljs-keyword">then</span></span><br><span class="line">    <span class="hljs-built_in">eval</span> $(<span class="hljs-built_in">dircolors</span> -b ~/.dircolors)     </span><br><span class="line"><span class="hljs-keyword">elif</span> [[ -f /etc/DIR_COLORS ]] ; <span class="hljs-keyword">then</span></span><br><span class="line">    <span class="hljs-built_in">eval</span> $(<span class="hljs-built_in">dircolors</span> -b /etc/DIR_COLORS)</span><br><span class="line"><span class="hljs-keyword">fi</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="3-Latex配置"><a href="#3-Latex配置" class="headerlink" title=" 3. Latex配置"></a><font color="blue"> 3. Latex配置</font></h2><p>未来可能有Latex编辑文档需求，在此记录VS Code环境实现直接编译源码并展示PDF文档的主要步骤：</p>
+<ul>
+<li><p>安装Texlive</p>
+</li>
+<li><p>安装VS Code插件Latex Workshop</p>
+</li>
+<li><p>修改settings.json</p>
+<p>若选择外部PDF软件呈现工具，修改参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/186249349">此网页</a>。此处选择VS Code自带预览读取PDF，<code>Ctrl+Shift+P</code>进入Command Palette，键入<code>settins.json</code>，选择第二项，插入如下代码。</p>
+</li>
+</ul>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"latex-workshop.latex.tools"</span>: [</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"pdflatex"</span>,</span><br><span class="line">           <span class="hljs-string">"command"</span>: <span class="hljs-string">"pdflatex"</span>,</span><br><span class="line">           <span class="hljs-string">"args"</span>: [</span><br><span class="line">             <span class="hljs-string">"-synctex=1"</span>,</span><br><span class="line">             <span class="hljs-string">"-interaction=nonstopmode"</span>,</span><br><span class="line">             <span class="hljs-string">"-file-line-error"</span>,</span><br><span class="line">             <span class="hljs-string">"%DOC%"</span></span><br><span class="line">           ]</span><br><span class="line">         },</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"xelatex"</span>,</span><br><span class="line">           <span class="hljs-string">"command"</span>: <span class="hljs-string">"xelatex"</span>,</span><br><span class="line">           <span class="hljs-string">"args"</span>: [</span><br><span class="line">             <span class="hljs-string">"-synctex=1"</span>,</span><br><span class="line">             <span class="hljs-string">"-interaction=nonstopmode"</span>,</span><br><span class="line">             <span class="hljs-string">"-file-line-error"</span>,</span><br><span class="line">             <span class="hljs-string">"%DOC%"</span></span><br><span class="line">           ]</span><br><span class="line">         },</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"bibtex"</span>,</span><br><span class="line">           <span class="hljs-string">"command"</span>: <span class="hljs-string">"bibtex"</span>,</span><br><span class="line">           <span class="hljs-string">"args"</span>: [</span><br><span class="line">             <span class="hljs-string">"%DOCFILE%"</span></span><br><span class="line">           ]</span><br><span class="line">         }</span><br><span class="line">       ],</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       <span class="hljs-string">"latex-workshop.latex.recipes"</span>: [</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"pdflatex"</span>,</span><br><span class="line">           <span class="hljs-string">"tools"</span>: [</span><br><span class="line">             <span class="hljs-string">"pdflatex"</span></span><br><span class="line">           ]</span><br><span class="line">         },</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"xelatex"</span>,</span><br><span class="line">           <span class="hljs-string">"tools"</span>: [</span><br><span class="line">             <span class="hljs-string">"xelatex"</span></span><br><span class="line">           ]</span><br><span class="line">         },</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"xe-&gt;bib-&gt;xe-&gt;xe"</span>,</span><br><span class="line">           <span class="hljs-string">"tools"</span>: [</span><br><span class="line">             <span class="hljs-string">"xelatex"</span>,</span><br><span class="line">             <span class="hljs-string">"bibtex"</span>,</span><br><span class="line">             <span class="hljs-string">"xelatex"</span>,</span><br><span class="line">             <span class="hljs-string">"xelatex"</span></span><br><span class="line">           ]</span><br><span class="line">         },</span><br><span class="line">         {</span><br><span class="line">           <span class="hljs-string">"name"</span>: <span class="hljs-string">"pdflatex -&gt; bibtex -&gt; pdflatex*2"</span>,</span><br><span class="line">           <span class="hljs-string">"tools"</span>: [</span><br><span class="line">             <span class="hljs-string">"pdflatex"</span>,</span><br><span class="line">             <span class="hljs-string">"bibtex"</span>,</span><br><span class="line">             <span class="hljs-string">"pdflatex"</span>,</span><br><span class="line">             <span class="hljs-string">"pdflatex"</span></span><br><span class="line">           ]</span><br><span class="line">         }</span><br><span class="line">       ],</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="hljs-string">"latex-workshop.view.pdf.viewer"</span>: <span class="hljs-string">"tab"</span>,</span><br><span class="line">   <span class="hljs-string">"latex-workshop.latex.autoClean.run"</span>: <span class="hljs-string">"onBuilt"</span>,</span><br><span class="line">   <span class="hljs-string">"security.workspace.trust.untrustedFiles"</span>: <span class="hljs-string">"open"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>当然，在线使用Overleaf更为便捷。好不容易配置好，才想到┗( T﹏T )┛。</p>
+<h2 id="4-Hexo博客多终端编辑"><a href="#4-Hexo博客多终端编辑" class="headerlink" title="4. Hexo博客多终端编辑"></a><font color="blue">4. Hexo博客多终端编辑</font></h2><p>Hexo是简单、便捷的基于Github Pages的博客框架。本博客即基于此构建建立。此处我设想在多台终端均可进行博客写作和发布。由于github端文件只包括编译后结果，无原始文章信息，因此无法直接在新PC上c直接clone并使用。</p>
+<p>首先，在WSL环境下安装Hexo框架及Node.js，具体指令如下：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## 1. 安装Node.js</span></span><br><span class="line">curl -sL https://deb.nodesource.com/setup14.x | <span class="hljs-built_in">sudo</span> -E bash -</span><br><span class="line"><span class="hljs-built_in">sudo</span> apt-get install -y nodejs</span><br><span class="line"><span class="hljs-comment">## 报错 "not foundram Files/nodejs/npm: 3: /mnt/c/Program Files/nodejs/npm:"</span></span><br><span class="line"><span class="hljs-comment">## 参考 https://stackoverflow.com/questions/45853530/npm-install-error-not-foundram-files-nodejs-npm-3-mnt-c-program-files-nodejs</span></span><br><span class="line"><span class="hljs-comment">## 在~/.zshrc中添加以下行，并添加source</span></span><br><span class="line">PATH=<span class="hljs-string">"<span class="hljs-variable">$HOME</span>/bin:<span class="hljs-variable">$HOME</span>/.local/bin:/usr/bin:<span class="hljs-variable">$PATH</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 2. 安装Node.js框架</span></span><br><span class="line"><span class="hljs-built_in">sudo</span> npm install hexo-cli -g</span><br><span class="line"><span class="hljs-comment">### 建立一个新文件夹blog，存放博客文件</span></span><br><span class="line"><span class="hljs-built_in">sudo</span> npm install</span><br><span class="line">npm install -S highlight.js --save</span><br><span class="line">npm install -S cheerio --save</span><br><span class="line">npm install -g hexo-renderer-sass --save</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></tbody></table></figure>
+
+<p>进一步设置，有两类思路：</p>
+<ol>
+<li><p>直接迁移原有计算机中hexo文章内容，主题设置和配置文件，具体包括<code>_config.yml</code>,<code>theme</code>、<code>source</code>；</p>
+</li>
+<li><p>在新PC中直接初始化hexo框架，参考原有<code>*.yml</code>文件重新设置。</p>
+</li>
+</ol>
+<p>经本人测试，方法1）在<code>hexo clean</code>阶段反复报错，难以解决。个人认为可能原有编译文件和现在的hexo版本不符。因此，我初始化了log文件夹，移入博客历史文章，修改配置文件，具体如下：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hexo init</span><br><span class="line"><span class="hljs-comment">## 转移文章</span></span><br><span class="line"><span class="hljs-built_in">cp</span> ./../hexo_ori/source/_post/* ./source/_post/.</span><br><span class="line"><span class="hljs-comment">## 安装主题</span></span><br><span class="line">git <span class="hljs-built_in">clone</span> https://github.com/ppoffice/hexo-theme-minos.git themes/minos</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 按照原设置，修改主文件夹下_config.yml文件和theme文件夹下_config.yml文件</span></span><br><span class="line">hexo g</span><br><span class="line">hexo server</span><br></pre></td></tr></tbody></table></figure>
+
+<p>本地编译测试无误后，设置SSh密钥，关联github个人账户，具体如下：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## 1. 生成ssh</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C <span class="hljs-string">"your_github_email@example.com"</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 2. 复制/home/your_name/.ssh/id_rsa.pub全部内容，添加至github账户中的SSH keys中</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 3. 检测成功设置</span></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 4. git初始化</span></span><br><span class="line">git config --global user.email <span class="hljs-string">"you@example.com"</span></span><br><span class="line">git config --global user.name <span class="hljs-string">"Your Name"</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 5. 配置个人域名，新建CNAME文件，添加个人域名</span></span><br><span class="line">vi ./source/CNAME </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 6. 移入本篇文章，开始部署</span></span><br><span class="line">hexo g </span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+
+<p>为实现Hexo博客可在多设备同时撰写发布，查询网络资料寻找可行方法。多数教程建议采用教程提供了hexo源文件新建github分支的做法。但该方法公开了ssh密钥信息。此处，我专设文件夹撰写<code>.md</code>格式文件，置于Dropbox文件夹内，不同终端间可共享。更新博客时，只需将其新写入的文章拖入hexo的编译文件夹内更新部署。</p>
+<p>未来会继续整理在WSL环境下安装，调用学科专业软件内容。</p>
+<p><strong>部分参考资料</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://towardsdatascience.com/running-jupyter-notebook-on-wsl-while-using-firefox-on-windows-5a47ebfae4c1">Running Jupyter Notebook on WSL while Using Browser on Windows</a></li>
+<li><a target="_blank" rel="noopener" href="https://joesuen.com/2020/07/11/WSL2%E4%B8%8B%E7%94%A8Hexo%E5%9C%A8github%E4%B8%8A%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/">WSL2下用Hexo在github上搭建静态博客 · Joe Suen's Blog</a></li>
+</ol>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Linux/">#Linux</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Windows/">#Windows</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2022/03/01/25.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%84%8F%E5%A4%A7%E5%88%A9%E6%96%87%E5%8C%96%E7%AE%80%E5%8F%B2/">读书笔记-意大利文化简史</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2020/11/01/WRF-technique-xarray-tricks/">WRF post processing 2: Xarray tricks</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2021/07/14/24.Windows%E7%94%B5%E8%84%91%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/';
+        this.page.identifier = '2021/07/14/24.Windows电脑配置指南/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

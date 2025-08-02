@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>MODIS卫星火点数据的简易处理与可视化分析 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="提要：此文介绍利用Python语言处理NASA MODIS火点数据（Global Monthly Fire Location Product，MCD14ML），可实现的基本功能包括:（1）特定时期的火点信息提取;（2）特定区域内的火点信息提取;（3）火点密度空间分布的计算与可视化表达">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MODIS卫星火点数据的简易处理与可视化分析">
+<meta property="og:url" content="http://envhyf.github.io/2017/06/22/6.[Code]Python%E7%81%AB%E7%82%B9%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E6%9E%90%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="提要：此文介绍利用Python语言处理NASA MODIS火点数据（Global Monthly Fire Location Product，MCD14ML），可实现的基本功能包括:（1）特定时期的火点信息提取;（2）特定区域内的火点信息提取;（3）火点密度空间分布的计算与可视化表达">
+<meta property="og:locale">
+<meta property="article:published_time" content="2017-06-22T14:26:26.000Z">
+<meta property="article:modified_time" content="2025-07-23T21:51:29.455Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Air quality">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            MODIS卫星火点数据的简易处理与可视化分析
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2017-06-22T14:26:26.000Z" itemprop="datePublished">6月 22 2017</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>提要：此文介绍利用Python语言处理NASA MODIS火点数据（Global Monthly Fire Location Product，MCD14ML），可实现的基本功能包括:（1）特定时期的火点信息提取;（2）特定区域内的火点信息提取;（3）火点密度空间分布的计算与可视化表达</p>
+<span id="more"></span>
+
+<h3 id="火点数据背景介绍"><a href="#火点数据背景介绍" class="headerlink" title=" 火点数据背景介绍"></a><font color="blue"> 火点数据背景介绍</font></h3><p>生物质(biomass)和石油、煤炭等一样，是一类重要的能源物质。在我国的广大农村地区，生物质能源(如秸秆、薪柴以及牲畜粪便等)占据重要地位，在1979年前，更是占到整个农村能源消费总量的70%以上[^1][1]。同时，由于生物质燃烧过程中，排放大量气态以及颗粒态的污染物，对大气能见度造成影响，危害人体健康，同时具有着一定的气候效益。</p>
+<p>环境遥感技术依据中红外波段对高温热源的敏感特性，可对全球陆面的火点信息进行检测，识别生物质开放燃烧事件的具体位置。目前较为成熟的火点数据库主要有两类：<a target="_blank" rel="noopener" href="https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/c6-mcd14dl">MODIS</a>以及<a target="_blank" rel="noopener" href="https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/v1-vnp14imgt">VIIRS 375m</a>，以多种数据格式为公众提供历史火点信息。</p>
+<h3 id="特定时期燃烧事件数据的提取"><a href="#特定时期燃烧事件数据的提取" class="headerlink" title=" 特定时期燃烧事件数据的提取"></a><font color="blue"> 特定时期燃烧事件数据的提取</font></h3><p>此处介绍MODIS数据集中应用最为广泛的__MCD14ML__数据，对基础数据的打理和分析做以基本的介绍。__MCD14ML__数据的单个文件包含某个月的全球火点信息，具体获取方法如下：</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#### 下载网址及用户名 ###   </span></span><br><span class="line"><span class="hljs-comment">#ftp://fuoco.geog.umd.edu/modis/C6/mcd14ml/</span></span><br><span class="line"><span class="hljs-comment">#用户名:fire</span></span><br><span class="line"><span class="hljs-comment">#密码: burnt  </span></span><br><span class="line"><span class="hljs-comment">#----------------------</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#### 1. 文件的下载下载</span></span><br><span class="line"><span class="hljs-comment"># 此处参考https://stackoverflow.com/questions/7006574/how-to-download-file-from-ftp中的方法进行下载，亦可直接在浏览器中手动下载</span></span><br><span class="line">    </span><br><span class="line"><span class="hljs-keyword">import</span> mimetypes,os,urllib2,urlparse</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">filename_from_url</span>(<span class="hljs-params">url</span>):</span><br><span class="line">	 		<span class="hljs-keyword">return</span> os.path.basename(urlparse.urlsplit(url)[<span class="hljs-number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">download_file</span>(<span class="hljs-params">url</span>):</span><br><span class="line">	<span class="hljs-string">"""Create an urllib2 request and return the request plus some useful info"""</span></span><br><span class="line">	name = filename_from_url(url)</span><br><span class="line">	r = urllib2.urlopen(urllib2.Request(url))</span><br><span class="line">	info = r.info()</span><br><span class="line">	<span class="hljs-keyword">if</span> <span class="hljs-string">'Content-Disposition'</span> <span class="hljs-keyword">in</span> info:</span><br><span class="line">		<span class="hljs-comment"># If the response has Content-Disposition, we take filename from it</span></span><br><span class="line">		name = info[<span class="hljs-string">'Content-Disposition'</span>].split(<span class="hljs-string">'filename='</span>)[<span class="hljs-number">1</span>]</span><br><span class="line">		<span class="hljs-keyword">if</span> name[<span class="hljs-number">0</span>] == <span class="hljs-string">'"'</span> <span class="hljs-keyword">or</span> name[<span class="hljs-number">0</span>] == <span class="hljs-string">"'"</span>:</span><br><span class="line">			name = name[<span class="hljs-number">1</span>:-<span class="hljs-number">1</span>]</span><br><span class="line">	</span><br><span class="line">	<span class="hljs-keyword">elif</span> r.geturl() != url:</span><br><span class="line">	<span class="hljs-comment"># if we were redirected, take the filename from the final url</span></span><br><span class="line">		name = filename_from_url(r.geturl())</span><br><span class="line">	content_type = <span class="hljs-literal">None</span></span><br><span class="line">	<span class="hljs-keyword">if</span> <span class="hljs-string">'Content-Type'</span> <span class="hljs-keyword">in</span> info:</span><br><span class="line">		content_type = info[<span class="hljs-string">'Content-Type'</span>].split(<span class="hljs-string">';'</span>)[<span class="hljs-number">0</span>]</span><br><span class="line">	<span class="hljs-comment"># Try to guess missing info</span></span><br><span class="line">	<span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> name <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> content_type:</span><br><span class="line">		name = <span class="hljs-string">'unknown'</span></span><br><span class="line">	<span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> name:</span><br><span class="line">		name = <span class="hljs-string">'unknown'</span> + mimetypes.guess_extension(content_type) <span class="hljs-keyword">or</span> <span class="hljs-string">''</span></span><br><span class="line">	<span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> content_type:</span><br><span class="line">		content_type = mimetypes.guess_type(name)[<span class="hljs-number">0</span>]</span><br><span class="line">	<span class="hljs-keyword">return</span> r, name, content_type</span><br><span class="line"><span class="hljs-keyword">import</span> shutil</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">download_file_locally</span>(<span class="hljs-params">url, dest</span>):</span><br><span class="line">	req, filename, content_type = download_file(url)        </span><br><span class="line">	<span class="hljs-keyword">if</span> dest.endswith(<span class="hljs-string">'/'</span>):</span><br><span class="line">		dest = os.path.join(dest, filename)</span><br><span class="line">	<span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(dest, <span class="hljs-string">'wb'</span>) <span class="hljs-keyword">as</span> f:</span><br><span class="line">		shutil.copyfileobj(req, f)</span><br><span class="line">	req.close()</span><br><span class="line">	     </span><br><span class="line"></span><br><span class="line">time = <span class="hljs-string">"201609"</span> <span class="hljs-comment">## 此处以2016年09月为例</span></span><br><span class="line">filename = <span class="hljs-string">'MCD14ML.'</span>+time+<span class="hljs-string">'.006.01.txt.gz'</span></span><br><span class="line">download_file_locally(<span class="hljs-string">'ftp://fire:burnt@fuoco.geog.umd.edu/modis/C6/mcd14ml/'</span>,filename)</span><br><span class="line"></span><br><span class="line">	   </span><br><span class="line"><span class="hljs-comment">#### 2. 文件预处理</span></span><br><span class="line"><span class="hljs-comment"># 原始文件中存在多类分隔符，需进行预先处理，统一替换为“ ”，便于后续读取。</span></span><br><span class="line"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename, <span class="hljs-string">'r'</span>) <span class="hljs-keyword">as</span> file :</span><br><span class="line">	filedata = file.read()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Replace the target string</span></span><br><span class="line">filedata = filedata.replace(<span class="hljs-string">'   '</span>, <span class="hljs-string">' '</span>)</span><br><span class="line">filedata = filedata.replace(<span class="hljs-string">' '</span>, <span class="hljs-string">' '</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#Write the file out again</span></span><br><span class="line"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename, <span class="hljs-string">'w'</span>) <span class="hljs-keyword">as</span> file:</span><br><span class="line">	file.write(filedata)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#### 3. 文件读取</span></span><br><span class="line">df = pd.read_csv(filename, sep=<span class="hljs-string">'\s+'</span>)</span><br><span class="line">df.head()		</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="特定区域内燃烧事件的提取"><a href="#特定区域内燃烧事件的提取" class="headerlink" title=" 特定区域内燃烧事件的提取"></a><font color="blue"> 特定区域内燃烧事件的提取</font></h3><p>原始数据中包含该段时期火点位置的有关信息，对于研究生物质燃烧对于局地污染事件发生的影响，应对于特定地理位置内的火点信息进行提取。该工作同样可以借助fiona包，利用简单的判断语句实现。这里我们以四川省为例，对2016年9月发生在该省境内的逐日火点信息进行提取。  </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> fiona</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> shape,Polygon, Point</span><br><span class="line"><span class="hljs-comment"># read the shapefile</span></span><br><span class="line">sc_area = fiona.<span class="hljs-built_in">open</span>(<span class="hljs-string">"/Users/HYF/Documents/NanChong/GIS/sichuan.shp"</span>)</span><br><span class="line">pol = sc_area.<span class="hljs-built_in">next</span>()</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> shape</span><br><span class="line">geom = shape(pol[<span class="hljs-string">'geometry'</span>])</span><br><span class="line">poly_data = pol[<span class="hljs-string">"geometry"</span>][<span class="hljs-string">"coordinates"</span>][<span class="hljs-number">0</span>]</span><br><span class="line">poly = Polygon(poly_data)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">### zip the x coordidate and y coordidate of each hotspot</span></span><br><span class="line">points = <span class="hljs-built_in">zip</span>(*np.array([df.lon.values, df.lat.values]))</span><br><span class="line"><span class="hljs-comment">### to identify whether the hotspot is inside the boundary or not</span></span><br><span class="line">mask = np.array([poly.contains(Point(x, y)) <span class="hljs-keyword">for</span> x, y <span class="hljs-keyword">in</span> points])  </span><br><span class="line"></span><br><span class="line">df[<span class="hljs-string">"MASK"</span>] = mask</span><br><span class="line">select = df[df[<span class="hljs-string">"MASK"</span>] == <span class="hljs-literal">True</span>]</span><br><span class="line">select[<span class="hljs-string">'datetime'</span>]  = pd.to_datetime(select.YYYYMMDD,<span class="hljs-built_in">format</span> = <span class="hljs-string">'%Y%m%d'</span>)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="简单的图形绘制"><a href="#简单的图形绘制" class="headerlink" title=" 简单的图形绘制"></a><font color="blue"> 简单的图形绘制</font></h3><h4 id="火点分布图"><a href="#火点分布图" class="headerlink" title=" 火点分布图"></a><font color="grey"> 火点分布图</font></h4><p>例如，此处我们专门考察2016年9月5日四川省境内的火点分布情况：</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">####Only select the biomass events in 2016-09-05</span></span><br><span class="line">select[select.datetime == <span class="hljs-string">'2016-09-05'</span>]</span><br><span class="line"></span><br><span class="line">m = Basemap(projection=<span class="hljs-string">'cyl'</span>, resolution=<span class="hljs-string">'l'</span>,llcrnrlon = <span class="hljs-number">97.2</span>,llcrnrlat=<span class="hljs-number">26.0</span>,urcrnrlon = <span class="hljs-number">109.0</span>,urcrnrlat=<span class="hljs-number">34.5</span>)</span><br><span class="line">m.readshapefile(<span class="hljs-string">'/Users/HYF/Documents/NanChong/GIS/sichuan'</span>, <span class="hljs-string">'sichuan'</span>, color=<span class="hljs-string">'b'</span>, zorder=<span class="hljs-number">3</span>,linewidth=<span class="hljs-number">1.5</span>)</span><br><span class="line">m.drawcoastlines(color = <span class="hljs-string">'0.15'</span>)</span><br><span class="line">lon, lat = m(select.lon,select.lat)</span><br><span class="line">plt.scatter(lon,lat, color = <span class="hljs-string">'red'</span>)</span><br><span class="line"></span><br><span class="line">parallels = np.arange(<span class="hljs-number">26.</span>,<span class="hljs-number">34</span>,<span class="hljs-number">3.</span>)</span><br><span class="line">m.drawparallels(parallels,labels=[<span class="hljs-literal">False</span>,<span class="hljs-literal">True</span>,<span class="hljs-literal">True</span>,<span class="hljs-literal">False</span>])</span><br><span class="line">meridians = np.arange(<span class="hljs-number">97</span>,<span class="hljs-number">109.</span>,<span class="hljs-number">3.</span>)</span><br><span class="line">m.drawmeridians(meridians,labels=[<span class="hljs-literal">True</span>,<span class="hljs-literal">False</span>,<span class="hljs-literal">False</span>,<span class="hljs-literal">True</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2017/11/06/7.%5BCode%5D%E5%9C%B0%E7%90%86%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96/">利用Python获取地理信息并可视化</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2016/09/05/5.%5BModel%5D%5BWRF-Chem%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%91%A1%5D%E4%BB%85%E5%90%AB%E6%B2%99%E5%B0%98%E6%BA%90%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%BB%83%E4%B9%A0/">[WRF-Chem学习笔记②]仅含沙尘源的模拟练习</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2017/06/22/6.[Code]Python%E7%81%AB%E7%82%B9%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E6%9E%90%E5%A4%84%E7%90%86/';
+        this.page.identifier = '2017/06/22/6.[Code]Python火点数据的分析处理/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

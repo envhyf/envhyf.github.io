@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>OrbiTrack Dev Log Final: Formula Assignment - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="In this post, I document the full formula assignment pipeline using MFAssignR, tailored for Orbitrap-MS data post-peak list processing. The steps include quality control filtering, noise estimation vi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OrbiTrack Dev Log Final: Formula Assignment">
+<meta property="og:url" content="http://envhyf.github.io/2024/11/01/37.[MS]OrbiTrack_Dev_Log_5_Formula_Assignment/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="In this post, I document the full formula assignment pipeline using MFAssignR, tailored for Orbitrap-MS data post-peak list processing. The steps include quality control filtering, noise estimation vi">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.MFassignR_SN_plot.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.MFassignR_Spectrum_noise%20removal.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.MFAssignR_VK_Diagram.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.MFAssignR_assigned_formula_results.png">
+<meta property="article:published_time" content="2024-11-01T14:40:00.000Z">
+<meta property="article:modified_time" content="2025-08-02T07:24:09.052Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="R">
+<meta property="article:tag" content="Orbitrap">
+<meta property="article:tag" content="Mass Spectrometry">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.MFassignR_SN_plot.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            OrbiTrack Dev Log Final: Formula Assignment
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-11-01T14:40:00.000Z" itemprop="datePublished">11月 1 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this post, I document the full formula assignment pipeline using <code>MFAssignR</code>, tailored for Orbitrap-MS data post-peak list processing.</p>
+<p>The steps include quality control filtering, noise estimation via Kendrick Mass Defect (KMD) plots, isotopic filtering, recalibrant inspection, and final formula assignment.</p>
+<span id="more"></span>
+
+<h2 id="1-Load-Input-and-Install-Required-Packages"><a href="#1-Load-Input-and-Install-Required-Packages" class="headerlink" title="1. Load Input and Install Required Packages"></a>1. Load Input and Install Required Packages</h2><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">setwd<span class="hljs-punctuation">(</span><span class="hljs-string">"./output/ToF_peak_list/"</span><span class="hljs-punctuation">)</span></span><br><span class="line">devtools<span class="hljs-operator">::</span>install<span class="hljs-punctuation">(</span><span class="hljs-string">"MFAssignR"</span><span class="hljs-punctuation">)</span></span><br><span class="line">library<span class="hljs-punctuation">(</span>MFAssignR<span class="hljs-punctuation">)</span></span><br><span class="line">input_name <span class="hljs-operator">=</span> <span class="hljs-string">'./output/ToF_peak_list/20250731_Punjab_Delhi_Orbitrap+TOF_peak_list'</span></span><br><span class="line">Data <span class="hljs-operator">&lt;-</span> read.csv<span class="hljs-punctuation">(</span>paste0<span class="hljs-punctuation">(</span>input_name<span class="hljs-punctuation">,</span> <span class="hljs-string">'-raw_mz.csv'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">[</span> <span class="hljs-punctuation">,</span> <span class="hljs-built_in">c</span><span class="hljs-punctuation">(</span><span class="hljs-string">'m.z'</span><span class="hljs-punctuation">,</span> <span class="hljs-string">'intensity'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="2-Reading-note-How-MFAssignR-filter-raw-peaks-and-assign-formulas"><a href="#2-Reading-note-How-MFAssignR-filter-raw-peaks-and-assign-formulas" class="headerlink" title="2. Reading note: How MFAssignR filter raw peaks and assign formulas"></a>2. Reading note: How MFAssignR filter raw peaks and assign formulas</h2><p><strong>Noise filtering</strong><br>MFassignR uses a Kendrick Mass Defect (KMD)-based noise filtering approach (KMDNoise) before formula assignment. It analyzes raw spectra to identify background regions free from analyte signals. By slicing along two KMD lines (default intercepts: 0.05 and 0.2), it estimates the baseline noise level. Peaks below a user-defined signal-to-noise (SN) threshold (e.g., 3–10× noise) are removed. This enhances data quality by filtering out low-intensity noise and multiply charged ions.</p>
+<p><strong>Formula assignment</strong><br>MFAssignR applies several non-optional quality assurance (QA) rules to screen out chemically invalid formulas during assignment. Below is a summary of key rules:</p>
+<h3 id="🔍-Fundamental-Rules"><a href="#🔍-Fundamental-Rules" class="headerlink" title="🔍 Fundamental Rules"></a>🔍 Fundamental Rules</h3><table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Senior Rule</strong><br>(Kind &amp; Fiehn, 2007)</td>
+<td>Ensures molecular formulas follow known valency and bonding constraints. Useful for identifying feasible adduct or fragment ions.</td>
+</tr>
+<tr>
+<td><strong>Nitrogen Rule</strong></td>
+<td>For odd vs even nominal masses: odd → odd number of N atoms.</td>
+</tr>
+<tr>
+<td><strong>Large Atom Rule</strong></td>
+<td>Large atoms tend to fragment at weak bonds; used to predict fragmentation patterns.</td>
+</tr>
+<tr>
+<td><strong>Max Hydrogen Rule</strong></td>
+<td>Limits H count based on allowed bonding from other atoms. Prevents over-saturation.</td>
+</tr>
+<tr>
+<td><strong>Max DBE Rule</strong><br>(Lobodin et al., 2012)</td>
+<td>Ensures formulas have chemically valid unsaturation: <br>DBE = (2C + 2 + N − X − H)/2</td>
+</tr>
+</tbody></table>
+<h2 id="3-Noise-Estimation-Using-KMD"><a href="#3-Noise-Estimation-Using-KMD" class="headerlink" title="3. Noise Estimation Using KMD"></a>3. Noise Estimation Using KMD</h2><p>KMDNoise isolates low-intensity regions via Kendrick Mass Defect linear slice filtering:</p>
+<figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Noise <span class="hljs-operator">&lt;-</span> KMDNoise<span class="hljs-punctuation">(</span>Data<span class="hljs-punctuation">)</span></span><br><span class="line">plot <span class="hljs-operator">&lt;-</span> Noise<span class="hljs-punctuation">[[</span><span class="hljs-string">"KMD"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">plot</span><br><span class="line">KMDN <span class="hljs-operator">&lt;-</span> Noise<span class="hljs-punctuation">[[</span><span class="hljs-string">"Noise"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">KMDN</span><br><span class="line">SNplot<span class="hljs-punctuation">(</span>Data<span class="hljs-punctuation">,</span> cut <span class="hljs-operator">=</span> KMDN <span class="hljs-operator">*</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> mass <span class="hljs-operator">=</span> <span class="hljs-number">301.1</span><span class="hljs-punctuation">,</span> window.x <span class="hljs-operator">=</span> <span class="hljs-number">900</span><span class="hljs-punctuation">,</span> window.y <span class="hljs-operator">=</span> <span class="hljs-number">25</span><span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+
+<div style="display: flex; gap: 10px; justify-content: space-between;">
+
+  <div style="flex: 1; text-align: center;">
+    <img src="/images/Orbitrack_log/Fig.MFassignR_SN_plot.png" alt="SN Plot" style="max-width: 100%;">
+    <p><strong>Signal-to-noise (S/N) plot</strong></p>
+  </div>
+
+  <div style="flex: 1; text-align: center;">
+    <img src="/images/Orbitrack_log/Fig.MFassignR_Spectrum_noise removal.png" alt="Spectrum noise removal" style="max-width: 100%;">
+    <p><strong>Spectrum after noise removal</strong></p>
+  </div>
+
+</div>
+
+
+<h2 id="4-Isotope-Prescreening"><a href="#4-Isotope-Prescreening" class="headerlink" title="4. Isotope Prescreening"></a>4. Isotope Prescreening</h2><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Isotope <span class="hljs-operator">&lt;-</span> IsoFiltR<span class="hljs-punctuation">(</span>Data<span class="hljs-punctuation">)</span></span><br><span class="line">Mono <span class="hljs-operator">&lt;-</span> Isotope<span class="hljs-punctuation">[[</span><span class="hljs-string">"Mono"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Iso <span class="hljs-operator">&lt;-</span> Isotope<span class="hljs-punctuation">[[</span><span class="hljs-string">"Iso"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="5-Initial-CHO-Formula-Assignment"><a href="#5-Initial-CHO-Formula-Assignment" class="headerlink" title="5. Initial CHO Formula Assignment"></a>5. Initial CHO Formula Assignment</h2><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Assign <span class="hljs-operator">&lt;-</span> MFAssignCHO<span class="hljs-punctuation">(</span>Mono<span class="hljs-punctuation">,</span> Iso<span class="hljs-punctuation">,</span> ionMode <span class="hljs-operator">=</span> <span class="hljs-string">"pos"</span><span class="hljs-punctuation">,</span> lowMW <span class="hljs-operator">=</span><span class="hljs-number">50</span><span class="hljs-punctuation">,</span> highMW <span class="hljs-operator">=</span> <span class="hljs-number">1000</span><span class="hljs-punctuation">,</span></span><br><span class="line">                      POEx<span class="hljs-operator">=</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span> Zx <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span> Mx <span class="hljs-operator">=</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span> Ex <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span></span><br><span class="line">                      ppm_err <span class="hljs-operator">=</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> H_Cmin <span class="hljs-operator">=</span> <span class="hljs-number">0.3</span><span class="hljs-punctuation">,</span></span><br><span class="line">                      HetCut <span class="hljs-operator">=</span> <span class="hljs-string">"off"</span><span class="hljs-punctuation">,</span> NMScut <span class="hljs-operator">=</span> <span class="hljs-string">"on"</span><span class="hljs-punctuation">,</span> SN <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-operator">*</span>KMDN<span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="6-Review-Assignment-Quality"><a href="#6-Review-Assignment-Quality" class="headerlink" title="6. Review Assignment Quality"></a>6. Review Assignment Quality</h2><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Unambig1 <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"Unambig"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Ambig1 <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"Ambig"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Unassigned1 <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"None"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">MSAssign <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"MSAssign"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Error <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"Error"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">MSgroups <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"MSgroups"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">VK <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"VK"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="7-Identify-Recalibrant-Series-and-Recalibrate"><a href="#7-Identify-Recalibrant-Series-and-Recalibrate" class="headerlink" title="7. Identify Recalibrant Series and Recalibrate"></a>7. Identify Recalibrant Series and Recalibrate</h2><p>This step uses high-confidence assigned ions (from Unambig1) to refine m/z accuracy via internal recalibration.</p>
+<figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">check <span class="hljs-operator">&lt;-</span> RecalList<span class="hljs-punctuation">(</span>Unambig1<span class="hljs-punctuation">)</span></span><br><span class="line">Test <span class="hljs-operator">&lt;-</span> Recal<span class="hljs-punctuation">(</span>df <span class="hljs-operator">=</span> Unambig1<span class="hljs-punctuation">,</span> peaks <span class="hljs-operator">=</span> Mono<span class="hljs-punctuation">,</span> isopeaks <span class="hljs-operator">=</span> Iso<span class="hljs-punctuation">,</span> mode <span class="hljs-operator">=</span> <span class="hljs-string">"pos"</span><span class="hljs-punctuation">,</span></span><br><span class="line">              SN <span class="hljs-operator">=</span> <span class="hljs-number">2</span><span class="hljs-operator">*</span>KMDN<span class="hljs-punctuation">,</span> mzRange <span class="hljs-operator">=</span> <span class="hljs-number">50</span><span class="hljs-punctuation">,</span></span><br><span class="line">              series1 <span class="hljs-operator">=</span> <span class="hljs-string">"O5_Na_2"</span><span class="hljs-punctuation">,</span> series2 <span class="hljs-operator">=</span> <span class="hljs-string">"O5_Na_3"</span><span class="hljs-punctuation">,</span></span><br><span class="line">              series3 <span class="hljs-operator">=</span> <span class="hljs-string">"O6_Na_3"</span><span class="hljs-punctuation">,</span> series4 <span class="hljs-operator">=</span> <span class="hljs-string">"O2_Na_3"</span><span class="hljs-punctuation">,</span> series5 <span class="hljs-operator">=</span> <span class="hljs-string">"O3_Na_3"</span><span class="hljs-punctuation">)</span></span><br><span class="line">Plot <span class="hljs-operator">&lt;-</span> Test<span class="hljs-punctuation">[[</span><span class="hljs-string">"Plot"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Plot</span><br><span class="line">Mono2 <span class="hljs-operator">&lt;-</span> Test<span class="hljs-punctuation">[[</span><span class="hljs-string">"Mono"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Iso2 <span class="hljs-operator">&lt;-</span> Test<span class="hljs-punctuation">[[</span><span class="hljs-string">"Iso"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">List <span class="hljs-operator">&lt;-</span> Test<span class="hljs-punctuation">[[</span><span class="hljs-string">"RecalList"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="8-Final-Formula-Assignment-with-Extended-Elements"><a href="#8-Final-Formula-Assignment-with-Extended-Elements" class="headerlink" title="8. Final Formula Assignment with Extended Elements"></a>8. Final Formula Assignment with Extended Elements</h2><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Assign <span class="hljs-operator">&lt;-</span> MFAssign<span class="hljs-punctuation">(</span>Mono2<span class="hljs-punctuation">,</span> Iso2<span class="hljs-punctuation">,</span> ionMode <span class="hljs-operator">=</span> <span class="hljs-string">"pos"</span><span class="hljs-punctuation">,</span> lowMW <span class="hljs-operator">=</span><span class="hljs-number">50</span><span class="hljs-punctuation">,</span> highMW <span class="hljs-operator">=</span> <span class="hljs-number">1000</span><span class="hljs-punctuation">,</span></span><br><span class="line">                   POEx<span class="hljs-operator">=</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span> Zx <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span> Mx <span class="hljs-operator">=</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span> Ex <span class="hljs-operator">=</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span></span><br><span class="line">                   Nx <span class="hljs-operator">=</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> Sx <span class="hljs-operator">=</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> ppm_err <span class="hljs-operator">=</span> <span class="hljs-number">20</span><span class="hljs-punctuation">,</span> H_Cmin <span class="hljs-operator">=</span> <span class="hljs-number">0.3</span><span class="hljs-punctuation">,</span></span><br><span class="line">                   HetCut <span class="hljs-operator">=</span> <span class="hljs-string">"off"</span><span class="hljs-punctuation">,</span> DeNovo <span class="hljs-operator">=</span> <span class="hljs-number">300</span><span class="hljs-punctuation">,</span> NMScut <span class="hljs-operator">=</span> <span class="hljs-string">"on"</span><span class="hljs-punctuation">,</span> SN <span class="hljs-operator">=</span> <span class="hljs-number">0.25</span><span class="hljs-operator">*</span>KMDN<span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+<p>A summary of the parameters used in the MFAssign function: </p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Mono2</code></td>
+<td>[input]</td>
+<td>Dataframe of monoisotopic masses (from <code>Recal</code> step)</td>
+</tr>
+<tr>
+<td><code>Iso2</code></td>
+<td>[input]</td>
+<td>Dataframe of isotopic masses (from <code>Recal</code> step)</td>
+</tr>
+<tr>
+<td><code>ionMode</code></td>
+<td><code>"pos"</code></td>
+<td>Specifies positive ionization mode</td>
+</tr>
+<tr>
+<td><code>lowMW</code></td>
+<td><code>50</code></td>
+<td>Lower limit of molecular mass to be assigned</td>
+</tr>
+<tr>
+<td><code>highMW</code></td>
+<td><code>1000</code></td>
+<td>Upper limit of molecular mass to be assigned</td>
+</tr>
+<tr>
+<td><code>POEx</code></td>
+<td><code>0</code></td>
+<td>Whether to allow odd-electron positive mode ions (0 = no)</td>
+</tr>
+<tr>
+<td><code>Zx</code></td>
+<td><code>1</code></td>
+<td>Charge state allowed in formula assignment</td>
+</tr>
+<tr>
+<td><code>Mx</code></td>
+<td><code>2</code></td>
+<td>Maximum number of sodium adducts (Na) allowed</td>
+</tr>
+<tr>
+<td><code>Ex</code></td>
+<td><code>0</code></td>
+<td>Amount of 13C isotopes allowed</td>
+</tr>
+<tr>
+<td><code>Nx</code></td>
+<td><code>3</code></td>
+<td>Maximum number of nitrogen atoms (14N) allowed</td>
+</tr>
+<tr>
+<td><code>Sx</code></td>
+<td><code>3</code></td>
+<td>Maximum number of sulfur atoms (32S) allowed</td>
+</tr>
+<tr>
+<td><code>ppm_err</code></td>
+<td><code>20</code></td>
+<td>Error tolerance for formula assignment in ppm</td>
+</tr>
+<tr>
+<td><code>H_Cmin</code></td>
+<td><code>0.3</code></td>
+<td>Minimum hydrogen-to-carbon (H/C) ratio</td>
+</tr>
+<tr>
+<td><code>HetCut</code></td>
+<td><code>"off"</code></td>
+<td>Disable high heteroatom QA filter</td>
+</tr>
+<tr>
+<td><code>DeNovo</code></td>
+<td><code>300</code></td>
+<td>Cutoff for de novo formula generation (masses above this value are not considered)</td>
+</tr>
+<tr>
+<td><code>NMScut</code></td>
+<td><code>"on"</code></td>
+<td>Enable nominal mass series QA check (Koch et al., 2007)</td>
+</tr>
+<tr>
+<td><code>SN</code></td>
+<td><code>0.25*KMDN</code></td>
+<td>Signal-to-noise threshold for formula assignment, scaled by KMD-based noise estimate</td>
+</tr>
+</tbody></table>
+<h2 id="9-Save-Final-Outputs"><a href="#9-Save-Final-Outputs" class="headerlink" title="9. Save Final Outputs"></a>9. Save Final Outputs</h2><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Unambig2 <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"Unambig"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Ambig2 <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"Ambig"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Unassigned2 <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"None"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">MSAssign <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"MSAssign"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">Error <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"Error"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">MSgroups <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"MSgroups"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br><span class="line">VK <span class="hljs-operator">&lt;-</span> Assign<span class="hljs-punctuation">[[</span><span class="hljs-string">"VK"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span></span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/Orbitrack_log/Fig.MFAssignR_VK_Diagram.png"></p>
+<figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input_name <span class="hljs-operator">=</span> <span class="hljs-string">'./output/ToF_peak_list/20250731_Punjab_Orbitrap+TOF_peak_list'</span></span><br><span class="line">write.csv<span class="hljs-punctuation">(</span>Unambig2<span class="hljs-punctuation">,</span> file <span class="hljs-operator">=</span> paste0<span class="hljs-punctuation">(</span>input_name<span class="hljs-punctuation">,</span> <span class="hljs-string">'-assigned_mz.csv'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span></span><br><span class="line">write.csv<span class="hljs-punctuation">(</span>Unassigned2<span class="hljs-punctuation">,</span>file <span class="hljs-operator">=</span> paste0<span class="hljs-punctuation">(</span>input_name<span class="hljs-punctuation">,</span> <span class="hljs-string">'-un-assigned_mz.csv'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span></span><br><span class="line">write.csv<span class="hljs-punctuation">(</span>Ambig2<span class="hljs-punctuation">,</span> file <span class="hljs-operator">=</span> paste0<span class="hljs-punctuation">(</span>input_name<span class="hljs-punctuation">,</span> <span class="hljs-string">'-ambiguous_ion.csv'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span></span><br><span class="line">write.csv<span class="hljs-punctuation">(</span>Iso2<span class="hljs-punctuation">,</span> file <span class="hljs-operator">=</span> paste0<span class="hljs-punctuation">(</span>input_name<span class="hljs-punctuation">,</span> <span class="hljs-string">'-isotope_mz.csv'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>The assigned formula will be shown as:</p>
+<p><img src="/images/Orbitrack_log/Fig.MFAssignR_assigned_formula_results.png"></p>
+<p><strong>Reference</strong></p>
+<ol>
+<li>Kind, T. &amp; Fiehn, O. (2007). Seven Golden Rules for heuristic filtering of molecular formulas obtained by accurate mass spectrometry. BMC Bioinformatics, 8, 105</li>
+<li>Schum, S.K., Brown, L.E., &amp; Mazzoleni, L.R. (2020). MFAssignR: Molecular formula assignment software for ultrahigh resolution mass spectrometry analysis of environmental complex mixtures. Environmental Research, <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.envres.2020.11011">https://doi.org/10.1016/j.envres.2020.11011</a></li>
+<li>MFAssignR github page, <a target="_blank" rel="noopener" href="https://github.com/skschum/MFAssignR">https://github.com/skschum/MFAssignR</a></li>
+</ol>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/R/">#R</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Mass-Spectrometry/">#Mass Spectrometry</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/">From Formula to Function: Inferring Compound Class from MS1 + MS2</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/10/24/35.%5BMS%5DOrbiTrack%20Dev%20Log%204_Enhancing_Peak_Coverage_via_TOF_Integration/">OrbiTrack Dev Log 4: TOF missing peaks adding</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2024/11/01/37.[MS]OrbiTrack_Dev_Log_5_Formula_Assignment/';
+        this.page.identifier = '2024/11/01/37.[MS]OrbiTrack_Dev_Log_5_Formula_Assignment/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

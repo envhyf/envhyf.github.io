@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>🍵非靶向质谱方法探索各类茶饮的分子组成 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助这次协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。 本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="🍵非靶向质谱方法探索各类茶饮的分子组成">
+<meta property="og:url" content="http://envhyf.github.io/2024/05/29/38.[MS]Untargeted_Analysis_on_Tea/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助这次协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。 本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-05-29T16:05:00.000Z">
+<meta property="article:modified_time" content="2025-08-02T13:02:37.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Orbitrap">
+<meta property="article:tag" content="Mass Spectrometry">
+<meta property="article:tag" content="Chemistry">
+<meta property="article:tag" content="Food">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            🍵非靶向质谱方法探索各类茶饮的分子组成
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-05-29T16:05:00.000Z" itemprop="datePublished">5月 29 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助这次协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。</p>
+<p>本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。</p>
+<span id="more"></span>
+
+<h1 id="1-实验设计"><a href="#1-实验设计" class="headerlink" title="1. 实验设计"></a>1. 实验设计</h1><p>我总共设计了两组测量任务：</p>
+<ul>
+<li><p><strong>任务 A：不同国家与产区的茶叶对比</strong><br>包括中国绿茶、日本绿茶、印度红茶、斯里兰卡红茶等，卢旺达红茶等，探究不同类型/产地茶叶能否通过质谱分析呈现差异。</p>
+</li>
+<li><p><strong>任务 B：西湖龙井的“档次分辨”挑战</strong><br>对比杭州核心产区与非核心产区龙井（价格不同）以及其他地区的”挂牌”龙井的分子组成差异。该部分实验已完成，尚未分析其数据，未来会专文介绍。</p>
+</li>
+</ul>
+<p>茶叶样品相比大气污染物自然采集更有意思。我个人从老家带来几种安徽产的绿茶，为了扩大样品量，向同事们借茶，并前往Lenzburg的茶叶商店<a target="_blank" rel="noopener" href="https://www.itsteatime.ch/de/Probierset_Schwarzer_Tee_Nature.a4163.5.html">It’s tea time</a>购买红茶。最终我收集到的茶叶样品包括：</p>
+<ul>
+<li>中国绿茶：安徽池州绿茶、四川雅安绿茶</li>
+<li>日本绿茶：两款产地不同的煎茶</li>
+<li>斯里兰卡绿茶<br>红茶系列：</li>
+<li>中国祁门红茶</li>
+<li>印度大吉岭红茶（Margaret’s Hope）</li>
+<li>越南红茶（Golden Tippy）</li>
+<li>斯里兰卡红茶（Nuwara Eliya）</li>
+<li>卢旺达红茶（Rukeri）</li>
+</ul>
+<p>在国内朋友的帮助下，我收到了多个价位（从 200 元至 1000 元不等）的西湖龙井样品，并由一位回国探亲的同事帮忙携带至瑞士，具见下图：</p>
+<p>通过预实验，尽可能模拟真实饮茶状态——即将茶叶浸泡于热水中提取成分，并直接进行质谱测量。</p>
+<h1 id="2-数据处理"><a href="#2-数据处理" class="headerlink" title="2. 数据处理"></a>2. 数据处理</h1><p>RDKit Python library can reproduce the structurs based on the smiles code.</p>
+<h1 id="3-结果分析"><a href="#3-结果分析" class="headerlink" title="3. 结果分析"></a>3. 结果分析</h1><table>
+<thead>
+<tr>
+<th>m/z</th>
+<th>Formula</th>
+<th>中文名称</th>
+<th>English Name</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>140.06853</td>
+<td>C5H11NO2-Na⁺</td>
+<td>缬氨酸</td>
+<td>Valine</td>
+<td>氨基酸</td>
+</tr>
+<tr>
+<td>158.08109</td>
+<td>C7H11NO3-H⁺</td>
+<td>甘氨酸</td>
+<td>Tiglylglycine</td>
+<td>氨基酸衍生物</td>
+</tr>
+<tr>
+<td>175.10800</td>
+<td>C7H14N2O3-H⁺</td>
+<td>茶氨酸</td>
+<td>Theanine</td>
+<td>茶叶中重要氨基酸成分之一</td>
+</tr>
+<tr>
+<td>197.09180</td>
+<td>C9H12N2O3-H⁺</td>
+<td>3-氨基-L-酪氨酸</td>
+<td>3-Amino-L-tyrosine</td>
+<td>酪氨酸衍生物</td>
+</tr>
+<tr>
+<td>215.05261</td>
+<td>C7H12O6-Na⁺</td>
+<td>奎宁酸</td>
+<td>Quinic acid</td>
+<td>植物代谢产物</td>
+</tr>
+<tr>
+<td>217.06955</td>
+<td>C8H10N4O2-Na⁺</td>
+<td>咖啡因</td>
+<td>Caffeine</td>
+<td>茶叶中的典型生物碱成分</td>
+</tr>
+<tr>
+<td>219.07156</td>
+<td>C7H13N2O3-Na⁺</td>
+<td>L-茶氨酸</td>
+<td>Theanine</td>
+<td>又称谷氨酰乙胺，是茶鲜味的主要来源，占游离氨基酸50%以上</td>
+</tr>
+<tr>
+<td>313.06851</td>
+<td>C15H14O6-Na⁺</td>
+<td>儿茶素</td>
+<td>Catechin</td>
+<td>多酚类抗氧化成分</td>
+</tr>
+<tr>
+<td>335.09497</td>
+<td>C11H20O10-Na⁺</td>
+<td>接骨木二糖</td>
+<td>Sambubiose</td>
+<td>多糖类</td>
+</tr>
+<tr>
+<td>365.10501</td>
+<td>C12H22O11-Na⁺</td>
+<td>蔗糖</td>
+<td>Sucrose</td>
+<td>常见双糖</td>
+</tr>
+<tr>
+<td>203.05258</td>
+<td>C6H12O6-Na⁺</td>
+<td>葡萄糖</td>
+<td>Glucose</td>
+<td>单糖</td>
+</tr>
+<tr>
+<td>329.09976</td>
+<td>C16H18O6-Na⁺</td>
+<td>升麻素</td>
+<td>Cimifugin</td>
+<td>中草药活性成分，具有抗炎活性</td>
+</tr>
+</tbody></table>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Mass-Spectrometry/">#Mass Spectrometry</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Chemistry/">#Chemistry</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Food/">#Food</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2024/05/29/40.%5BMS%5DVisualizing-Chemical-Structures/">Visualizing Chemical Structures 绘制化学物质的结构式</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/02/10/%5BCode-library%5DLinear_fitting_plotting_code_summary/">Linear Fitting with Matplotlib and Plotly</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2024/05/29/38.[MS]Untargeted_Analysis_on_Tea/';
+        this.page.identifier = '2024/05/29/38.[MS]Untargeted_Analysis_on_Tea/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

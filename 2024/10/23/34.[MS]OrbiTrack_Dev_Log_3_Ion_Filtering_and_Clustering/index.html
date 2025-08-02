@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>OrbiTrack Dev Log 3: Ion Filtering and Clustering - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="After m&#x2F;z calibration, the next step is to align ions detected across different retention times that likely originate from the same chemical species but appear at slightly shifted m&#x2F;z values. To ensur">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OrbiTrack Dev Log 3: Ion Filtering and Clustering">
+<meta property="og:url" content="http://envhyf.github.io/2024/10/23/34.[MS]OrbiTrack_Dev_Log_3_Ion_Filtering_and_Clustering/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="After m&#x2F;z calibration, the next step is to align ions detected across different retention times that likely originate from the same chemical species but appear at slightly shifted m&#x2F;z values. To ensur">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.KDE_algorithm_1.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.KDE_algorithm_2.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.DBSCAN_algorithm_results.png">
+<meta property="article:published_time" content="2024-10-23T16:45:00.000Z">
+<meta property="article:modified_time" content="2025-08-02T15:41:56.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Orbitrap">
+<meta property="article:tag" content="Mass Spectrometry">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.KDE_algorithm_1.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            OrbiTrack Dev Log 3: Ion Filtering and Clustering
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-10-23T16:45:00.000Z" itemprop="datePublished">10月 23 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>After m/z calibration, the next step is to align ions detected across different retention times that likely originate from the same chemical species but appear at slightly shifted m/z values. To ensure robust clustering, it’s important to first remove rare or noisy ions that could interfere with pattern recognition.</p>
+<span id="more"></span>
+
+<h2 id="Basic-principle"><a href="#Basic-principle" class="headerlink" title="Basic principle"></a>Basic principle</h2><p>We apply two types of filtering strategies onto Orbitrap MS1 data to isolate meaningful signals.    </p>
+<p><strong>Density-Based Filtering (KDE)</strong><br>Kernel Density Estimation (KDE) is used to evaluate the local density around each m/z value:</p>
+<ul>
+<li>Low-density points are likely to represent noise or isolated random signals and are filtered out using a user-defined percentile threshold (default: 5%).</li>
+<li>To balance accuracy and computational performance, the full m/z range is dynamically split into smaller chunks (e.g., 500 points), and KDE is applied to each chunk independently.<br>(Note: Since KDE has a time complexity of O(n²), chunking significantly reduces the computational burden. See slides below for more details.)</li>
+</ul>
+<p><img src="/images/Orbitrack_log/Fig.KDE_algorithm_1.png"></p>
+<p><img src="/images/Orbitrack_log/Fig.KDE_algorithm_2.png"></p>
+<p><strong>Ion Clustering (DBSCAN)</strong><br>The remaining m/z values after KDE filtering are grouped using the DBSCAN algorithm:</p>
+<ul>
+<li>DBSCAN identifies ion clusters based on spatial proximity, enabling detection of true ion peaks even with minor m/z drifts over time.</li>
+<li>After clustering, a frequency threshold (e.g., ≥2% of scans) is applied to exclude unstable or sporadic clusters.</li>
+</ul>
+<p>For example, if a stable calibrant ion appears consistently in 100 scans, meaningful signals are expected to recur in at least a small fraction (e.g., ≥2 scans). This step removes random spikes that lack temporal consistency.</p>
+<p>🟥 Note: The clustering_thre threshold is critical and should be carefully tuned based on the actual dataset and scanning strategy. It is highly recommended to validate the setting by checking the fitting quality in the post-analysis stage.</p>
+<p><img src="/images/Orbitrack_log/Fig.DBSCAN_algorithm_results.png"></p>
+<h2 id="Code-library"><a href="#Code-library" class="headerlink" title="Code library"></a>Code library</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">correct_mz_dynamically</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan</span>):</span><br><span class="line">    ...</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h2 id="Execution-and-Output-Parameters"><a href="#Execution-and-Output-Parameters" class="headerlink" title="Execution and Output Parameters"></a>Execution and Output Parameters</h2><p>Run the calibration and extract linear model parameters from each retention time segment.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">merged_spectrum_mzcal, model_params = correct_mz_dynamically(</span><br><span class="line">    merged_spectrum, </span><br><span class="line">    ideal_calibrants_mass,</span><br><span class="line">    calibration_tolerance_ppm, </span><br><span class="line">    overlapped_scan_option</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>We then inspect the variation in calibration parameters (slope and intercept) across segments.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">slope_ = []</span><br><span class="line">intercept_ = []</span><br><span class="line"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> model_params:</span><br><span class="line">    slope_.append(c[<span class="hljs-string">'slope'</span>])</span><br><span class="line">    intercept_.append(c[<span class="hljs-string">'intercept'</span>])</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">2</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(slope_)), y=slope_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Slope"</span>, col=<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(intercept_)), y=intercept_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">2</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Intercept"</span>, col=<span class="hljs-number">2</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="hljs-string">"Chunk"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>)</span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">900</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Dynamic Fitting Parameters Across Retention Time"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h2 id="Check-Calibration-Accuracy-on-Known-Ions"><a href="#Check-Calibration-Accuracy-on-Known-Ions" class="headerlink" title="Check Calibration Accuracy on Known Ions"></a>Check Calibration Accuracy on Known Ions</h2><p>We visualize the distribution of m/z values for five reference ions before and after correction. This comparison confirms the improvement in accuracy.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">subplot_titles = [<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>,<span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>]</span><br><span class="line">masses = [<span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>, <span class="hljs-number">108.9638</span>, <span class="hljs-number">166.9163</span>]</span><br><span class="line">colors = [<span class="hljs-string">'#447f44'</span>, <span class="hljs-string">'#cd4040'</span>, <span class="hljs-string">'#636efa'</span>, <span class="hljs-string">'#ddc927'</span>, <span class="hljs-string">'#9271dd'</span>]</span><br><span class="line"></span><br><span class="line">subplot_titles = []</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>]), masses[i])</span><br><span class="line">    mean_ppm = np.mean(ppm_differences)</span><br><span class="line">    subplot_titles.append(<span class="hljs-string">f"<span class="hljs-subst">{[<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>, <span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>][i]}</span>: <span class="hljs-subst">{mean_ppm:<span class="hljs-number">.2</span>f}</span> ppm"</span>)</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">5</span>, subplot_titles=subplot_titles)</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'blue'</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'red'</span>, opacity=<span class="hljs-number">0.75</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_vline(x=masses[i], line_width=<span class="hljs-number">2</span>, line_dash=<span class="hljs-string">"dash"</span>, line_color=<span class="hljs-string">"grey"</span>, row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>, <span class="hljs-built_in">range</span>=[masses[i]-<span class="hljs-number">0.0025</span>, masses[i]+<span class="hljs-number">0.0025</span>], col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_yaxes(title_text=<span class="hljs-string">"Count"</span>, col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">1500</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Calibrant Mass Distribution Before and After Calibration"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Mass-Spectrometry/">#Mass Spectrometry</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2024/10/24/35.%5BMS%5DOrbiTrack%20Dev%20Log%204_Enhancing_Peak_Coverage_via_TOF_Integration/">OrbiTrack Dev Log 4: TOF missing peaks adding</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/10/22/33.%5BMS%5DOrbiTrack_Dev_Log_2_MZ_calibration/">OrbiTrack Dev Log 2: Dynamic M/Z Calibration</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2024/10/23/34.[MS]OrbiTrack_Dev_Log_3_Ion_Filtering_and_Clustering/';
+        this.page.identifier = '2024/10/23/34.[MS]OrbiTrack_Dev_Log_3_Ion_Filtering_and_Clustering/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

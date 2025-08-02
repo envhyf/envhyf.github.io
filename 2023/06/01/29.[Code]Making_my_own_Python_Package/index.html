@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>Making Your Own Python Package Publicly Available - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="In this post, I document the full procedure for turning a personal Python project into a public package, available on both GitHub and the Python Package Index (PyPI). As a demonstration, I create a sm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Making Your Own Python Package Publicly Available">
+<meta property="og:url" content="http://envhyf.github.io/2023/06/01/29.[Code]Making_my_own_Python_Package/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="In this post, I document the full procedure for turning a personal Python project into a public package, available on both GitHub and the Python Package Index (PyPI). As a demonstration, I create a sm">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/color_palatte_generation/A%20Deer%20Of%20Nine%20Colors.png">
+<meta property="og:image" content="https://i.stack.imgur.com/QX0Yb.jpg">
+<meta property="og:image" content="https://i.stack.imgur.com/MdkQr.jpg">
+<meta property="og:image" content="https://i.stack.imgur.com/p8zpQ.jpg">
+<meta property="article:published_time" content="2023-06-01T20:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-02T11:38:58.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Visualization">
+<meta property="article:tag" content="Package">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/color_palatte_generation/A%20Deer%20Of%20Nine%20Colors.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            Making Your Own Python Package Publicly Available
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2023-06-01T20:00:00.000Z" itemprop="datePublished">6月 1 2023</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this post, I document the full procedure for turning a personal Python project into a public package, available on both <strong>GitHub</strong> and the <strong>Python Package Index (PyPI)</strong>.</p>
+<p>As a demonstration, I create a small package named <strong>PalAniSh</strong> (<em>Palette of Animation of Shanghai</em>), which extracts and displays color palettes from classical Chinese animations produced by the Shanghai Animation Film Studio.</p>
+<span id="more"></span>
+
+
+<h2 id="1-Color-Palette-generation"><a href="#1-Color-Palette-generation" class="headerlink" title="1. Color Palette generation"></a>1. Color Palette generation</h2><p>Herein, I will use some of the screenshots from the Chinese traditional animations, e.g., the 1956 animation _The Proud General (骄傲的将军). All raw images as source of color palette were derived from Bilibili. </p>
+<p>The extraction and combination of colors were similar to the web-based tool <a target="_blank" rel="noopener" href="https://color.adobe.com/create/image">Adobe color</a> or Colormind (<a target="_blank" rel="noopener" href="http://colormind.io/image">http://colormind.io/image</a>).</p>
+<p>Below is the core workflow:</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib <span class="hljs-keyword">as</span> mpl</span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib.offsetbox <span class="hljs-keyword">import</span> OffsetImage, AnnotationBbox</span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib.colors <span class="hljs-keyword">import</span> ListedColormap</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> cv2</span><br><span class="line"><span class="hljs-keyword">import</span> extcolors</span><br><span class="line"><span class="hljs-keyword">from</span> colormap <span class="hljs-keyword">import</span> rgb2hex,hex2rgb</span><br><span class="line"><span class="hljs-keyword">import</span> colorsys</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">get_hsv</span>(<span class="hljs-params">hexrgb</span>):</span><br><span class="line">    hexrgb = hexrgb.lstrip(<span class="hljs-string">"#"</span>)   <span class="hljs-comment"># in case you have Web color specs</span></span><br><span class="line">    r, g, b = (<span class="hljs-built_in">int</span>(hexrgb[i:i+<span class="hljs-number">2</span>], <span class="hljs-number">16</span>) / <span class="hljs-number">255.0</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> np.arange(<span class="hljs-number">0</span>,<span class="hljs-number">5</span>,<span class="hljs-number">2</span>))</span><br><span class="line">    <span class="hljs-keyword">return</span> colorsys.rgb_to_hsv(r, g, b)</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">get_hls</span>(<span class="hljs-params">hexrgb</span>):</span><br><span class="line">    hexrgb = hexrgb.lstrip(<span class="hljs-string">"#"</span>)   <span class="hljs-comment"># in case you have Web color specs</span></span><br><span class="line">    r, g, b = (<span class="hljs-built_in">int</span>(hexrgb[i:i+<span class="hljs-number">2</span>], <span class="hljs-number">16</span>) / <span class="hljs-number">255.0</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> np.arange(<span class="hljs-number">0</span>,<span class="hljs-number">5</span>,<span class="hljs-number">2</span>))</span><br><span class="line">    <span class="hljs-keyword">return</span> colorsys.rgb_to_hls(r, g, b)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">### HSV sorting </span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">get_sorted_df_color</span>(<span class="hljs-params">input_color,sort_type</span>):</span><br><span class="line">    input_  = input_color</span><br><span class="line">    colors_pre_list = <span class="hljs-built_in">str</span>(input_).replace(<span class="hljs-string">'([('</span>,<span class="hljs-string">''</span>).split(<span class="hljs-string">', ('</span>)[<span class="hljs-number">0</span>:-<span class="hljs-number">1</span>]</span><br><span class="line">    df_rgb = [i.split(<span class="hljs-string">'), '</span>)[<span class="hljs-number">0</span>] + <span class="hljs-string">')'</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> colors_pre_list]</span><br><span class="line"></span><br><span class="line">    df_percent = [i.split(<span class="hljs-string">'), '</span>)[<span class="hljs-number">1</span>].replace(<span class="hljs-string">')'</span>,<span class="hljs-string">''</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> colors_pre_list]  </span><br><span class="line">    df_color_up = [rgb2hex(<span class="hljs-built_in">int</span>(i.split(<span class="hljs-string">", "</span>)[<span class="hljs-number">0</span>].replace(<span class="hljs-string">"("</span>,<span class="hljs-string">""</span>)),</span><br><span class="line">                          <span class="hljs-built_in">int</span>(i.split(<span class="hljs-string">", "</span>)[<span class="hljs-number">1</span>]),</span><br><span class="line">                          <span class="hljs-built_in">int</span>(i.split(<span class="hljs-string">", "</span>)[<span class="hljs-number">2</span>].replace(<span class="hljs-string">")"</span>,<span class="hljs-string">""</span>))) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> df_rgb]</span><br><span class="line"></span><br><span class="line">    df_color_up_new =   df_color_up.copy()</span><br><span class="line">    <span class="hljs-keyword">if</span> sort_type == <span class="hljs-string">'hsv'</span>:</span><br><span class="line">        df_color_up_new.sort(key = get_hsv)</span><br><span class="line">    <span class="hljs-keyword">if</span> sort_type == <span class="hljs-string">'hls'</span>: </span><br><span class="line">        df_color_up_new.sort(key = get_hls)</span><br><span class="line">    df_color_up_new = df_color_up_new[::-<span class="hljs-number">1</span>]</span><br><span class="line">    <span class="hljs-keyword">if</span> <span class="hljs-string">"#FFFFFF"</span> <span class="hljs-keyword">in</span> df_color_up_new:</span><br><span class="line">        df_color_up_new.insert(<span class="hljs-number">0</span>, <span class="hljs-string">"#FFFFFF"</span>)</span><br><span class="line">        df_color_up_new = df_color_up_new[<span class="hljs-number">0</span>:-<span class="hljs-number">1</span>]</span><br><span class="line">    re_index        =   [df_color_up.index(c) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> df_color_up_new]</span><br><span class="line">    df_percent_new  =   [df_percent[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> re_index]</span><br><span class="line">    df = pd.DataFrame(<span class="hljs-built_in">zip</span>(df_color_up_new, df_percent_new), columns = [<span class="hljs-string">'hsv_code'</span>,<span class="hljs-string">'occurence'</span>])</span><br><span class="line">    <span class="hljs-keyword">if</span> sort_type == <span class="hljs-string">'none'</span>:</span><br><span class="line">        df = pd.DataFrame(<span class="hljs-built_in">zip</span>(df_color_up, df_percent), columns = [<span class="hljs-string">'hsv_code'</span>,<span class="hljs-string">'occurence'</span>])</span><br><span class="line">    df[<span class="hljs-string">'rgb_color'</span>] = [[hex2rgb(c)[<span class="hljs-number">0</span>]/<span class="hljs-number">255.0</span>,hex2rgb(c)[<span class="hljs-number">1</span>]/<span class="hljs-number">255.0</span>,hex2rgb(c)[<span class="hljs-number">2</span>]/<span class="hljs-number">255.0</span>,] <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> df[<span class="hljs-string">'hsv_code'</span>]]</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> df</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">get_color_x</span>(<span class="hljs-params">input_name,tol,num</span>):</span><br><span class="line">    output_width = <span class="hljs-number">200</span>                  <span class="hljs-comment">#set the output size</span></span><br><span class="line">    img = Image.<span class="hljs-built_in">open</span>(input_name)</span><br><span class="line">    wpercent = (output_width/<span class="hljs-built_in">float</span>(img.size[<span class="hljs-number">0</span>]))</span><br><span class="line">    hsize = <span class="hljs-built_in">int</span>((<span class="hljs-built_in">float</span>(img.size[<span class="hljs-number">1</span>])*<span class="hljs-built_in">float</span>(wpercent)))</span><br><span class="line">    img = img.resize((output_width,hsize), Image.ANTIALIAS)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># 1. Show the resized image</span></span><br><span class="line">    resize_name = <span class="hljs-string">'./resize_'</span> + <span class="hljs-string">'test_.png'</span><span class="hljs-comment">#the resized image name</span></span><br><span class="line">    img.save(resize_name)                </span><br><span class="line">    img_url = resize_name</span><br><span class="line">    colors_x = extcolors.extract_from_path(img_url, tolerance=tol, limit = num)</span><br><span class="line">    <span class="hljs-keyword">return</span> colors_x</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># plot the result color palatte</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">plot_image_with_color_palette</span>(<span class="hljs-params">df_color,input_name,palatee_name,axs</span>):</span><br><span class="line">    </span><br><span class="line">    img_url = input_name</span><br><span class="line">    img = plt.imread(img_url)</span><br><span class="line">    axs[<span class="hljs-number">0</span>].imshow(img)</span><br><span class="line">    axs[<span class="hljs-number">0</span>].axis(<span class="hljs-string">'off'</span>)</span><br><span class="line">    </span><br><span class="line">    name           = palatee_name</span><br><span class="line">    color_list     = df_color[<span class="hljs-string">'rgb_color'</span>].values</span><br><span class="line">    color_name = df_color[<span class="hljs-string">'hsv_code'</span>].values</span><br><span class="line">    cmap_diy = ListedColormap(color_list, name)</span><br><span class="line">    col_map = cmap_diy</span><br><span class="line">    new_val = []</span><br><span class="line">    ticks = np.linspace(<span class="hljs-number">0.0</span>,<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(color_list)+<span class="hljs-number">1</span>)</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(ticks)-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>):</span><br><span class="line">        new_val.append((ticks[i]+ticks[i+<span class="hljs-number">1</span>])/<span class="hljs-number">2.0</span>)</span><br><span class="line">    cbar  = mpl.colorbar.ColorbarBase(axs[<span class="hljs-number">1</span>], cmap=col_map, orientation = <span class="hljs-string">'horizontal'</span>, ticks =new_val, alpha = <span class="hljs-number">0.75</span>)</span><br><span class="line">    cbar.ax.set_xticklabels(color_name, fontsize =<span class="hljs-number">10</span>, rotation = <span class="hljs-number">30</span>) </span><br><span class="line"></span><br><span class="line">    ttl = plt.title(name,fontweight=<span class="hljs-string">"bold"</span>,fontsize =<span class="hljs-number">16</span>,)</span><br><span class="line">    ttl.set_position([<span class="hljs-number">.5</span>, <span class="hljs-number">1.15</span>])</span><br></pre></td></tr></tbody></table></figure>
+<p>Example output </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">input_name = <span class="hljs-string">'./SA_palette/九色鹿/九色鹿9.jpg'</span></span><br><span class="line">colors_x   = get_color_x(input_name,<span class="hljs-number">10</span>,<span class="hljs-number">10</span>)</span><br><span class="line">df_color_jsl   = get_sorted_df_color(colors_x,<span class="hljs-string">'hsl'</span>)</span><br><span class="line">fig, axs = plt.subplots(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,figsize=(<span class="hljs-number">6</span>,<span class="hljs-number">5</span>), gridspec_kw={<span class="hljs-string">'height_ratios'</span>: [<span class="hljs-number">5</span>, <span class="hljs-number">1</span>]})</span><br><span class="line">plot_image_with_color_palette(df_color_jsl,input_name,<span class="hljs-string">'A Deer of Nine Colors'</span>, axs)</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/./../images/color_palatte_generation/A%20Deer%20Of%20Nine%20Colors.png" alt="alt text"></p>
+<p>Other examples are shown as follows</p>
+<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/QX0Yb.jpg"><img src="https://i.stack.imgur.com/QX0Yb.jpg" alt="enter image description here"></a></p>
+<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/MdkQr.jpg"><img src="https://i.stack.imgur.com/MdkQr.jpg" alt="enter image description here"></a></p>
+<p><a target="_blank" rel="noopener" href="https://i.stack.imgur.com/p8zpQ.jpg"><img src="https://i.stack.imgur.com/p8zpQ.jpg" alt="enter image description here"></a></p>
+<h2 id="2-Packaging-the-Code-and-Uploading-to-GitHub"><a href="#2-Packaging-the-Code-and-Uploading-to-GitHub" class="headerlink" title="2. Packaging the Code and Uploading to GitHub"></a>2. Packaging the Code and Uploading to GitHub</h2><p>Usually, a package will have such structure:</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">palanish/</span><br><span class="line">├── palanish/                  <span class="hljs-comment"># main folder</span></span><br><span class="line">│   ├── __init__.py            <span class="hljs-comment"># essential even it is empty. With this file included, Python treats the folder as a package.</span></span><br><span class="line">│   └── color_extractor.py     <span class="hljs-comment"># main functions</span></span><br><span class="line">├── tests/                     <span class="hljs-comment"># optional</span></span><br><span class="line">│   └── test_basic.py</span><br><span class="line">├── README.md</span><br><span class="line">├── LICENSE</span><br><span class="line">├── setup.py</span><br><span class="line">└── requirements.txt</span><br></pre></td></tr></tbody></table></figure>
+<p>First step, add the folder of <code>palanish</code> as previous listed and add the main function into the <code>color_extractor.py</code>.</p>
+<p>Later, within the <code>__init__.py</code>, add following line:    </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> .color_extractor <span class="hljs-keyword">import</span> get_color_palette, hex_sort</span><br></pre></td></tr></tbody></table></figure>
+<p>Then, write the script of the <code>setup.py</code> as follows:</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    name=<span class="hljs-string">'palanish'</span>,</span><br><span class="line">    version=<span class="hljs-string">'0.1.0'</span>,</span><br><span class="line">    description=<span class="hljs-string">'Palette extraction from Shanghai Animation images'</span>,</span><br><span class="line">    author=<span class="hljs-string">'Yufang Hao'</span>,</span><br><span class="line">    author_email=<span class="hljs-string">'your_email@example.com'</span>,</span><br><span class="line">    url=<span class="hljs-string">'https://github.com/envhyf/palanish'</span>,</span><br><span class="line">    packages=find_packages(),</span><br><span class="line">    install_requires=[</span><br><span class="line">        <span class="hljs-string">'pillow'</span>,</span><br><span class="line">        <span class="hljs-string">'extcolors'</span>,</span><br><span class="line">        <span class="hljs-string">'matplotlib'</span>,</span><br><span class="line">        <span class="hljs-string">'colormap'</span>,</span><br><span class="line">        <span class="hljs-string">'pandas'</span></span><br><span class="line">    ],</span><br><span class="line">    classifiers=[</span><br><span class="line">        <span class="hljs-string">'Programming Language :: Python :: 3'</span>,</span><br><span class="line">        <span class="hljs-string">'License :: OSI Approved :: MIT License'</span>,</span><br><span class="line">    ],</span><br><span class="line">    python_requires=<span class="hljs-string">'&gt;=3.6'</span>,</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+<p>As well as writing a small README.md,</p>
+<figure class="highlight markdown hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-section"># PalAniSh</span></span><br><span class="line">Extract and visualize color palettes from classic Shanghai animations or any screenshots.</span><br><span class="line"></span><br><span class="line"><span class="hljs-section">## Installation</span></span><br><span class="line">pip install git+https://github.com/envhyf/palanish.git</span><br><span class="line"></span><br><span class="line"><span class="hljs-section">## Usage</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-code">```python</span></span><br><span class="line"><span class="hljs-code">from palanish import get_color_palette</span></span><br><span class="line"><span class="hljs-code">colors = get_color_palette("screenshot.jpg")</span></span><br><span class="line"><span class="hljs-code"></span></span><br><span class="line"><span class="hljs-code">### 🔑 4. `LICENSE`</span></span><br><span class="line"><span class="hljs-code"></span></span><br><span class="line"><span class="hljs-code">You can use [MIT License](https://choosealicense.com/licenses/mit/) for open source:</span></span><br><span class="line"><span class="hljs-code"></span></span><br><span class="line"><span class="hljs-code">```</span>txt</span><br><span class="line">MIT License</span><br><span class="line"></span><br><span class="line">Copyright (c) 2024 Yufang Hao</span><br><span class="line">Permission is hereby granted, free of charge, ...</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>The final step is uploading to Github</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">cd</span> palanish</span><br><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="hljs-string">"Initial commit"</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin git@github.com:envhyf/palanish.git</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></tbody></table></figure>
+
+<p>After all steps done, anyone can install via:</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install git+https://github.com/envhyf/palanish.git</span><br></pre></td></tr></tbody></table></figure>
+
+
+<h2 id="3-Web-app"><a href="#3-Web-app" class="headerlink" title="3. Web app"></a>3. Web app</h2><p>With</p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Package/">#Package</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2023/08/09/29.%5BCode%5DWeb_App_Development_Interactive_Data_Panel/">Create your first web app: Interactive data panel for visualizatoin correlations</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2023/02/23/28.%5BCode%5DFrom-Shapefile-to-Geojson/">The work transformed from shapefile to geojson file</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2023/06/01/29.[Code]Making_my_own_Python_Package/';
+        this.page.identifier = '2023/06/01/29.[Code]Making_my_own_Python_Package/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

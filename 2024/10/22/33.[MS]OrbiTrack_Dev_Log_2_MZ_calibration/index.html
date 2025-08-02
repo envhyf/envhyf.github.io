@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>OrbiTrack Dev Log 2: Dynamic M/Z Calibration - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="After reading m&#x2F;z data from Orbitrap raw files, it is essential to perform m&#x2F;z calibration based on known reference masses of internal calibrants. For long-term measurements, especially those spanning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OrbiTrack Dev Log 2: Dynamic M&#x2F;Z Calibration">
+<meta property="og:url" content="http://envhyf.github.io/2024/10/22/33.[MS]OrbiTrack_Dev_Log_2_MZ_calibration/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="After reading m&#x2F;z data from Orbitrap raw files, it is essential to perform m&#x2F;z calibration based on known reference masses of internal calibrants. For long-term measurements, especially those spanning">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.Calibration_interecept_slope_variations.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.After_calibration_mz_postion_calibrants&amp;important_ions.png">
+<meta property="article:published_time" content="2024-10-22T16:45:00.000Z">
+<meta property="article:modified_time" content="2025-08-02T19:25:43.392Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Orbitrap">
+<meta property="article:tag" content="Mass Spectrometry">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.Calibration_interecept_slope_variations.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            OrbiTrack Dev Log 2: Dynamic M/Z Calibration
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-10-22T16:45:00.000Z" itemprop="datePublished">10月 22 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>After reading m/z data from Orbitrap raw files, it is essential to perform m/z calibration based on known reference masses of internal calibrants.</p>
+<p>For long-term measurements, especially those spanning days or weeks, dynamic calibration is critical—m/z drift can occur over time, and calibration parameters from Day 1 may not hold by Day 5. The function below allows automated chunk-wise recalibration across retention time.</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="Dynamic-M-Z-Calibration-Function"><a href="#Dynamic-M-Z-Calibration-Function" class="headerlink" title="Dynamic M/Z Calibration Function"></a>Dynamic M/Z Calibration Function</h2><p>The function below performs dynamic m/z calibration using known calibrant ions. It splits the full dataset by identifying where the calibrant signals are strongest (typically their peak retention times), and fits a linear correction model within each chunk.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## Module 2 MS calibration</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calculate_ppm</span>(<span class="hljs-params">observed_mass, ideal_mass</span>):</span><br><span class="line">    ppm = ((observed_mass - ideal_mass) / ideal_mass) * <span class="hljs-number">1e6</span></span><br><span class="line">    <span class="hljs-keyword">return</span> ppm</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_peak_near_mass_after_mzcal</span>(<span class="hljs-params">merged_spectrum, target_mass, tolerance_ppm</span>):</span><br><span class="line">    <span class="hljs-comment"># Calculate the tolerance in m/z</span></span><br><span class="line">    tolerance = target_mass * tolerance_ppm / <span class="hljs-number">1e6</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># Find peaks within the tolerance range</span></span><br><span class="line">    peaks_within_tolerance = merged_spectrum[</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'corrected_m/z'</span>] &gt;= target_mass - tolerance) &amp;</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'corrected_m/z'</span>] &lt;= target_mass + tolerance)</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> peaks_within_tolerance</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_peak_near_mass</span>(<span class="hljs-params">merged_spectrum, target_mass, tolerance_ppm</span>):</span><br><span class="line">    <span class="hljs-comment"># Calculate the tolerance in m/z</span></span><br><span class="line">    tolerance = target_mass * tolerance_ppm / <span class="hljs-number">1e6</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># Find peaks within the tolerance range</span></span><br><span class="line">    peaks_within_tolerance = merged_spectrum[</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'m/z'</span>] &gt;= target_mass - tolerance) &amp;</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'m/z'</span>] &lt;= target_mass + tolerance)</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> peaks_within_tolerance</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_calibrant_matches</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm</span>):</span><br><span class="line">    calibrant_matches = []</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> ideal_mass <span class="hljs-keyword">in</span> ideal_calibrants_mass:</span><br><span class="line">        tolerance = ideal_mass * tolerance_ppm / <span class="hljs-number">1e6</span>  <span class="hljs-comment"># Tolerance based on ppm</span></span><br><span class="line">        peaks_within_tolerance = merged_spectrum[</span><br><span class="line">            (merged_spectrum[<span class="hljs-string">'m/z'</span>] &gt;= ideal_mass - tolerance) &amp;</span><br><span class="line">            (merged_spectrum[<span class="hljs-string">'m/z'</span>] &lt;= ideal_mass + tolerance)</span><br><span class="line">        ]</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> peaks_within_tolerance.empty:</span><br><span class="line">            <span class="hljs-comment"># Store the actual masses and their RTs</span></span><br><span class="line">            <span class="hljs-keyword">for</span> _, peak <span class="hljs-keyword">in</span> peaks_within_tolerance.iterrows():</span><br><span class="line">                calibrant_matches.append((ideal_mass, peak[<span class="hljs-string">'m/z'</span>], peak[<span class="hljs-string">'rt'</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> calibrant_matches</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_rt_for_maximum_mz</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm,overlapped_scan</span>):</span><br><span class="line">    </span><br><span class="line">    calibrant_matches = find_calibrant_matches(merged_spectrum, ideal_calibrants_mass, tolerance_ppm)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> calibrant_matches:</span><br><span class="line">        <span class="hljs-built_in">print</span>(<span class="hljs-string">'No calibrants found in the spectrum.'</span>)</span><br><span class="line">        <span class="hljs-keyword">return</span> []</span><br><span class="line">    </span><br><span class="line">    max_ideal_mass = <span class="hljs-built_in">max</span>(ideal_calibrants_mass)</span><br><span class="line">    max_calibrant_matches = [(ideal_mass, actual_mass, rt) <span class="hljs-keyword">for</span> ideal_mass, actual_mass, rt <span class="hljs-keyword">in</span> calibrant_matches <span class="hljs-keyword">if</span> ideal_mass == max_ideal_mass]    </span><br><span class="line">    max_calibrant_rts = <span class="hljs-built_in">sorted</span>([<span class="hljs-keyword">match</span>[<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> <span class="hljs-keyword">match</span> <span class="hljs-keyword">in</span> max_calibrant_matches]) </span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># For overlapped mz scan, choose the second scan's rts (be careful!)</span></span><br><span class="line">    <span class="hljs-keyword">if</span> overlapped_scan == <span class="hljs-number">1</span>:</span><br><span class="line">        max_calibrant_rts = max_calibrant_rts[<span class="hljs-number">1</span>::<span class="hljs-number">2</span>]</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sorted</span>(max_calibrant_rts)  <span class="hljs-comment"># Sort the RTs</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">correct_mz_dynamically</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan</span>):</span><br><span class="line">    merged_spectrum   = merged_spectrum.reset_index(drop = <span class="hljs-literal">True</span>)</span><br><span class="line">    max_calibrant_rts = find_rt_for_maximum_mz(merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan)</span><br><span class="line">    chunk_boundaries = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">sorted</span>(([merged_spectrum[<span class="hljs-string">'rt'</span>].<span class="hljs-built_in">min</span>()] + max_calibrant_rts + [merged_spectrum[<span class="hljs-string">'rt'</span>].<span class="hljs-built_in">max</span>()])))</span><br><span class="line">    model_params = []</span><br><span class="line">    <span class="hljs-comment"># processing for each chunk split by the rts of the maximum m/z</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(chunk_boundaries) - <span class="hljs-number">1</span>):</span><br><span class="line">        rt_start = chunk_boundaries[i]</span><br><span class="line">        rt_end = chunk_boundaries[i + <span class="hljs-number">1</span>]</span><br><span class="line">        chunk = merged_spectrum[(merged_spectrum[<span class="hljs-string">'rt'</span>] &gt;= rt_start) &amp; (merged_spectrum[<span class="hljs-string">'rt'</span>] &lt; rt_end)]</span><br><span class="line"></span><br><span class="line">        actual_masses = {}</span><br><span class="line">        <span class="hljs-keyword">for</span> ideal_mass <span class="hljs-keyword">in</span> ideal_calibrants_mass:</span><br><span class="line">            tolerance = ideal_mass * tolerance_ppm / <span class="hljs-number">1e6</span></span><br><span class="line">            peaks_within_chunk = chunk[</span><br><span class="line">                (chunk[<span class="hljs-string">'m/z'</span>] &gt;= ideal_mass - tolerance) &amp;</span><br><span class="line">                (chunk[<span class="hljs-string">'m/z'</span>] &lt;= ideal_mass + tolerance)</span><br><span class="line">            ]</span><br><span class="line">            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> peaks_within_chunk.empty:</span><br><span class="line">                actual_masses[ideal_mass] = np.mean(peaks_within_chunk[<span class="hljs-string">'m/z'</span>])</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment"># Step 5: Apply calibration if at least one calibrant is found</span></span><br><span class="line">        <span class="hljs-keyword">if</span> actual_masses:</span><br><span class="line">            ideal_actual_pairs = np.array([(actual_masses[m], m) <span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> actual_masses])</span><br><span class="line">            </span><br><span class="line">            weights = np.<span class="hljs-built_in">abs</span>(<span class="hljs-number">1</span> - (ideal_actual_pairs[:, <span class="hljs-number">0</span>] / ideal_actual_pairs[:, <span class="hljs-number">1</span>]))  <span class="hljs-comment"># Weight by proximity to ideal mass</span></span><br><span class="line">            model = LinearRegression()</span><br><span class="line">            model.fit(ideal_actual_pairs[:, <span class="hljs-number">0</span>].reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>), ideal_actual_pairs[:, <span class="hljs-number">1</span>], sample_weight=weights)</span><br><span class="line"></span><br><span class="line">            <span class="hljs-comment"># Apply the calibration to the current chunk</span></span><br><span class="line">            chunk_rows = (merged_spectrum[<span class="hljs-string">'rt'</span>] &gt;= rt_start) &amp; (merged_spectrum[<span class="hljs-string">'rt'</span>] &lt; rt_end)</span><br><span class="line">            merged_spectrum.loc[chunk_rows, <span class="hljs-string">'corrected_m/z'</span>] = model.predict(merged_spectrum.loc[chunk_rows, <span class="hljs-string">'m/z'</span>].values.reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))</span><br><span class="line">            </span><br><span class="line">            slope = model.coef_[<span class="hljs-number">0</span>]</span><br><span class="line">            intercept = model.intercept_</span><br><span class="line">            model_params.append({<span class="hljs-string">'rt_start'</span>: rt_start, <span class="hljs-string">'rt_end'</span>: rt_end, <span class="hljs-string">'slope'</span>: slope, <span class="hljs-string">'intercept'</span>: intercept})</span><br><span class="line">    <span class="hljs-keyword">return</span> merged_spectrum, model_params</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Execution-and-Output-Parameters"><a href="#Execution-and-Output-Parameters" class="headerlink" title="Execution and Output Parameters"></a>Execution and Output Parameters</h2><p>To address potential m/z drift over long measurement periods, I developed a dynamic calibration procedure that allows for chunk-wise m/z correction using varying fitting parameters. This approach avoids the limitations of applying a single static equation to the entire dataset and ensures more accurate mass alignment throughout the run.</p>
+<p><em>A. Chunking by Retention Time of Maximum Calibrant</em>    </p>
+<p>The full time series is segmented into chunks based on the retention time (RT) of the maximum calibrant ion.<br>Each chunk corresponds to a distinct time window, accounting for potential overlap to preserve peak continuity.<br>Note: In our untargeted direct infusion study, the retention time refers to the time stamp of each specific MS1 scan.</p>
+<p><em>B. Calibrant-Based Correction Per Chunk</em>    </p>
+<p>For each time chunk:</p>
+<ul>
+<li>The actual m/z values of selected calibrant ions are extracted.</li>
+<li>A linear regression is performed between the measured m/z values and their corresponding ideal masses.</li>
+</ul>
+<p>This model is then used to recalibrate all ions in that chunk, shifting their m/z values to more accurate positions. Before the calibration </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">merged_spectrum_mzcal, model_params = correct_mz_dynamically(</span><br><span class="line">    merged_spectrum, </span><br><span class="line">    ideal_calibrants_mass,</span><br><span class="line">    calibration_tolerance_ppm,  <span class="hljs-comment"># Predefined tolerance based on the typical mass error between actual and ideal calibrant values, I typically set to 20 ppm</span></span><br><span class="line">    overlapped_scan_option</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>We then inspect the variation in calibration parameters (slope and intercept) across segments.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">slope_ = []</span><br><span class="line">intercept_ = []</span><br><span class="line"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> model_params:</span><br><span class="line">    slope_.append(c[<span class="hljs-string">'slope'</span>])</span><br><span class="line">    intercept_.append(c[<span class="hljs-string">'intercept'</span>])</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">2</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(slope_)), y=slope_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Slope"</span>, col=<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(intercept_)), y=intercept_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">2</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Intercept"</span>, col=<span class="hljs-number">2</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="hljs-string">"Chunk"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>)</span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">900</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Dynamic Fitting Parameters Across Retention Time"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/Orbitrack_log/Fig.Calibration_interecept_slope_variations.png"></p>
+<h2 id="Check-Calibration-Accuracy-on-Known-Ions"><a href="#Check-Calibration-Accuracy-on-Known-Ions" class="headerlink" title="Check Calibration Accuracy on Known Ions"></a>Check Calibration Accuracy on Known Ions</h2><p>We visualize the distribution of m/z values for five reference ions before and after correction. This comparison confirms the improvement in accuracy.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">subplot_titles = [<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>,<span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>]</span><br><span class="line">masses = [<span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>, <span class="hljs-number">108.9638</span>, <span class="hljs-number">166.9163</span>]</span><br><span class="line">colors = [<span class="hljs-string">'#447f44'</span>, <span class="hljs-string">'#cd4040'</span>, <span class="hljs-string">'#636efa'</span>, <span class="hljs-string">'#ddc927'</span>, <span class="hljs-string">'#9271dd'</span>]</span><br><span class="line"></span><br><span class="line">subplot_titles = []</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>]), masses[i])</span><br><span class="line">    mean_ppm = np.mean(ppm_differences)</span><br><span class="line">    subplot_titles.append(<span class="hljs-string">f"<span class="hljs-subst">{[<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>, <span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>][i]}</span>: <span class="hljs-subst">{mean_ppm:<span class="hljs-number">.2</span>f}</span> ppm"</span>)</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">5</span>, subplot_titles=subplot_titles)</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'blue'</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'red'</span>, opacity=<span class="hljs-number">0.75</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_vline(x=masses[i], line_width=<span class="hljs-number">2</span>, line_dash=<span class="hljs-string">"dash"</span>, line_color=<span class="hljs-string">"grey"</span>, row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>, <span class="hljs-built_in">range</span>=[masses[i]-<span class="hljs-number">0.0025</span>, masses[i]+<span class="hljs-number">0.0025</span>], col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_yaxes(title_text=<span class="hljs-string">"Count"</span>, col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">1500</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Calibrant Mass Distribution Before and After Calibration"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Here is an example of the post-check on those calibrants as well as those important ions (analytes).<br><img src="/images/Orbitrack_log/Fig.After_calibration_mz_postion_calibrants&amp;important_ions.png"></p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Mass-Spectrometry/">#Mass Spectrometry</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2024/10/23/34.%5BMS%5DOrbiTrack_Dev_Log_3_Ion_Filtering_and_Clustering/">OrbiTrack Dev Log 3: Ion Filtering and Clustering</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/">OrbiTrack Dev Log 1: Parsing Orbitrap MS1 Data</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2024/10/22/33.[MS]OrbiTrack_Dev_Log_2_MZ_calibration/';
+        this.page.identifier = '2024/10/22/33.[MS]OrbiTrack_Dev_Log_2_MZ_calibration/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>利用Python获取地理信息并可视化 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="网络中有丰富的地理信息数据资源，此处介绍我采用Python工具实现地形地貌、行政区划、城市交通路网等数据获取及可视化的部分实例，供大家参考学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Python获取地理信息并可视化">
+<meta property="og:url" content="http://envhyf.github.io/2017/11/06/7.[Code]%E5%9C%B0%E7%90%86%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="网络中有丰富的地理信息数据资源，此处介绍我采用Python工具实现地形地貌、行政区划、城市交通路网等数据获取及可视化的部分实例，供大家参考学习。">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/7.Python_map/Fig.1.png">
+<meta property="og:image" content="http://envhyf.github.io/images/7.Python_map/Fig.2.png">
+<meta property="og:image" content="http://envhyf.github.io/images/7.Python_map/Fig.3.png">
+<meta property="og:image" content="http://envhyf.github.io/images/7.Python_map/Fig.4.png">
+<meta property="og:image" content="http://envhyf.github.io/images/7.Python_map/Fig.5.png">
+<meta property="article:published_time" content="2017-11-06T15:26:26.000Z">
+<meta property="article:modified_time" content="2025-07-23T21:58:26.696Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/7.Python_map/Fig.1.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            利用Python获取地理信息并可视化
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2017-11-06T15:26:26.000Z" itemprop="datePublished">11月 6 2017</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>  网络中有丰富的地理信息数据资源，此处介绍我采用Python工具实现地形地貌、行政区划、城市交通路网等数据获取及可视化的部分实例，供大家参考学习。</p>
+<span id="more"></span>
+
+<h2 id="1-简易地形底图绘制"><a href="#1-简易地形底图绘制" class="headerlink" title=" 1. 简易地形底图绘制"></a><font color="blue"> 1. 简易地形底图绘制</font></h2><h3 id="1-1-WMS数据库"><a href="#1-1-WMS数据库" class="headerlink" title=" 1.1 WMS数据库"></a><font color="blue"> 1.1 WMS数据库</font></h3><p>针对较大范围的研究区域，我采用WMS数据库的地形底图，依四角坐标下载特定尺寸的图片，并展示。此处以东亚地区为例，逐步展示。</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 1. Set the left, bottom, right, top locations</span></span><br><span class="line">llx,lly, urx,ury = [<span class="hljs-number">104.211</span>,<span class="hljs-number">29.150</span>,<span class="hljs-number">105.523</span>,<span class="hljs-number">30.150</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 2. Download the original file</span></span><br><span class="line">target = <span class="hljs-string">'http://www2.demis.nl/wms/wms.asp?Service=WMS&amp;WMS=worldmap&amp;Version=1.1.0&amp;Request=GetMap&amp;BBox=%s,%s,%s,%s'</span>%(llx,lly, urx,ury) +\</span><br><span class="line">         <span class="hljs-string">'&amp;SRS=EPSG:4326&amp;Width=800&amp;Height=600&amp;Layers=Bathymetry,Countries,Topography,Ocean%20features,Hillshading,Borders,Waterbodies,Coastlines&amp;Format=image/gif'</span></span><br><span class="line">path_name = <span class="hljs-string">'./Terrain.gif'</span></span><br><span class="line">urllib.urlretrieve(target, path_name) </span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment"># 3. Plot the terrain map of East Asia</span></span><br><span class="line"><span class="hljs-keyword">from</span> scipy.misc <span class="hljs-keyword">import</span> imread</span><br><span class="line">fig = plt.figure(figsize = (<span class="hljs-number">8</span>,<span class="hljs-number">6</span>))</span><br><span class="line">ax = plt.subplot()</span><br><span class="line">m = Basemap(projection=<span class="hljs-string">'cyl'</span>, resolution=<span class="hljs-string">'l'</span>,llcrnrlon = llx,llcrnrlat=lly,urcrnrlon = urx,urcrnrlat=ury)</span><br><span class="line">img = imread(path_name)</span><br><span class="line">plt.imshow(img, zorder=<span class="hljs-number">1</span>,extent=[llx,urx,lly,ury ] )</span><br><span class="line">m.drawparallels(np.arange(-<span class="hljs-number">90.</span>, <span class="hljs-number">120.</span>, <span class="hljs-number">10.</span>), labels=[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>],fontsize =<span class="hljs-number">18</span>,linewidth= <span class="hljs-number">0.02</span>)</span><br><span class="line">m.drawmeridians(np.arange(<span class="hljs-number">45</span>,<span class="hljs-number">180</span>,<span class="hljs-number">10</span>), labels=[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>],fontsize = <span class="hljs-number">18</span>,linewidth= <span class="hljs-number">0.02</span>)</span><br><span class="line">plt.subplots_adjust(left=<span class="hljs-number">0.015</span>, bottom  = <span class="hljs-number">0.05</span>, top = <span class="hljs-number">0.99</span>,right=<span class="hljs-number">0.99</span>, wspace = <span class="hljs-number">0.1</span>,hspace=<span class="hljs-literal">None</span>)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>出图的样例，如下所示。</p>
+<p><img src="/images/7.Python_map/Fig.1.png">      </p>
+<h3 id="1-2-SRTM-geotiff数据"><a href="#1-2-SRTM-geotiff数据" class="headerlink" title=" 1.2 SRTM geotiff数据"></a><font color="blue"> 1.2 SRTM geotiff数据</font></h3><p>对于较小的地理环境，直接采用WMS格式图片清晰度不够。此处介绍下载并绘制原始DEM地形文件的方法。<br>通过<a target="_blank" rel="noopener" href="https://pypi.python.org/pypi/elevation">elevation package</a>进行tif格式地形文件的下载</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 以四川某市及周边地区为例</span></span><br><span class="line"><span class="hljs-comment">## 1. Download the geotiff file</span></span><br><span class="line">!pip install elevation  </span><br><span class="line">!eio --product SRTM3 clip -o DEM.tif --bounds <span class="hljs-number">104.211</span> <span class="hljs-number">29.150</span> <span class="hljs-number">105.523</span> <span class="hljs-number">30.150</span>  <span class="hljs-comment"># left bottom right top locations</span></span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment">## 2. Read the tif file as 2-d array</span></span><br><span class="line">pathToRaster = <span class="hljs-string">r'./DEM.tif'</span></span><br><span class="line">raster = gdal.Open(pathToRaster,  gdal.GA_ReadOnly)</span><br><span class="line">dem = raster.GetRasterBand(<span class="hljs-number">1</span>).ReadAsArray()</span><br><span class="line">dem = dem[::-<span class="hljs-number">1</span>]</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment">## 3. Generate a terrain coloarmap </span></span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.colors <span class="hljs-keyword">as</span> colors</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">truncate_colormap</span>(<span class="hljs-params">cmap, minval=<span class="hljs-number">0.0</span>, maxval=<span class="hljs-number">1.0</span>, n=<span class="hljs-number">100</span></span>):</span><br><span class="line">	new_cmap = colors.LinearSegmentedColormap.from_list(</span><br><span class="line">       <span class="hljs-string">'trunc({n},{a:.2f},{b:.2f})'</span>.<span class="hljs-built_in">format</span>(n=cmap.name, a=minval, b=maxval),</span><br><span class="line">		cmap(np.linspace(minval, maxval, n)))</span><br><span class="line">	<span class="hljs-keyword">return</span> new_cmap</span><br><span class="line">cmap = plt.get_cmap(<span class="hljs-string">'terrain'</span>)</span><br><span class="line">terrain_cmap = truncate_colormap(cmap, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.7</span>)</span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment">## 4. Plot it!</span></span><br><span class="line">llx,lly, urx,ury = [<span class="hljs-number">104.211</span>,<span class="hljs-number">29.150</span>,<span class="hljs-number">105.523</span>,<span class="hljs-number">30.150</span>]</span><br><span class="line">fig = plt.figure(figsize = (<span class="hljs-number">8</span>,<span class="hljs-number">5</span>))</span><br><span class="line">ax = plt.subplot()</span><br><span class="line">m = Basemap(projection=<span class="hljs-string">'cyl'</span>, 	resolution=<span class="hljs-string">'l'</span>,llcrnrlon = llx,llcrnrlat=lly,urcrnrlon = urx,urcrnrlat=ury)</span><br><span class="line">	dem_plot = <span class="hljs-built_in">map</span>.imshow(dem, extent=[llx,urx,lly,ury ], cmap =plt.get_cmap(<span class="hljs-string">'terrain'</span>),vmin = <span class="hljs-number">0</span> ,vmax = <span class="hljs-number">900</span>)<span class="hljs-comment"># terrain_cmap</span></span><br><span class="line"><span class="hljs-built_in">map</span>.drawparallels(np.arange(-<span class="hljs-number">90.0</span>, <span class="hljs-number">120.</span>, <span class="hljs-number">0.5</span>), labels=[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>],fontsize = <span class="hljs-number">12</span>,linewidth = <span class="hljs-number">0.1</span>,color = <span class="hljs-string">'#FFFFFF'</span>, zorder = <span class="hljs-number">10</span>)</span><br><span class="line"><span class="hljs-built_in">map</span>.drawmeridians(np.arange(-<span class="hljs-number">180.0</span>, <span class="hljs-number">180.</span>, <span class="hljs-number">0.5</span>), labels=[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>],fontsize = <span class="hljs-number">12</span>,linewidth = <span class="hljs-number">0.1</span>,color = <span class="hljs-string">'#FFFFFF'</span>,zorder=<span class="hljs-number">10</span>)		</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>结果如下图所示：<br><img src="/images/7.Python_map/Fig.2.png">      </p>
+<h3 id="1-3-Cartopy-STAMEN-图形绘制"><a href="#1-3-Cartopy-STAMEN-图形绘制" class="headerlink" title=" 1.3 Cartopy STAMEN 图形绘制"></a><font color="blue"> 1.3 Cartopy STAMEN 图形绘制</font></h3><p>数据源<a target="_blank" rel="noopener" href="http://maps.stamen.com/">stamen</a>是开源的地理信息服务网站，提供道路、地形等多种数据信息。在其官方网页采用手动下方式，仅能以确定中心点和缩放比例的方式进行图片下载，不能实现任意区域内图形获取。此处参照<a target="_blank" rel="noopener" href="http://geologyandpython.com/maps.html">Geology and Python博客</a>中的相关教程，以中国全域为例，展示底图获取和绘制流程。  </p>
+<p><a target="_blank" rel="noopener" href="http://scitools.org.uk/cartopy/docs/v0.15/index.html">cartopy</a>是用以分析并可视化地理数据的Python库。<br>在安装时候，与系统原有的matplotlib.basemap发生冲突，原因在于二者所依赖的GEOS库不一致。在此处花费了不少时间来解决这一问题(网络上也有很多人遇到了类似的问题，如无法同时安装成功，安装后无法import以及执行cartopy有关指令，kernel会自动restart. )。</p>
+<p>在此处，我列出了自己的安装步骤: 
+		</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## 卸载原有的cartopy及相关库shapely，保留原有的basemap</span></span><br><span class="line">conda uninstall cartopy    </span><br><span class="line">conda uninstall shaeply</span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment">## 升级gdal库  </span></span><br><span class="line">brew upgrade gdal</span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment">## 采用pip方式安装cartopy及shapely</span></span><br><span class="line">pip install shapely cartopy --no-binary shapely --no-binary cartopy</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 结果仍未能成功import cartopy,原因在于shapely库未安装成功。用conda方式再安装</span></span><br><span class="line">conda install shapely </span><br><span class="line">	</span><br><span class="line"><span class="hljs-comment">## 全部安装完毕!! d(`･∀･)b</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 开始绘图</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy.crs <span class="hljs-keyword">as</span> ccrs</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.feature <span class="hljs-keyword">import</span> BORDERS</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.io.img_tiles <span class="hljs-keyword">import</span> StamenTerrain</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.mpl.ticker <span class="hljs-keyword">import</span> LongitudeFormatter, LatitudeFormatter</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">basemap_terrain</span>(<span class="hljs-params">extent</span>):</span><br><span class="line">	fig = plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">6</span>))</span><br><span class="line">    ax = fig.add_subplot(<span class="hljs-number">111</span>, projection=ccrs.PlateCarree())</span><br><span class="line">    ax.set_extent(extents=extent, crs=ccrs.Geodetic())</span><br><span class="line">    ax.coastlines(resolution=<span class="hljs-string">'10m'</span>)</span><br><span class="line">    BORDERS.scale = <span class="hljs-string">'10m'</span></span><br><span class="line">    ax.add_feature(BORDERS)</span><br><span class="line">    ax.gridlines(color=<span class="hljs-string">'.5'</span>)</span><br><span class="line">    ax.set_xticks(np.arange(extent[<span class="hljs-number">0</span>]+<span class="hljs-number">2</span>, extent[<span class="hljs-number">1</span>], <span class="hljs-number">15</span>), crs=ccrs.PlateCarree())</span><br><span class="line">    ax.set_yticks(np.arange(extent[<span class="hljs-number">2</span>]+<span class="hljs-number">2</span>, extent[<span class="hljs-number">3</span>], <span class="hljs-number">15</span>), crs=ccrs.PlateCarree())</span><br><span class="line">    ax.xaxis.set_major_formatter(LongitudeFormatter())</span><br><span class="line">    ax.yaxis.set_major_formatter(LatitudeFormatter())</span><br><span class="line">    <span class="hljs-keyword">return</span> fig, ax</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 地图四至</span></span><br><span class="line">x1,x2,y1,y2 = <span class="hljs-number">74</span>,<span class="hljs-number">134</span>, <span class="hljs-number">18</span>,<span class="hljs-number">51</span></span><br><span class="line">extent      = x1 -<span class="hljs-number">1</span>, x2+<span class="hljs-number">1</span>,y1-<span class="hljs-number">1</span>, y2+<span class="hljs-number">1</span>     </span><br><span class="line">	</span><br><span class="line">fig, ax = basemap_terrain(extent)</span><br><span class="line">st = StamenTerrain()</span><br><span class="line">ax.add_image(st, <span class="hljs-number">4</span>)  </span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/7.Python_map/Fig.3.png">      </p>
+<h2 id="2-行政区划及城市路网信息"><a href="#2-行政区划及城市路网信息" class="headerlink" title=" 2. 行政区划及城市路网信息"></a><font color="blue"> 2. 行政区划及城市路网信息</font></h2><p>此处以四川内江市为例，利用<a target="_blank" rel="noopener" href="https://github.com/gboeing/osmnx">osmnx</a>库，shp文件自动下载于工作文件夹内。    </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 行政辖区下载</span></span><br><span class="line"><span class="hljs-keyword">import</span> osmnx <span class="hljs-keyword">as</span> ox</span><br><span class="line">city = ox.gdf_from_place(<span class="hljs-string">'Neijiang City,  Sichuan, China'</span>)</span><br><span class="line">ox.save_gdf_shapefile(city)</span><br><span class="line">city = ox.project_gdf(city)</span><br><span class="line">fig, ax = ox.plot_shape(city, figsize=(<span class="hljs-number">3</span>,<span class="hljs-number">3</span>))</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/7.Python_map/Fig.4.png">      </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 内江市东兴区公路路网下载</span></span><br><span class="line">Road = ox.graph_from_place(<span class="hljs-string">'Dongxing, Neijiang,  Sichuan, China'</span>, network_type=<span class="hljs-string">'drive'</span>)</span><br><span class="line">Road_projected = ox.project_graph(Road)</span><br><span class="line">fig, ax = ox.plot_graph(Road_projected)</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/7.Python_map/Fig.5.png">      </p>
+<h2 id="3-一些有用的小指令"><a href="#3-一些有用的小指令" class="headerlink" title=" 3. 一些有用的小指令"></a><font color="blue"> 3. 一些有用的小指令</font></h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># A. 任意地点的海拔查询</span></span><br><span class="line">!pip install geocoder</span><br><span class="line"><span class="hljs-keyword">import</span> geocoder</span><br><span class="line"><span class="hljs-built_in">print</span> geocoder.elevation ([lat,lng]).meters</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># B. 两例获取某地区及周边的google地图静态图像</span></span><br><span class="line"><span class="hljs-comment">## B1. 卫星图</span></span><br><span class="line">http://maps.googleapis.com/maps/api/staticmap?center=<span class="hljs-number">42.2341289</span>,<span class="hljs-number">118.9790778</span>&amp;zoom=<span class="hljs-number">12</span>&amp;<span class="hljs-built_in">format</span>=png&amp;sensor=false&amp;size=2400x2000&amp;maptype=satellite&amp;style=feature:administrative|weight:<span class="hljs-number">0.1</span>|invert_lightneºss:true|visibility:off&amp;style=feature:water|element:labels.text|visibility:off&amp;style=feature:landscape.natural|visibility:on</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## B2. 道路地图</span></span><br><span class="line">http://maps.google.com/maps/api/staticmap?sensor=false&amp;size=512x512&amp;center=Brooklyn&amp;zoom=<span class="hljs-number">12</span>&amp;style=feature:<span class="hljs-built_in">all</span>|element:labels|visibility:off</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># C. google地图下载工具</span></span><br><span class="line">http://www.chengfolio.com/google_map_customizer<span class="hljs-comment">#satellitemap</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># D. 地形图在线下载工具</span></span><br><span class="line">https://maps-<span class="hljs-keyword">for</span>-free.com/</span><br><span class="line">    </span><br><span class="line"><span class="hljs-comment"># E.测量两点间距离</span></span><br><span class="line"><span class="hljs-comment"># source: https://stackoverflow.com/questions/15736995/how-can-i-quickly-estimate-the-distance-between-two-latitude-longitude-points</span></span><br><span class="line"><span class="hljs-keyword">from</span> math <span class="hljs-keyword">import</span> radians, cos, sin, asin, sqrt</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">haversine</span>(<span class="hljs-params">lon1, lat1, lon2, lat2</span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Calculate the great circle distance between two points </span></span><br><span class="line"><span class="hljs-string">    on the earth (specified in decimal degrees)</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    <span class="hljs-comment"># convert decimal degrees to radians </span></span><br><span class="line">    lon1, lat1, lon2, lat2 = <span class="hljs-built_in">map</span>(radians, [lon1, lat1, lon2, lat2])</span><br><span class="line">    <span class="hljs-comment"># haversine formula </span></span><br><span class="line">    dlon = lon2 - lon1 </span><br><span class="line">    dlat = lat2 - lat1 </span><br><span class="line">    a = sin(dlat/<span class="hljs-number">2</span>)**<span class="hljs-number">2</span> + cos(lat1) * cos(lat2) * sin(dlon/<span class="hljs-number">2</span>)**<span class="hljs-number">2</span></span><br><span class="line">    c = <span class="hljs-number">2</span> * asin(sqrt(a)) </span><br><span class="line">    <span class="hljs-comment"># Radius of earth in kilometers is 6371</span></span><br><span class="line">    km = <span class="hljs-number">6371</span>* c</span><br><span class="line">    <span class="hljs-keyword">return</span> km</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2018/04/04/8.%5BDataset%5DChina%20air%20quality%20data%20in%20HDF5%20format/">中国空气质量历史数据整理(HDF5格式)</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2017/06/22/6.%5BCode%5DPython%E7%81%AB%E7%82%B9%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E6%9E%90%E5%A4%84%E7%90%86/">MODIS卫星火点数据的简易处理与可视化分析</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2017/11/06/7.[Code]%E5%9C%B0%E7%90%86%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96/';
+        this.page.identifier = '2017/11/06/7.[Code]地理地形数据的获取与可视化/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

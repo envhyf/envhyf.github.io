@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta property="og:type" content="website">
+<meta property="og:title" content="太平塔">
+<meta property="og:url" content="http://envhyf.github.io/page/2/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:locale">
+<meta property="article:author" content="Hao Yufang">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/" itemprop="url">OrbiTrack Dev Log 1: Parsing Orbitrap MS1 Data</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-10-21T10:45:00.000Z" itemprop="datePublished">10月 21 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>The ultra-high resolution of Orbitrap mass spectrometry enables an unprecedented level of chemical detail. In my current research, we employ a direct infusion–Orbitrap approach for non-targeted analysis. However, due to the lack of dedicated tools tailored for this application, I developed a new software package called <strong>OrbiTrack</strong>. It supports two key workflows:</p>
+<p>(1) Guiding ion fitting in EESI-TOF using high-resolution chemical information acquired at 120k resolution on the Orbitrap.</p>
+<p>(2) Directly utilizing non-targeted Orbitrap data by integrating full time-series MS1 outputs for real-time or online analysis.</p>
+<p><img src="/images/Orbitrack_log/Orbitrack_Objectives.png"></p>
+<p>This blog series will present the OrbiTrack framework step by step, explaining the underlying principles and sharing the original scripts for each component. </p>
+<p>Feedback and suggestions from the community are most welcome.</p>
+<p>In this first post, I will introduce Part 1: loading Orbitrap raw MS1 data by user-defined time period.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/10/11/31.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BA%A7%E4%B8%9A%E4%B8%8E%E6%96%87%E6%98%8E/" itemprop="url">读书笔记-张笑宇文明三部曲</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-10-10T22:15:26.000Z" itemprop="datePublished">10月 11 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Life/">Life</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>《产业与文明》</p>
+<h1 id="第一章总结"><a href="#第一章总结" class="headerlink" title="第一章总结"></a>第一章总结</h1><p><strong>主题</strong>：技术改变社会并非直接线性发生，而是必须通过“漏斗—喇叭”模型的检验——即<strong>产业化、商业化</strong>检验，才能真正改变世界。</p>
+<hr>
+<p><strong>技术本身无法自动改变社会，必须经过“商业化/产业化”漏斗筛选</strong></p>
+<ul>
+<li><strong>事实支撑</strong>：<ul>
+<li>希罗发明汽转球、自动门、自动售货机等超前机械，但因社会缺乏商业需求与产业应用，仅成为神庙的奇技异巧，无广泛应用。</li>
+<li>巴努·穆萨三兄弟、加扎利发明自动演奏装置、大象钟等复杂机械，但依附神职机构或暴力集团，未能推动生产革命。</li>
+<li>古代社会资源集中在暴力集团与宗教集团手中，缺乏广泛消费能力与高劳动力成本，因此新技术难以普及应用。</li>
+</ul>
+</li>
+</ul>
+<hr></body></html>
+        <p class="article-more-link">
+            <a href="/2024/10/11/31.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BA%A7%E4%B8%9A%E4%B8%8E%E6%96%87%E6%98%8E/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/10/05/30.FLEXPART-trajectories-in-3D-terrain-map/" itemprop="url">PLotting FLEXPART trajectories in 3D terrain map</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-10-05T18:15:26.000Z" itemprop="datePublished">10月 5 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>This blog post demonstrates how to plot FLEXPART model trajectories on a 3D terrain map, integrating topography and transport data for enhanced visualization. The workflow includes:</p>
+<ul>
+<li>Loading terrain data</li>
+<li>Plotting air mass trajectories in 3D</li>
+<li>Creating illustrative particle dispersion effects</li>
+</ul></body></html>
+        <p class="article-more-link">
+            <a href="/2024/10/05/30.FLEXPART-trajectories-in-3D-terrain-map/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/05/29/40.%5BMS%5DVisualizing-Chemical-Structures/" itemprop="url">Visualizing Chemical Structures 绘制化学物质的结构式</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-05-29T16:05:00.000Z" itemprop="datePublished">5月 29 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2024/05/29/40.%5BMS%5DVisualizing-Chemical-Structures/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/05/29/38.%5BMS%5DUntargeted_Analysis_on_Tea/" itemprop="url">🍵非靶向质谱方法探索各类茶饮的分子组成</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-05-29T16:05:00.000Z" itemprop="datePublished">5月 29 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助这次协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。</p>
+<p>本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。</p></body></html>
+        <p class="article-more-link">
+            <a href="/2024/05/29/38.%5BMS%5DUntargeted_Analysis_on_Tea/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2024/02/10/%5BCode-library%5DLinear_fitting_plotting_code_summary/" itemprop="url">Linear Fitting with Matplotlib and Plotly</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-02-10T18:00:00.000Z" itemprop="datePublished">2月 10 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>Linear regression is a fundamental method in data analysis to understand the relationship between two variables. Here, I summarize four reusable Python functions for performing and visualizing linear fitting:</p>
+<ol>
+<li>Matplotlib: with and without intercept  </li>
+<li>Plotly: with and without intercept</li>
+</ol>
+<p>All methods:</p>
+<ul>
+<li>Drop NaN values in x and y</li>
+<li>Plot a scatter graph</li>
+<li>Fit a linear line</li>
+<li>Annotate the equation and correlation coefficient (R)</li>
+</ul></body></html>
+        <p class="article-more-link">
+            <a href="/2024/02/10/%5BCode-library%5DLinear_fitting_plotting_code_summary/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2023/08/09/29.%5BCode%5DWeb_App_Development_Interactive_Data_Panel/" itemprop="url">Create your first web app: Interactive data panel for visualizatoin correlations</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2023-08-09T14:55:00.000Z" itemprop="datePublished">8月 9 2023</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this tutorial, I will demonstrate how to create a simple, interactive web app that visualizes correlations between variables. We will also walk you through the necessary environment setup and deployment steps.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2023/08/09/29.%5BCode%5DWeb_App_Development_Interactive_Data_Panel/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2023/06/01/29.%5BCode%5DMaking_my_own_Python_Package/" itemprop="url">Making Your Own Python Package Publicly Available</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2023-06-01T20:00:00.000Z" itemprop="datePublished">6月 1 2023</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this post, I document the full procedure for turning a personal Python project into a public package, available on both <strong>GitHub</strong> and the <strong>Python Package Index (PyPI)</strong>.</p>
+<p>As a demonstration, I create a small package named <strong>PalAniSh</strong> (<em>Palette of Animation of Shanghai</em>), which extracts and displays color palettes from classical Chinese animations produced by the Shanghai Animation Film Studio.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2023/06/01/29.%5BCode%5DMaking_my_own_Python_Package/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2023/02/23/28.%5BCode%5DFrom-Shapefile-to-Geojson/" itemprop="url">The work transformed from shapefile to geojson file</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2023-02-23T22:32:26.000Z" itemprop="datePublished">2月 23 2023</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>Geojson provides several advantages compared to shapefiles:</p>
+<ol>
+<li><p>lightweight, text-based, and easily readable format that can be easily shared, transmitted and used on the web. </p>
+</li>
+<li><p>It supports a wider range of data types compared to shapefile and can be used across multiple platforms and programming languages. </p>
+</li>
+<li><p>Additionally, geojson files have smaller file sizes, making them easier to store and process. These benefits make geojson a popular choice for geographic information data storage and exchange.</p>
+</li>
+</ol></body></html>
+        <p class="article-more-link">
+            <a href="/2023/02/23/28.%5BCode%5DFrom-Shapefile-to-Geojson/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            <a href="/2023/01/03/27.%5BDataset%5DEarth-Science-Tools-and-Data/" itemprop="url">Dataset and Tools Collection for Earth Science</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2023-01-02T23:00:00.000Z" itemprop="datePublished">1月 3 2023</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>本文持续更新个人网络搜集的各类数据集，包括中国/世界行政区划、自然地理、气象水文、空气质量及社会经济数据等。</p></body></html>
+        <p class="article-more-link">
+            <a href="/2023/01/03/27.%5BDataset%5DEarth-Science-Tools-and-Data/#more">Read More</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+    
+        
+<nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
+    <div class="pagination-previous">
+        <a href="/">Prev</a>
+    </div>
+    <div class="pagination-next">
+        <a href="/page/3/">Next</a>
+    </div>
+    <ul class="pagination-list is-hidden-mobile">
+        
+        <li><a class="pagination-link" href="/">1</a></li>
+        
+        <li><a class="pagination-link is-current" href="/page/2/">2</a></li>
+        
+        <li><a class="pagination-link" href="/page/3/">3</a></li>
+        
+        <li><a class="pagination-link" href="/page/4/">4</a></li>
+        
+        <li><a class="pagination-link" href="/page/5/">5</a></li>
+        
+    </ul>
+</nav>
+    
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>Resampling the orignial data to 2-d array in specific grid system - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="In this post, I address an common problem in geoscience research: how to arrange the original geodata into pre-defined grid system. Sometimes, we need to unify the resolution of various dataset or sum">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Resampling the orignial data to 2-d array in specific grid system">
+<meta property="og:url" content="http://envhyf.github.io/2019/06/01/19.[Code]Resampling-the-orignial-data-to-2-d-array/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="In this post, I address an common problem in geoscience research: how to arrange the original geodata into pre-defined grid system. Sometimes, we need to unify the resolution of various dataset or sum">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/19.2-D_resampling/Fig.1.png">
+<meta property="article:published_time" content="2019-06-01T18:32:26.000Z">
+<meta property="article:modified_time" content="2025-07-23T22:24:51.150Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Air quality">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/19.2-D_resampling/Fig.1.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            Resampling the orignial data to 2-d array in specific grid system
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2019-06-01T18:32:26.000Z" itemprop="datePublished">6月 1 2019</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>In this post, I address an common problem in geoscience research: how to arrange the original geodata into pre-defined grid system. Sometimes, we need to unify the resolution of various dataset or summary the scatter data to raster one.</p>
+<p>Specifically, this brief tutorial will look at two different original data, and allow you to creat gridded data in python. For better illustration, two practial cases with detailed code are shown:</p>
+<ul>
+<li>Creating an emission inventory based on the emissions from point sources (e.g., power plants, cement plants)</li>
+<li>Remapping a population density map to a coarser resolution</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="1-Scatter-data-point"><a href="#1-Scatter-data-point" class="headerlink" title=" 1. Scatter data point"></a><font color="blue"> 1. Scatter data point</font></h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy.crs <span class="hljs-keyword">as</span> ccrs</span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib.axes <span class="hljs-keyword">import</span> Axes</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.mpl.geoaxes <span class="hljs-keyword">import</span> GeoAxes</span><br><span class="line">GeoAxes._pcolormesh_patched = Axes.pcolormesh</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.mpl.gridliner <span class="hljs-keyword">import</span> LATITUDE_FORMATTER, LONGITUDE_FORMATTER</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.spatial <span class="hljs-keyword">import</span> KDTree</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 1. generating the scatter data</span></span><br><span class="line">xc1, xc2, yc1, yc2 = <span class="hljs-number">100</span>, <span class="hljs-number">110</span>, <span class="hljs-number">35</span>, <span class="hljs-number">45</span></span><br><span class="line">N = <span class="hljs-number">1000</span></span><br><span class="line">x = np.random.uniform(low=xc1, high=xc2, size=(N,))</span><br><span class="line">y = np.random.uniform(low=yc1, high=yc2, size=(N,))</span><br><span class="line">value = np.ravel(np.random.rand(<span class="hljs-number">1000</span>,<span class="hljs-number">1</span>))</span><br><span class="line">df_points = pd.DataFrame({<span class="hljs-string">"x"</span>:x, <span class="hljs-string">"y"</span>:y, <span class="hljs-string">"v"</span>:value})</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 2. Clustering the scatter point Using KdTree method</span></span><br><span class="line">XSIZE,YSIZE=<span class="hljs-number">50</span>,<span class="hljs-number">50</span> <span class="hljs-comment"># set the grid resolution</span></span><br><span class="line">lon,lat  = np.linspace(xc1,xc2,XSIZE),np.linspace(yc1,yc2,YSIZE)</span><br><span class="line">X, Y = np.mgrid[lon.<span class="hljs-built_in">min</span>():lon.<span class="hljs-built_in">max</span>():XSIZE*<span class="hljs-number">1j</span>, lat.<span class="hljs-built_in">min</span>():lat.<span class="hljs-built_in">max</span>():YSIZE*<span class="hljs-number">1j</span>]</span><br><span class="line"></span><br><span class="line">grid = np.c_[X.ravel(), Y.ravel()]</span><br><span class="line">points = np.c_[df_points.x, df_points.y]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">from</span> scipy.spatial <span class="hljs-keyword">import</span> KDTree</span><br><span class="line">tree = KDTree(grid)</span><br><span class="line">dist, indices = tree.query(points)</span><br><span class="line">grid_values = df_points.groupby(indices).v.<span class="hljs-built_in">sum</span>()</span><br><span class="line"></span><br><span class="line">df_grid = pd.DataFrame(grid, columns=[<span class="hljs-string">"x"</span>, <span class="hljs-string">"y"</span>])</span><br><span class="line">df_grid[<span class="hljs-string">"v"</span>] = grid_values</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## 3. Visualization</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">plot_xy_tick</span>(<span class="hljs-params">ax</span>):</span><br><span class="line">    xticks = [<span class="hljs-number">100</span>,<span class="hljs-number">105</span>,<span class="hljs-number">110</span>]</span><br><span class="line">    yticks = [<span class="hljs-number">35</span>,<span class="hljs-number">40</span>,<span class="hljs-number">45</span>]</span><br><span class="line">    ax.set_xticks(xticks, crs=ccrs.PlateCarree())</span><br><span class="line">    ax.set_yticks(yticks, crs=ccrs.PlateCarree())</span><br><span class="line">    lon_formatter = LongitudeFormatter(number_format=<span class="hljs-string">'.1f'</span>,</span><br><span class="line">                                       degree_symbol=<span class="hljs-string">''</span>,</span><br><span class="line">                                       dateline_direction_label=<span class="hljs-literal">True</span>)</span><br><span class="line">    lat_formatter = LatitudeFormatter(number_format=<span class="hljs-string">'.1f'</span>,</span><br><span class="line">                                      degree_symbol=<span class="hljs-string">''</span>)</span><br><span class="line">    ax.xaxis.set_major_formatter(lon_formatter)</span><br><span class="line">    ax.yaxis.set_major_formatter(lat_formatter)</span><br><span class="line"></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">8</span>,<span class="hljs-number">3</span>))</span><br><span class="line">ax1 = plt.subplot(<span class="hljs-number">121</span>, projection=ccrs.PlateCarree())</span><br><span class="line">ax1.scatter(df_points.x, df_points.y,  alpha=<span class="hljs-number">0.2</span>,c=df_points.v,s=<span class="hljs-number">15</span>,transform=ccrs.PlateCarree())</span><br><span class="line">ax1.set_extent([xc1, xc2, yc1, yc2], crs=ccrs.PlateCarree())</span><br><span class="line">plot_xy_tick(ax1)</span><br><span class="line">ax2 = plt.subplot(<span class="hljs-number">122</span>, projection=ccrs.PlateCarree())</span><br><span class="line">val_ = df_grid.v.values.reshape(<span class="hljs-built_in">len</span>(lat),<span class="hljs-built_in">len</span>(lon))</span><br><span class="line">ax2.pcolormesh(X,Y, val_,transform=ccrs.PlateCarree())</span><br><span class="line">ax1.set_extent([xc1, xc2, yc1, yc2], crs=ccrs.PlateCarree())</span><br><span class="line">plot_xy_tick(ax2)    </span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+<p><a href="/images/19.2-D_resampling/Fig.1.png"><img src="/images/19.2-D_resampling/Fig.1.png" alt="enter image description here"></a></p>
+<h2 id="2-Raster-data"><a href="#2-Raster-data" class="headerlink" title="&nbsp;2. Raster data"></a><font color="blue">&nbsp;2. Raster data</font></h2><p>Noted in my last <a target="_blank" rel="noopener" href="http://paisheng.me/2019/04/07/Altering-the-resolution-raster-file-using-Pyton/">post</a>, the resampling of <strong>tif-format dataset</strong> to raster file in other resolution relied on the skimage.transform function.  Here, I present the method which directly deal with np.array.</p>
+<h3 id="2-1-equal-coarse-ratio-on-both-axis"><a href="#2-1-equal-coarse-ratio-on-both-axis" class="headerlink" title="2.1 equal coarse ratio on both axis"></a>2.1 equal coarse ratio on both axis</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## creat a original data representing populaiton map</span></span><br><span class="line">xc1, xc2, yc1, yc2 = <span class="hljs-number">100</span>, <span class="hljs-number">110</span>, <span class="hljs-number">35</span>, <span class="hljs-number">45</span></span><br><span class="line">XSIZE,YSIZE=<span class="hljs-number">100</span>,<span class="hljs-number">100</span></span><br><span class="line">lon,lat  = np.linspace(xc1,xc2,XSIZE),np.linspace(yc1,yc2,YSIZE)</span><br><span class="line">pop = np.random.uniform(low=<span class="hljs-number">1000</span>, high=<span class="hljs-number">50000</span>, size=(XSIZE*YSIZE,)).reshape(YSIZE,XSIZE)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## Method 1 reshape the original data array</span></span><br><span class="line">shape = np.array(pop.shape, dtype=<span class="hljs-built_in">float</span>)</span><br><span class="line">coarseness = <span class="hljs-number">2</span> <span class="hljs-comment"># the new shape is in 50 x 50</span></span><br><span class="line">new_shape = coarseness * np.ceil(shape/coarseness).astype(<span class="hljs-built_in">int</span>)</span><br><span class="line"><span class="hljs-comment"># # Create the zero-padded array and assign it with the old density</span></span><br><span class="line">zp_pop = np.zeros(new_shape)</span><br><span class="line">zp_pop[:<span class="hljs-built_in">int</span>(shape[<span class="hljs-number">0</span>]), :<span class="hljs-built_in">int</span>(shape[<span class="hljs-number">1</span>])] = pop</span><br><span class="line">temp = zp_pop.reshape((new_shape[<span class="hljs-number">0</span>] // coarseness, coarseness,</span><br><span class="line">                                new_shape[<span class="hljs-number">1</span>] // coarseness, coarseness))</span><br><span class="line">coarse_pop = np.<span class="hljs-built_in">sum</span>(temp, axis=(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>))</span><br><span class="line"><span class="hljs-built_in">print</span> (pop.<span class="hljs-built_in">sum</span>())</span><br><span class="line"><span class="hljs-built_in">print</span> (coarse_pop.<span class="hljs-built_in">sum</span>())</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-2-inequal-coarse-ratio-on-both-axis"><a href="#2-2-inequal-coarse-ratio-on-both-axis" class="headerlink" title="2.2 inequal coarse ratio on both axis"></a>2.2 inequal coarse ratio on both axis</h3><p><strong>Method.1 interpolation</strong></p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> scipy <span class="hljs-keyword">import</span> interpolate</span><br><span class="line">hfunc = interpolate.interp2d(lon,lat,pop)</span><br><span class="line">XSIZE_n,YSIZE_n=<span class="hljs-number">80</span>,<span class="hljs-number">60</span></span><br><span class="line">coarse_pop = np.zeros(XSIZE_n * YSIZE_n)</span><br><span class="line">xx,yy=np.meshgrid(lon_n,lat_n)</span><br><span class="line">grid = np.c_[xx.ravel(),yy.ravel()]</span><br><span class="line">df_grid = pd.DataFrame(grid, columns=[<span class="hljs-string">"x"</span>, <span class="hljs-string">"y"</span>])</span><br><span class="line">df_grid[<span class="hljs-string">'v'</span>] = [hfunc(x,y)[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> x, y <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(df_grid[<span class="hljs-string">'x'</span>].values,df_grid[<span class="hljs-string">'y'</span>].values)]</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">print</span> (pop.<span class="hljs-built_in">sum</span>())</span><br><span class="line"><span class="hljs-built_in">print</span> (df_grid[<span class="hljs-string">'v'</span>].<span class="hljs-built_in">sum</span>())</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Method.2 Fourier transform method</strong></p>
+<p>Thanks to help from my new roomate who is expert in math, I learned to transfrom the 2-d array using Fourier transform method</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> scipy <span class="hljs-keyword">import</span> fftpack</span><br><span class="line">pop_fft = fftpack.fft2(pop*<span class="hljs-number">100</span>*<span class="hljs-number">100</span>/(<span class="hljs-number">60</span>*<span class="hljs-number">80</span>),shape = (<span class="hljs-number">60</span>,<span class="hljs-number">80</span>)) <span class="hljs-comment"># 100 x 100 -&gt; 60 x 80</span></span><br><span class="line">pop_res = fftpack.ifft2(pop_fft).real</span><br><span class="line"><span class="hljs-built_in">print</span>(pop.<span class="hljs-built_in">sum</span>())</span><br><span class="line"><span class="hljs-built_in">print</span>(pop_res.<span class="hljs-built_in">sum</span>())</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2020/05/10/20.%5BCode%5D%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BD%91%E7%BB%9C%E9%A2%84%E8%A7%88%E6%96%87%E7%8C%AE%E8%B5%84%E6%96%99%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%90%88%E6%88%90/">小工具开发：网络预览文献资料的下载合成</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2019/04/07/18.%5BCode%5DAltering-the-resolution-raster-file-using-Pyton/">Altering the resolution of a raster data using Python</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2019/06/01/19.[Code]Resampling-the-orignial-data-to-2-d-array/';
+        this.page.identifier = '2019/06/01/19.[Code]Resampling-the-orignial-data-to-2-d-array/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

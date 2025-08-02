@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>Visualizing Chemical Structures 绘制化学物质的结构式 - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Visualizing Chemical Structures 绘制化学物质的结构式">
+<meta property="og:url" content="http://envhyf.github.io/2024/05/29/40.[MS]Visualizing-Chemical-Structures/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/chem_structure/C9H10N2_fragments.png">
+<meta property="og:image" content="http://envhyf.github.io/images/chem_structure/C9H10N2_structure_pyrazine.svg">
+<meta property="article:published_time" content="2024-05-29T16:05:00.000Z">
+<meta property="article:modified_time" content="2025-07-29T20:59:07.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Visualization">
+<meta property="article:tag" content="Chemistry">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/chem_structure/C9H10N2_fragments.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            Visualizing Chemical Structures 绘制化学物质的结构式
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-05-29T16:05:00.000Z" itemprop="datePublished">5月 29 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Tech/">Tech</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>For the purpose of visualizing chemical structures, I will now post a few method that can achive this goal.</p>
+<span id="more"></span>
+
+<h1 id="1-ChemDraw"><a href="#1-ChemDraw" class="headerlink" title="1. ChemDraw"></a>1. ChemDraw</h1><p><a target="_blank" rel="noopener" href="https://revvitysignals.com/products/research/chemdraw">ChemDraw</a> is a software that can be used to draw chemical structures (though  commerical).</p>
+<h1 id="2-RDKit"><a href="#2-RDKit" class="headerlink" title="2. RDKit"></a>2. RDKit</h1><p>RDKit Python library can reproduce the structurs based on the smiles code.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> rdkit <span class="hljs-keyword">import</span> Chem</span><br><span class="line"><span class="hljs-keyword">from</span> rdkit.Chem <span class="hljs-keyword">import</span> Draw</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define the correct Myosmine SMILES</span></span><br><span class="line">precursor_smiles = <span class="hljs-string">"C1CC(=NC1)C2=CN=CC=C2"</span>  <span class="hljs-comment"># Correct Myosmine (C9H10N2)</span></span><br><span class="line">precursor_mol = Chem.MolFromSmiles(precursor_smiles)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define predicted fragment SMILES</span></span><br><span class="line">fragments_smiles = {</span><br><span class="line">    <span class="hljs-string">"79.0544"</span>: <span class="hljs-string">"C1CC(=NC1)"</span>,  <span class="hljs-comment"># Benzene radical cation C6H6-H+</span></span><br><span class="line">    <span class="hljs-string">"104.0495"</span>: <span class="hljs-string">"C1=CC=C(C=C1)C=[NH+]"</span>,  <span class="hljs-comment"># Pyridine-benzyl cation</span></span><br><span class="line">    <span class="hljs-string">"106.0653"</span>: <span class="hljs-string">"C1=CC=C(C=N1)C=[NH+]"</span>,  <span class="hljs-comment"># Methyl-pyridine</span></span><br><span class="line">    <span class="hljs-string">"132.0683"</span>: <span class="hljs-string">"CCC(=[NH+])C2=CN=CC=C2"</span>,  <span class="hljs-comment"># Pyridine-imidazole</span></span><br><span class="line">    <span class="hljs-string">"147.0919"</span>: <span class="hljs-string">"C1CC(=NC1)C2=CN=CC=C2"</span>  <span class="hljs-comment"># Correct Myosmine (precursor)</span></span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment"># Convert SMILES to RDKit molecules</span></span><br><span class="line">fragment_mols = {mz: Chem.MolFromSmiles(smiles) <span class="hljs-keyword">for</span> mz, smiles <span class="hljs-keyword">in</span> fragments_smiles.items()}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Draw precursor and fragments</span></span><br><span class="line">Draw.MolsToGridImage(</span><br><span class="line">    [precursor_mol] + <span class="hljs-built_in">list</span>(fragment_mols.values()),</span><br><span class="line">    molsPerRow=<span class="hljs-number">3</span>,</span><br><span class="line">    subImgSize=(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>),</span><br><span class="line">    legends=[<span class="hljs-string">"Precursor"</span>] + <span class="hljs-built_in">list</span>(fragments_smiles.keys())</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/chem_structure/C9H10N2_fragments.png" alt="alt text"></p>
+<p>Save the structures to SVG vector file.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> rdkit <span class="hljs-keyword">import</span> Chem</span><br><span class="line"><span class="hljs-keyword">from</span> rdkit.Chem <span class="hljs-keyword">import</span> Draw</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define the molecule</span></span><br><span class="line">precursor_smiles = <span class="hljs-string">"CC1=CN2C=CC=C2C(=N1)C"</span></span><br><span class="line">precursor_mol = Chem.MolFromSmiles(precursor_smiles)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Generate SVG as a string</span></span><br><span class="line">drawer = Draw.MolDraw2DSVG(<span class="hljs-number">600</span>, <span class="hljs-number">600</span>)  <span class="hljs-comment"># width, height in pixels</span></span><br><span class="line">drawer.DrawMolecule(precursor_mol)</span><br><span class="line">drawer.FinishDrawing()</span><br><span class="line">svg = drawer.GetDrawingText()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Save SVG to file</span></span><br><span class="line"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">"C9H10N2_structure_pyrazine.svg"</span>, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> f:</span><br><span class="line">    f.write(svg)</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="/images/chem_structure/C9H10N2_structure_pyrazine.svg" alt="alt text"></p>
+<h1 id="3-SmileDrawer"><a href="#3-SmileDrawer" class="headerlink" title="3. SmileDrawer"></a>3. SmileDrawer</h1><p><a target="_blank" rel="noopener" href="https://github.com/reymond-group/smilesDrawer?tab=readme-ov-file">SmileDrawer</a> is a lightweight JS library that renders chemical structures from SMILES strings in the browser. It supports canvas and SVG, with optional export and styling.    </p>
+<p>I receommend this method with the nice looking and the interactive feature.</p>
+<p>Relevant link: </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/reymond-group/smilesDrawer?tab=readme-ov-file">Playground</a> </li>
+<li><a target="_blank" rel="noopener" href="https://doc.gdb.tools/smilesDrawer/sd/example/index_svg.html">Simple example</a></li>
+<li><a target="_blank" rel="noopener" href="https://jsitor.com/VSdIPakuF">Online editor</a></li>
+</ul>
+<p>Two examples for pasting </p>
+<h2 id="3-1-Quick-draw-using-Canvas"><a href="#3-1-Quick-draw-using-Canvas" class="headerlink" title="3.1. Quick draw using Canvas"></a>3.1. Quick draw using Canvas</h2><figure class="highlight html hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">"x-ua-compatible"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"ie=edge"</span> /&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Smiles Drawer Example<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"description"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"A minimal smiles drawer example."</span> /&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"https://fonts.googleapis.com/css?family=Droid+Sans:400,700"</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> /&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"example-input"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"example-input"</span> /&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"example-canvas"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"500"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"500"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">		<span class="hljs-keyword">let</span> input = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="hljs-string">"example-input"</span>);</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">let</span> options = {};</span></span><br><span class="line"><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-comment">// Initialize the drawer to draw to canvas</span></span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">let</span> smilesDrawer = <span class="hljs-keyword">new</span> <span class="title class_">SmilesDrawer</span>.<span class="title class_">Drawer</span>(options);</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-comment">// Alternatively, initialize the SVG drawer:</span></span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-comment">// let svgDrawer = new SmilesDrawer.SvgDrawer(options);</span></span></span><br><span class="line"><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">      input.<span class="title function_">addEventListener</span>(<span class="hljs-string">"input"</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {</span></span><br><span class="line"><span class="hljs-language-javascript">        <span class="hljs-comment">// Clean the input (remove unrecognized characters, such as spaces and tabs) and parse it</span></span></span><br><span class="line"><span class="hljs-language-javascript">        <span class="title class_">SmilesDrawer</span>.<span class="title function_">parse</span>(input.<span class="hljs-property">value</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params">tree</span>) {</span></span><br><span class="line"><span class="hljs-language-javascript">          <span class="hljs-comment">// Draw to the canvas</span></span></span><br><span class="line"><span class="hljs-language-javascript">          smilesDrawer.<span class="title function_">draw</span>(tree, <span class="hljs-string">"example-canvas"</span>, <span class="hljs-string">"light"</span>, <span class="hljs-literal">false</span>);</span></span><br><span class="line"><span class="hljs-language-javascript">          <span class="hljs-comment">// Alternatively, draw to SVG:</span></span></span><br><span class="line"><span class="hljs-language-javascript">          <span class="hljs-comment">// svgDrawer.draw(tree, 'output-svg', 'dark', false);</span></span></span><br><span class="line"><span class="hljs-language-javascript">        });</span></span><br><span class="line"><span class="hljs-language-javascript">      });</span></span><br><span class="line"><span class="hljs-language-javascript">	</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<h2 id="3-2-Exportable-SVG-with-Save-Button"><a href="#3-2-Exportable-SVG-with-Save-Button" class="headerlink" title="3.2 Exportable SVG with Save Button"></a>3.2 Exportable SVG with Save Button</h2><figure class="highlight html hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>SmilesDrawer SVG Example<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"example-input"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"example-input"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"C1=CC=CC=C1"</span> /&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">svg</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"example-svg"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"500"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"500"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"background:white; border:1px solid #ccc;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">svg</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"saveBtn"</span>&gt;</span>💾 Save SVG<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">		<span class="hljs-keyword">const</span> input = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="hljs-string">"example-input"</span>);</span></span><br><span class="line"><span class="hljs-language-javascript">    <span class="hljs-keyword">const</span> svg = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="hljs-string">"example-svg"</span>);</span></span><br><span class="line"><span class="hljs-language-javascript">    <span class="hljs-keyword">const</span> svgDrawer = <span class="hljs-keyword">new</span> <span class="title class_">SmilesDrawer</span>.<span class="title class_">SvgDrawer</span>({ <span class="hljs-attr">width</span>: <span class="hljs-number">500</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">500</span> });</span></span><br><span class="line"><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">    input.<span class="title function_">addEventListener</span>(<span class="hljs-string">"input"</span>, <span class="hljs-function">() =&gt;</span> {</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">while</span> (svg.<span class="hljs-property">firstChild</span>) svg.<span class="title function_">removeChild</span>(svg.<span class="hljs-property">firstChild</span>); <span class="hljs-comment">// Clear old structure</span></span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="title class_">SmilesDrawer</span>.<span class="title function_">parse</span>(input.<span class="hljs-property">value</span>, <span class="hljs-function"><span class="hljs-params">tree</span> =&gt;</span> {</span></span><br><span class="line"><span class="hljs-language-javascript">        svgDrawer.<span class="title function_">draw</span>(tree, svg, <span class="hljs-string">"light"</span>);</span></span><br><span class="line"><span class="hljs-language-javascript">      }, <span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {</span></span><br><span class="line"><span class="hljs-language-javascript">        <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="hljs-string">"SMILES parse error:"</span>, err);</span></span><br><span class="line"><span class="hljs-language-javascript">      });</span></span><br><span class="line"><span class="hljs-language-javascript">    });</span></span><br><span class="line"><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">    <span class="hljs-comment">// Initial draw</span></span></span><br><span class="line"><span class="hljs-language-javascript">    input.<span class="title function_">dispatchEvent</span>(<span class="hljs-keyword">new</span> <span class="title class_">Event</span>(<span class="hljs-string">"input"</span>));</span></span><br><span class="line"><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">    <span class="hljs-comment">// Save as SVG</span></span></span><br><span class="line"><span class="hljs-language-javascript">    <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="hljs-string">"saveBtn"</span>).<span class="title function_">addEventListener</span>(<span class="hljs-string">"click"</span>, <span class="hljs-function">() =&gt;</span> {</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">const</span> serializer = <span class="hljs-keyword">new</span> <span class="title class_">XMLSerializer</span>();</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">const</span> svgString = serializer.<span class="title function_">serializeToString</span>(svg);</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">const</span> blob = <span class="hljs-keyword">new</span> <span class="title class_">Blob</span>([svgString], { <span class="hljs-attr">type</span>: <span class="hljs-string">"image/svg+xml"</span> });</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">const</span> url = <span class="variable constant_">URL</span>.<span class="title function_">createObjectURL</span>(blob);</span></span><br><span class="line"><span class="hljs-language-javascript"></span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="hljs-keyword">const</span> a = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="hljs-string">"a"</span>);</span></span><br><span class="line"><span class="hljs-language-javascript">      a.<span class="hljs-property">href</span> = url;</span></span><br><span class="line"><span class="hljs-language-javascript">      a.<span class="hljs-property">download</span> = <span class="hljs-string">"molecule.svg"</span>;</span></span><br><span class="line"><span class="hljs-language-javascript">      a.<span class="title function_">click</span>();</span></span><br><span class="line"><span class="hljs-language-javascript">      <span class="variable constant_">URL</span>.<span class="title function_">revokeObjectURL</span>(url);</span></span><br><span class="line"><span class="hljs-language-javascript">    });</span></span><br><span class="line"><span class="hljs-language-javascript">	</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Chemistry/">#Chemistry</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2024/10/05/30.FLEXPART-trajectories-in-3D-terrain-map/">PLotting FLEXPART trajectories in 3D terrain map</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/05/29/38.%5BMS%5DUntargeted_Analysis_on_Tea/">🍵非靶向质谱方法探索各类茶饮的分子组成</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2024/05/29/40.[MS]Visualizing-Chemical-Structures/';
+        this.page.identifier = '2024/05/29/40.[MS]Visualizing-Chemical-Structures/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

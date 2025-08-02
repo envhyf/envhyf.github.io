@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>WRF post processing 2: Xarray tricks - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="Xarray provides pandas-level convenience for working with ultidimensional data. Xarray has two fundamental data structure: a DataArray, which holds a single multi-dimensional variable and its coordina">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WRF post processing 2: Xarray tricks">
+<meta property="og:url" content="http://envhyf.github.io/2020/11/01/WRF-technique-xarray-tricks/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="Xarray provides pandas-level convenience for working with ultidimensional data. Xarray has two fundamental data structure: a DataArray, which holds a single multi-dimensional variable and its coordina">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-10-31T23:29:26.000Z">
+<meta property="article:modified_time" content="2020-10-31T17:49:52.000Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="WRF">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Search" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            WRF post processing 2: Xarray tricks
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2020-10-31T23:29:26.000Z" itemprop="datePublished">11月 1 2020</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>Xarray provides pandas-level convenience for working with ultidimensional data. Xarray has two fundamental data structure: a <strong>DataArray</strong>, which holds a single multi-dimensional variable and its coordinates;<br>a <strong>Dataset</strong>, which holds multiple variables that potentially share the same coordinates.     </p>
+<p>Moreover, a <strong>DataArray</strong> has four attributes: </p>
+<ul>
+<li>values: a numpy.ndarray holding the array’s values (矩阵数值，例如地表温度具体数值)</li>
+<li>dims: dimension names for each axis (e.g., (‘x’, ‘y’, ‘z’)) (维度名称，如经度、纬度、垂直分层、时间等)</li>
+<li>coords: a dict-like container of arrays (coordinates) that label each * point (e.g., 1-dimensional arrays of numbers, datetime objects or strings) (各维度坐标体系，如时间序列)</li>
+<li>attrs: an OrderedDict to hold arbitrary metadata (attributes) (对各属性的描述)</li>
+</ul>
+<span id="more"></span>  
+
+<h1 id="1-Subset-and-Diurnal-profiles"><a href="#1-Subset-and-Diurnal-profiles" class="headerlink" title="1. Subset and Diurnal profiles"></a>1. Subset and Diurnal profiles</h1><p> As an illustration, we firstly extract the original file generated from WRF-Chem by specific time range and spatial coverage. Then, the daily averages for those selected grids are calculated and saved as another netCDF file. </p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> xarray <span class="hljs-keyword">as</span> xr</span><br><span class="line">filename = <span class="hljs-string">"./../wrfout_allBVOCs_d01_2018-06-01_00:00:00"</span></span><br><span class="line">df = xr.open_dataset(filename)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 1. add dims</span></span><br><span class="line">df = df.assign_coords(south_north=(<span class="hljs-string">'south_north'</span>,df.XLAT[<span class="hljs-number">0</span>,:,<span class="hljs-number">0</span>].values))</span><br><span class="line">df = df.assign_coords(west_east=(<span class="hljs-string">'west_east'</span>,df.XLONG[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,:].values))</span><br><span class="line">df = df.assign_coords(Time=(<span class="hljs-string">'Time'</span>,df.XTIME.values))</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 2. selcting the grids with lon in the range of 100-120，lat in the range of 40-50 in the bottom vertical level. The simulation period was chosen in the range of 2018-06-01 to 2018-06-05</span></span><br><span class="line">da = df.sel(bottom_top = <span class="hljs-built_in">slice</span>(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>), south_north = <span class="hljs-built_in">slice</span>(<span class="hljs-number">40</span>,<span class="hljs-number">50</span>),west_east = <span class="hljs-built_in">slice</span>(<span class="hljs-number">100</span>,<span class="hljs-number">120</span>), Time = <span class="hljs-built_in">slice</span>(<span class="hljs-string">'2018-06-01T00:00:00.000000000'</span>,\</span><br><span class="line">                                                                                                        <span class="hljs-string">'2018-06-08T00:00:00.000000000'</span>))</span><br><span class="line"><span class="hljs-comment"># 3. selecting one/multi variable(s)</span></span><br><span class="line">var      = <span class="hljs-string">'PM2_5_DRY'</span> </span><br><span class="line">var_list = [<span class="hljs-string">'asoa1j'</span>,<span class="hljs-string">'asoa1i'</span>,<span class="hljs-string">'asoa2j'</span>,<span class="hljs-string">'asoa2i'</span>]</span><br><span class="line"><span class="hljs-comment"># 3.1 Summarizing multiple variables</span></span><br><span class="line">da[<span class="hljs-string">'SUM'</span>]  = <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> var_list:</span><br><span class="line">    da[<span class="hljs-string">'SUM'</span>] = da[<span class="hljs-string">'SUM'</span>]+da[c]</span><br><span class="line">    </span><br><span class="line"><span class="hljs-comment"># 4. Calculating the diurnal averages</span></span><br><span class="line">dm  = da[<span class="hljs-string">"SUM"</span>].groupby(<span class="hljs-string">'Time.hour'</span>).mean()</span><br><span class="line">dm.to_netcdf(<span class="hljs-string">"diurnal.nc"</span>)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="2-Rolling-window"><a href="#2-Rolling-window" class="headerlink" title="2. Rolling window"></a>2. Rolling window</h1><p>In the second example, we use resample trick to group the original data, and use rolling trick to calculate the daily maximum of 8-hour ozone concentrations.</p>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">da[<span class="hljs-string">'8h_o3_averege'</span>] = da[<span class="hljs-string">'o3'</span>].rolling(Time=<span class="hljs-number">8</span>, center=<span class="hljs-literal">False</span>).mean() <span class="hljs-comment"># center = False-&gt;time=end point of the rolling window.</span></span><br><span class="line">dt = da[<span class="hljs-string">'8h_o3_averege'</span>].resample(Time =<span class="hljs-string">'1D'</span>).<span class="hljs-built_in">max</span>()</span><br><span class="line">dt.to_netcdf(<span class="hljs-string">"./8h_o3_max.nc"</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/WRF/">#WRF</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2021/07/14/24.Windows%E7%94%B5%E8%84%91%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">Windows电脑工作环境配置笔记</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2020/08/04/23.%5BModel%5DWRF%E5%B5%8C%E5%A5%97%E7%BD%91%E6%A0%BC%E7%9A%84%E7%BB%98%E5%88%B6/">Plotting WRF Nested Domains WRF嵌套网格的绘制</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Comments</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2020/11/01/WRF-technique-xarray-tricks/';
+        this.page.identifier = '2020/11/01/WRF-technique-xarray-tricks/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

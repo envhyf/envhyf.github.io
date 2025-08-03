@@ -2,7 +2,7 @@
 <html class="has-navbar-fixed-top">
 <head>
     <meta charset="utf-8">
-<title>🍵非靶向质谱方法探索各类茶饮的分子组成 - 太平塔</title>
+<title>Common Function for Composition Visualization 常见分子组成绘图代码分享 - 太平塔</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
@@ -14,20 +14,17 @@
 
 
 
-    <meta name="description" content="我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。 本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="🍵非靶向质谱方法探索各类茶饮的分子组成">
-<meta property="og:url" content="http://envhyf.github.io/2024/05/29/38.[MS]Untargeted_Analysis_on_Tea/index.html">
+    <meta property="og:type" content="article">
+<meta property="og:title" content="Common Function for Composition Visualization 常见分子组成绘图代码分享">
+<meta property="og:url" content="http://envhyf.github.io/2025/05/01/42.[Code]Common_Functions_in_Chemical_Composition_Visualization/index.html">
 <meta property="og:site_name" content="太平塔">
-<meta property="og:description" content="我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。 本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。">
 <meta property="og:locale">
-<meta property="article:published_time" content="2024-05-29T16:05:00.000Z">
-<meta property="article:modified_time" content="2025-08-02T23:17:54.948Z">
+<meta property="article:published_time" content="2025-05-01T13:40:00.000Z">
+<meta property="article:modified_time" content="2025-08-03T09:09:56.502Z">
 <meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="R">
 <meta property="article:tag" content="Orbitrap">
 <meta property="article:tag" content="Mass Spectrometry">
-<meta property="article:tag" content="Chemistry">
-<meta property="article:tag" content="Food">
 <meta name="twitter:card" content="summary">
 
 
@@ -114,7 +111,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -136,13 +133,13 @@
     <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            🍵非靶向质谱方法探索各类茶饮的分子组成
+            Common Function for Composition Visualization 常见分子组成绘图代码分享
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
         <span class="column is-narrow">
             
-                <time datetime="2024-05-29T16:05:00.000Z" itemprop="datePublished">5月 29 2024</time>
+                <time datetime="2025-05-01T13:40:00.000Z" itemprop="datePublished">5月 1 2025</time>
             
         </span>
         
@@ -155,139 +152,17 @@
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><p>我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。</p>
-<p>本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。</p>
-<span id="more"></span>
-
-<h1 id="1-实验设计"><a href="#1-实验设计" class="headerlink" title="1. 实验设计"></a>1. 实验设计</h1><p>我总共设计了两组测量任务：</p>
-<ul>
-<li><p><strong>任务 A：不同国家与产区的茶叶对比</strong><br>包括中国绿茶、日本绿茶、印度红茶、斯里兰卡红茶等，卢旺达红茶等，探究不同类型/产地茶叶能否通过质谱分析呈现差异。</p>
-</li>
-<li><p><strong>任务 B：西湖龙井的“档次分辨”挑战</strong><br>对比杭州核心产区与非核心产区龙井（价格不同）以及其他地区的”挂牌”龙井的分子组成差异。该部分实验已完成，尚未分析其数据，未来会专文介绍。</p>
-</li>
-</ul>
-<p>茶叶样品相比大气污染物自然采集更有意思。我个人从老家带来几种安徽产的绿茶，为了扩大样品量，向同事们借茶，并前往Lenzburg的茶叶商店<a target="_blank" rel="noopener" href="https://www.itsteatime.ch/de/Probierset_Schwarzer_Tee_Nature.a4163.5.html">It’s tea time</a>购买红茶。最终我收集到的茶叶样品包括：</p>
-<ul>
-<li>中国绿茶：安徽池州绿茶、四川雅安绿茶</li>
-<li>日本绿茶：两款产地不同的煎茶</li>
-<li>斯里兰卡绿茶<br>红茶系列：</li>
-<li>中国祁门红茶</li>
-<li>印度大吉岭红茶（Margaret’s Hope）</li>
-<li>越南红茶（Golden Tippy）</li>
-<li>斯里兰卡红茶（Nuwara Eliya）</li>
-<li>卢旺达红茶（Rukeri）</li>
-</ul>
-<p>在国内朋友的帮助下，我收到了多个价位（从 200 元至 1000 元不等）的西湖龙井样品，并由一位回国探亲的同事帮忙携带至瑞士，具见下图：</p>
-<p>通过预实验，尽可能模拟真实饮茶状态——即将茶叶浸泡于热水中提取成分，并直接进行质谱测量。</p>
-<h1 id="2-数据处理"><a href="#2-数据处理" class="headerlink" title="2. 数据处理"></a>2. 数据处理</h1><p>RDKit Python library can reproduce the structurs based on the smiles code.</p>
-<h1 id="3-结果分析"><a href="#3-结果分析" class="headerlink" title="3. 结果分析"></a>3. 结果分析</h1><table>
-<thead>
-<tr>
-<th>m/z</th>
-<th>Formula</th>
-<th>中文名称</th>
-<th>English Name</th>
-<th>Note</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>140.06853</td>
-<td>C5H11NO2-Na⁺</td>
-<td>缬氨酸</td>
-<td>Valine</td>
-<td>氨基酸</td>
-</tr>
-<tr>
-<td>158.08109</td>
-<td>C7H11NO3-H⁺</td>
-<td>甘氨酸</td>
-<td>Tiglylglycine</td>
-<td>氨基酸衍生物</td>
-</tr>
-<tr>
-<td>175.10800</td>
-<td>C7H14N2O3-H⁺</td>
-<td>茶氨酸</td>
-<td>Theanine</td>
-<td>茶叶中重要氨基酸成分之一</td>
-</tr>
-<tr>
-<td>197.09180</td>
-<td>C9H12N2O3-H⁺</td>
-<td>3-氨基-L-酪氨酸</td>
-<td>3-Amino-L-tyrosine</td>
-<td>酪氨酸衍生物</td>
-</tr>
-<tr>
-<td>215.05261</td>
-<td>C7H12O6-Na⁺</td>
-<td>奎宁酸</td>
-<td>Quinic acid</td>
-<td>植物代谢产物</td>
-</tr>
-<tr>
-<td>217.06955</td>
-<td>C8H10N4O2-Na⁺</td>
-<td>咖啡因</td>
-<td>Caffeine</td>
-<td>茶叶中的典型生物碱成分</td>
-</tr>
-<tr>
-<td>219.07156</td>
-<td>C7H13N2O3-Na⁺</td>
-<td>L-茶氨酸</td>
-<td>Theanine</td>
-<td>又称谷氨酰乙胺，是茶鲜味的主要来源，占游离氨基酸50%以上</td>
-</tr>
-<tr>
-<td>313.06851</td>
-<td>C15H14O6-Na⁺</td>
-<td>儿茶素</td>
-<td>Catechin</td>
-<td>多酚类抗氧化成分</td>
-</tr>
-<tr>
-<td>335.09497</td>
-<td>C11H20O10-Na⁺</td>
-<td>接骨木二糖</td>
-<td>Sambubiose</td>
-<td>多糖类</td>
-</tr>
-<tr>
-<td>365.10501</td>
-<td>C12H22O11-Na⁺</td>
-<td>蔗糖</td>
-<td>Sucrose</td>
-<td>常见双糖</td>
-</tr>
-<tr>
-<td>203.05258</td>
-<td>C6H12O6-Na⁺</td>
-<td>葡萄糖</td>
-<td>Glucose</td>
-<td>单糖</td>
-</tr>
-<tr>
-<td>329.09976</td>
-<td>C16H18O6-Na⁺</td>
-<td>升麻素</td>
-<td>Cimifugin</td>
-<td>中草药活性成分，具有抗炎活性</td>
-</tr>
-</tbody></table>
-</body></html>
+        
     
     </div>
     
     <div class="columns is-variable is-1 is-multiline is-mobile">
     
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/R/">#R</a></span>
+    
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
     
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Mass-Spectrometry/">#Mass Spectrometry</a></span>
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Chemistry/">#Chemistry</a></span>
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Food/">#Food</a></span>
     
     </div>
     
@@ -295,12 +170,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2024/10/05/30.FLEXPART-trajectories-in-3D-terrain-map/">PLotting FLEXPART trajectories in 3D terrain map</a>
+            <a href="/2025/06/20/%5BModel%5DFLEXPART.V11_ECMWF_supported_installation/">Installing FLEXPART v11 with ECMWF Support</a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2024/05/29/40.%5BMS%5DVisualizing-Chemical-Structures/">Visualizing Chemical Structures 绘制化学物质的结构式</a>
+            <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/">From Formula to Function: Inferring Compound Class from MS1 + MS2</a>
             
         </span>
     </div>
@@ -311,12 +186,12 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Kommentare</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://envhyf.github.io/2024/05/29/38.[MS]Untargeted_Analysis_on_Tea/';
-        this.page.identifier = '2024/05/29/38.[MS]Untargeted_Analysis_on_Tea/';
+        this.page.url = 'http://envhyf.github.io/2025/05/01/42.[Code]Common_Functions_in_Chemical_Composition_Visualization/';
+        this.page.identifier = '2025/05/01/42.[Code]Common_Functions_in_Chemical_Composition_Visualization/';
         
         this.language = 'zh';
         
@@ -342,7 +217,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -450,7 +325,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -463,10 +338,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Bez tytułu)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

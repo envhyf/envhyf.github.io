@@ -234,6 +234,44 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
+            <a href="/2025/05/01/43.%5BCode%5DInteractive_plot_for_organics_spectra/" itemprop="url">Organic Emission Profiles in Interactive Plots</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2025-05-01T13:40:00.000Z" itemprop="datePublished">5月 1 2025</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><ol>
+<li>Load Plotly JS once (in the theme’s head.ejs or _partial/footer.ejs)<br>In themes/minos/layout/_partial/head.ejs, before </li>
+</ol></body></html>
+        <p class="article-more-link">
+            <a href="/2025/05/01/43.%5BCode%5DInteractive_plot_for_organics_spectra/#more">Leer más</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
             <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/" itemprop="url">From Formula to Function: Inferring Compound Class from MS1 + MS2</a>
         
     </h1>
@@ -323,7 +361,7 @@
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><p>In this post, I document the full formula assignment pipeline using <code>MFAssignR</code>, tailored for Orbitrap-MS data post-peak list processing.</p>
+        <html><head></head><body><p>在此，我并不需要重新发明轮子，而是尽可能寻找已有的开源工具实现我已经规律整理的Ion的MZs位置明确分子化学式<br>In this post, I document the full formula assignment pipeline using <code>MFAssignR</code>, tailored for Orbitrap-MS data post-peak list processing.</p>
 <p>The steps include quality control filtering, noise estimation via Kendrick Mass Defect (KMD) plots, isotopic filtering, recalibrant inspection, and final formula assignment.</p></body></html>
         <p class="article-more-link">
             <a href="/2024/11/01/37.%5BMS%5DOrbiTrack_Dev_Log_5_Formula_Assignment/#more">Leer más</a>
@@ -444,44 +482,6 @@
 <p>For long-term measurements, especially those spanning days or weeks, dynamic calibration is critical—m/z drift can occur over time, and calibration parameters from Day 1 may not hold by Day 5. The function below allows automated chunk-wise recalibration across retention time.</p></body></html>
         <p class="article-more-link">
             <a href="/2024/10/22/33.%5BMS%5DOrbiTrack_Dev_Log_2_MZ_calibration/#more">Leer más</a>
-        </p>
-    
-    </div>
-    
-    
-</article>
-
-
-
-
-    
-        <article class="article content gallery" itemscope itemprop="blogPost">
-    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
-        
-            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/" itemprop="url">OrbiTrack Dev Log 1: Parsing Orbitrap MS1 Data</a>
-        
-    </h1>
-    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
-        <span class="column is-narrow">
-            
-                <time datetime="2024-10-21T10:45:00.000Z" itemprop="datePublished">10月 21 2024</time>
-            
-        </span>
-        
-        <span class="column is-narrow article-category">
-            <i class="far fa-folder"></i>
-            <a class="article-category-link" href="/categories/Research/">Research</a>
-        </span>
-        
-        
-    </div>
-    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
-    
-        <html><head></head><body><p>The ultra-high resolution of Orbitrap mass spectrometry enables an unprecedented level of chemical detail. In my current research, we employ a direct infusion–Orbitrap approach for non-targeted analysis. However, due to the lack of dedicated tools tailored for this application, I developed a new software package called <strong>OrbiTrack</strong>. It supports two key workflows:</p>
-<p>(1) Guiding ion fitting in EESI-TOF using high-resolution chemical information acquired at 120k resolution on the Orbitrap.</p>
-<p>(2) Directly utilizing non-targeted Orbitrap data by integrating full time-series MS1 outputs for real-time or online analysis.</p></body></html>
-        <p class="article-more-link">
-            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/#more">Leer más</a>
         </p>
     
     </div>

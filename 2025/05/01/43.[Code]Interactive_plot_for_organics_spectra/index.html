@@ -2,7 +2,7 @@
 <html class="has-navbar-fixed-top">
 <head>
     <meta charset="utf-8">
-<title>From Formula to Function: Inferring Compound Class from MS1 + MS2 - 太平塔</title>
+<title>Organic Emission Profiles in Interactive Plots - 太平塔</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
@@ -14,17 +14,16 @@
 
 
 
-    <meta name="description" content="In this post, I document the full formula assignment pipeline using MFAssignR, tailored for Orbitrap-MS data post-peak list processing. The steps include quality control filtering, noise estimation vi">
+    <meta name="description" content="Load Plotly JS once (in the theme’s head.ejs or _partial&#x2F;footer.ejs)In themes&#x2F;minos&#x2F;layout&#x2F;_partial&#x2F;head.ejs, before">
 <meta property="og:type" content="article">
-<meta property="og:title" content="From Formula to Function: Inferring Compound Class from MS1 + MS2">
-<meta property="og:url" content="http://envhyf.github.io/2025/04/01/41.[MS]From_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/index.html">
+<meta property="og:title" content="Organic Emission Profiles in Interactive Plots">
+<meta property="og:url" content="http://envhyf.github.io/2025/05/01/43.[Code]Interactive_plot_for_organics_spectra/index.html">
 <meta property="og:site_name" content="太平塔">
-<meta property="og:description" content="In this post, I document the full formula assignment pipeline using MFAssignR, tailored for Orbitrap-MS data post-peak list processing. The steps include quality control filtering, noise estimation vi">
+<meta property="og:description" content="Load Plotly JS once (in the theme’s head.ejs or _partial&#x2F;footer.ejs)In themes&#x2F;minos&#x2F;layout&#x2F;_partial&#x2F;head.ejs, before">
 <meta property="og:locale">
-<meta property="article:published_time" content="2025-04-01T13:40:00.000Z">
-<meta property="article:modified_time" content="2025-08-03T09:18:52.412Z">
+<meta property="article:published_time" content="2025-05-01T13:40:00.000Z">
+<meta property="article:modified_time" content="2025-08-03T09:40:47.697Z">
 <meta property="article:author" content="Hao Yufang">
-<meta property="article:tag" content="R">
 <meta property="article:tag" content="Orbitrap">
 <meta property="article:tag" content="Mass Spectrometry">
 <meta name="twitter:card" content="summary">
@@ -135,13 +134,13 @@
     <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            From Formula to Function: Inferring Compound Class from MS1 + MS2
+            Organic Emission Profiles in Interactive Plots
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
         <span class="column is-narrow">
             
-                <time datetime="2025-04-01T13:40:00.000Z" itemprop="datePublished">4月 1 2025</time>
+                <time datetime="2025-05-01T13:40:00.000Z" itemprop="datePublished">5月 1 2025</time>
             
         </span>
         
@@ -154,35 +153,18 @@
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><p>In this post, I document the full formula assignment pipeline using <code>MFAssignR</code>, tailored for Orbitrap-MS data post-peak list processing.</p>
-<p>The steps include quality control filtering, noise estimation via Kendrick Mass Defect (KMD) plots, isotopic filtering, recalibrant inspection, and final formula assignment.</p>
+        <html><head></head><body><ol>
+<li>Load Plotly JS once (in the theme’s head.ejs or _partial/footer.ejs)<br>In themes/minos/layout/_partial/head.ejs, before </li>
+</ol>
 <span id="more"></span>
 
-
-<h2 id="Tool-1-MetFrag"><a href="#Tool-1-MetFrag" class="headerlink" title="Tool 1. MetFrag"></a>Tool 1. MetFrag</h2><p><a target="_blank" rel="noopener" href="https://msbi.ipb-halle.de/MetFrag/">https://msbi.ipb-halle.de/MetFrag/</a></p>
-<h2 id="Tool-2-CFM-ID"><a href="#Tool-2-CFM-ID" class="headerlink" title="Tool 2. CFM-ID"></a>Tool 2. CFM-ID</h2><p><a target="_blank" rel="noopener" href="https://msbi.ipb-halle.de/MetFrag/">https://msbi.ipb-halle.de/MetFrag/</a></p>
-<h2 id="Tool-3-SIRIUS"><a href="#Tool-3-SIRIUS" class="headerlink" title="Tool 3. SIRIUS"></a>Tool 3. SIRIUS</h2><p><a target="_blank" rel="noopener" href="https://msbi.ipb-halle.de/MetFrag/">https://msbi.ipb-halle.de/MetFrag/</a></p>
-<h2 id="Simple-code-for-results-visualization"><a href="#Simple-code-for-results-visualization" class="headerlink" title="Simple code for results visualization"></a>Simple code for results visualization</h2><p><a target="_blank" rel="noopener" href="https://msbi.ipb-halle.de/MetFrag/">https://msbi.ipb-halle.de/MetFrag/</a></p>
-<h2 id="MS2-Analyzer"><a href="#MS2-Analyzer" class="headerlink" title="MS2 Analyzer"></a>MS2 Analyzer</h2><p><a target="_blank" rel="noopener" href="https://chemrxiv.org/engage/chemrxiv/article-details/6492507524989702c2b082fc">https://chemrxiv.org/engage/chemrxiv/article-details/6492507524989702c2b082fc</a></p>
-<p><a target="_blank" rel="noopener" href="https://fiehnlab.ucdavis.edu/projects/ms2analyzer">https://fiehnlab.ucdavis.edu/projects/ms2analyzer</a></p>
-<h2 id="Polaris-drug-discovery"><a href="#Polaris-drug-discovery" class="headerlink" title="Polaris drug discovery"></a>Polaris drug discovery</h2><p><a target="_blank" rel="noopener" href="https://polarishub.io/competitions/asap-discovery/antiviral-drug-discovery-2025">https://polarishub.io/competitions/asap-discovery/antiviral-drug-discovery-2025</a></p>
-<p>To do list.</p>
-<ol>
-<li><p>Orbitrack tool make 4-5 tools as the blog webpage 开发笔记</p>
-</li>
-<li><p>Drawing structure as a blog page</p>
-</li>
-<li><p>MS2结构分析</p>
-</li>
-<li></li>
-</ol>
-</body></html>
+<h2 id="Interactive-Spectrum-Fire-vs-Vehicular-Emissions"><a href="#Interactive-Spectrum-Fire-vs-Vehicular-Emissions" class="headerlink" title="Interactive Spectrum: Fire vs Vehicular Emissions"></a>Interactive Spectrum: Fire vs Vehicular Emissions</h2><div style="width:100%; height:500px; overflow:auto;">
+  <iframe src="/html/test_spectra.html" width="100%" height="100%" frameborder="0" scrolling="no" style="border:none;"></iframe>
+</div></body></html>
     
     </div>
     
     <div class="columns is-variable is-1 is-multiline is-mobile">
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/R/">#R</a></span>
     
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
     
@@ -194,12 +176,12 @@
     <div class="columns is-mobile is-multiline article-nav">
         <span class="column is-12-mobile is-half-desktop  article-nav-prev">
             
-            <a href="/2025/05/01/43.%5BCode%5DInteractive_plot_for_organics_spectra/">Organic Emission Profiles in Interactive Plots</a>
+            <a href="/2025/05/01/42.%5BCode%5DCommon_Functions_in_Chemical_Composition_Visualization%20copy/">Common Function for Organics Visualization 有机物分子组成绘图代码分享</a>
             
         </span>
         <span class="column is-12-mobile is-half-desktop  article-nav-next">
             
-            <a href="/2024/11/24/38.%5BMS%5DOrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/">OrbiTrack Dev Log 6: TOF missing peaks adding</a>
+            <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/">From Formula to Function: Inferring Compound Class from MS1 + MS2</a>
             
         </span>
     </div>
@@ -214,8 +196,8 @@
     
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://envhyf.github.io/2025/04/01/41.[MS]From_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/';
-        this.page.identifier = '2025/04/01/41.[MS]From_Formula_to Function_Inferring_Compound_Class_from_MS1+MS2/';
+        this.page.url = 'http://envhyf.github.io/2025/05/01/43.[Code]Interactive_plot_for_organics_spectra/';
+        this.page.identifier = '2025/05/01/43.[Code]Interactive_plot_for_organics_spectra/';
         
         this.language = 'zh';
         

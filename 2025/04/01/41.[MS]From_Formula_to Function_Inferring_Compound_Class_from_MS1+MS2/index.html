@@ -26,7 +26,7 @@
 <meta property="og:image" content="http://envhyf.github.io/images/MS2/Fig.SIRIUS_paper.png">
 <meta property="og:image" content="http://envhyf.github.io/images/MS2/Fig.Results_from_SIRIUS.png">
 <meta property="article:published_time" content="2025-04-01T13:40:00.000Z">
-<meta property="article:modified_time" content="2025-08-05T23:07:03.149Z">
+<meta property="article:modified_time" content="2025-08-05T23:14:10.442Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Orbitrap">
 <meta property="article:tag" content="Mass Spectrometry">
@@ -117,7 +117,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Suche" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -151,7 +151,7 @@
         <span class="column is-narrow">
             
             
-            15 分钟 de lectura (Alrededor de 2317 palabras)
+            16 分钟 lesen (Über 2328 Wörter)
         </span>
         
     </div>
@@ -170,11 +170,11 @@
 <p>By analyzing these MS2 spectra, either through in silico computational tools or by matching against curated spectral libraries, we can narrow down the structural identity of the parent ion. This capability is not only just valuable in environmental science but also has broad and profound applications in other fields. For example, in medical research, it is widely used for the structural identification of metabolites, disease diagnostics biomarker discovery (<a target="_blank" rel="noopener" href="https://polarishub.io/competitions/asap-discovery/antiviral-drug-discovery-2025">an interesting link</a>). In food chemistry, it enables the profiling of bioactive compounds and nutritional components.</p>
 <h2 id="1-MS2-Strategy-knowledge-base"><a href="#1-MS2-Strategy-knowledge-base" class="headerlink" title="1. MS2 Strategy knowledge base"></a>1. MS2 Strategy knowledge base</h2><p>Generally, there are two types of MS² (tandem mass spectrometry) acquisition strategies that can be adopted:</p>
 <ol>
-<li>DDA – Data-Dependent Acquisition<br>In this approach, precursor ions are selected based on the MS1 signal intensity. The instrument automatically selects the top N most intense precursor ions (above a certain threshold) for fragmentation in MS2 (MS/MS).</li>
-</ol>
-<p>✅ Advantage: High-abundance ions usually yield high-quality MS2 spectra, making structural interpretation more reliable.<br>⚠️ Limitation: Low-abundance ions may be missed, which is especially problematic in environmental samples like mine, where many of the most intense signals originate from background contaminants rather than meaningful analytes.</p>
-<ol>
-<li>DIA – Data-Independent Acquisition<br>In DIA, all ions within predefined m/z windows are fragmented simultaneously, regardless of their intensity.<br>✅ Advantage: Provides broader MS2 coverage, ensuring that even low-abundance compounds are captured.<br>⚠️ Limitation: The resulting MS2 spectra are highly complex and often require advanced deconvolution algorithms to interpret.</li>
+<li><p>DDA – Data-Dependent Acquisition<br>In this approach, precursor ions are selected based on the MS1 signal intensity. The instrument automatically selects the top N most intense precursor ions (above a certain threshold) for fragmentation in MS2 (MS/MS).</p>
+<p> ✅ Advantage: High-abundance ions usually yield high-quality MS2 spectra, making structural interpretation more reliable.<br> ⚠️ Limitation: Low-abundance ions may be missed, which is especially problematic in environmental samples like mine, where many of the most intense signals originate from background contaminants rather than meaningful analytes.</p>
+</li>
+<li><p>DIA – Data-Independent Acquisition<br>In DIA, all ions within predefined m/z windows are fragmented simultaneously, regardless of their intensity.<br> ✅ Advantage: Provides broader MS2 coverage, ensuring that even low-abundance compounds are captured.<br> ⚠️ Limitation: The resulting MS2 spectra are highly complex and often require advanced deconvolution algorithms to interpret.</p>
+</li>
 </ol>
 <p>In my case, I will first work with MS1 full-scan mode, using post-acquisition data analysis to identify and narrow down a list of important precursor ions across different m/z windows. Based on this information, I will then apply a targeted Selected Ion Monitoring (SIM) method focused on these specific ions. For each target, I will optimize key acquisition parameters with the goal of obtaining reproducible, stable, and chemically meaningful fragment patterns for downstream structural interpretation.</p>
 <p>From the paper of Assress et al (2023), I summarize the important paramters used for MS2 DIA analysis</p>
@@ -255,15 +255,15 @@
 <td><strong>Collision Energy</strong></td>
 <td>For ion fragmentation</td>
 <td>Fixed/Stepped</td>
-<td><strong>Stepped: 10 &amp; 40 V</strong></td>
+<td>depending on the molecules</td>
 <td>Stepped energies improve MS/MS spectrum richness</td>
 </tr>
 <tr>
 <td><strong>Dynamic Exclusion</strong></td>
 <td>Prevents redundant fragmentation</td>
-<td>3–100 s</td>
-<td><strong>10 s</strong></td>
-<td>Ensures broader MS/MS coverage</td>
+<td>specific m/z or a list of m/zs</td>
+<td>-</td>
+<td>Ensures broader MS/MS coverage, more structural information</td>
 </tr>
 </tbody></table>
 <h2 id="3-Simple-MS2-Level-Data-Visualization"><a href="#3-Simple-MS2-Level-Data-Visualization" class="headerlink" title="3. Simple MS2-Level Data Visualization"></a>3. Simple MS2-Level Data Visualization</h2><p>This section presents a basic workflow for parsing and visualizing MS1 and MS2 data exported from Orbitrap. The raw <code>.raw</code> files are first converted into <code>.ms1</code> and <code>.ms2</code> formats using tools such as <strong>MZmine3</strong> or <strong>RawConverter</strong>.</p>
@@ -335,7 +335,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Kommentare</h3>
     
 <script>
     var disqus_config = function () {
@@ -461,7 +461,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -474,10 +474,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Seiten',
+                CATEGORIES: 'Kategorien',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

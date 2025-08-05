@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>OrbiTrack Dev Log 6: TOF Fitting Refiner - 太平塔</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="1. MotivationContinuing from the previous post on molecular formula assignment, I encountered a common issue: overfitting during TOF peak assignment. In some cases, a narrow TOF m&#x2F;z window was being a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OrbiTrack Dev Log 6: TOF Fitting Refiner">
+<meta property="og:url" content="http://envhyf.github.io/2024/11/01/38.[MS]OrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/index.html">
+<meta property="og:site_name" content="太平塔">
+<meta property="og:description" content="1. MotivationContinuing from the previous post on molecular formula assignment, I encountered a common issue: overfitting during TOF peak assignment. In some cases, a narrow TOF m&#x2F;z window was being a">
+<meta property="og:locale">
+<meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.Ion_flow_Orbi+TOF+.png">
+<meta property="article:published_time" content="2024-11-01T15:40:00.000Z">
+<meta property="article:modified_time" content="2025-08-05T22:59:10.982Z">
+<meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Orbitrap">
+<meta property="article:tag" content="Mass Spectrometry">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.Ion_flow_Orbi+TOF+.png">
+
+
+
+
+
+<link rel="icon" href="/bugcatcher.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116955364-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116955364-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                    
+                    太平塔
+                    
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories/Research">Research</a>
+            
+            <a class="navbar-item "
+               href="/categories/Tech">Tech</a>
+            
+            <a class="navbar-item "
+               href="/categories/Life">Life</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="Suche" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            OrbiTrack Dev Log 6: TOF Fitting Refiner
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2024-11-01T15:40:00.000Z" itemprop="datePublished">11月 1 2024</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Research/">Research</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            4 分钟 lesen (Über 657 Wörter)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><h2 id="1-Motivation"><a href="#1-Motivation" class="headerlink" title="1. Motivation"></a>1. Motivation</h2><p>Continuing from the previous post on molecular formula assignment, I encountered a common issue: <strong>overfitting</strong> during TOF peak assignment. In some cases, a narrow TOF m/z window was being assigned with <strong>too many candidate formulas</strong>, resulting in <strong>high uncertainty</strong> for each individual ion. In other words, we might obtain a wrong intensity for a correct formula, which affecting the dat reliability.</p>
+<p>To address this, I implemented a refinement step after formula assignment:<br><strong>Only the local maxima within a given ppm range are retained</strong>, along with known TOF apex peaks.</p>
+<span id="more"></span>
+
+<h2 id="2-Concept"><a href="#2-Concept" class="headerlink" title="2. Concept"></a>2. Concept</h2><p>The idea is simple:</p>
+<ul>
+<li>If multiple peaks are detected within a small ppm window, <strong>keep only the most intense one</strong>.</li>
+<li>If a lower-intensity peak is near a known <strong>TOF apex position</strong> (from missing peaks), it is <strong>also retained</strong> to preserve chemically real signals that Orbitrap may have only partially captured. (this is because sometimes there are multiple peaks in an unit m/z window, and there are some ion on the shoulder of the main peak, and it is close to the small peak apex, if they somehow matched with the previous criteria, the ion on the peak apex were removed,which was not we expced.)</li>
+<li>All other weaker peaks in that region are discarded.</li>
+</ul>
+<h2 id="3-Function-of-Intensity-Based-Refiner"><a href="#3-Function-of-Intensity-Based-Refiner" class="headerlink" title="3. Function of Intensity-Based Refiner"></a>3. Function of Intensity-Based Refiner</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">refiner_by_orbitrap_intensity_ratio</span>(<span class="hljs-params">mf_result, ppm_range=<span class="hljs-number">50</span>, missing_peak_list=<span class="hljs-literal">None</span></span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Refine Orbitrap peak list by comparing intensities with neighbors in ±ppm_range.</span></span><br><span class="line"><span class="hljs-string">    Keeps local maxima or known TOF apex ions (from missing_peak_list).</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    Parameters:</span></span><br><span class="line"><span class="hljs-string">        mf_result (pd.DataFrame): DataFrame with 'exp_mass' and 'abundance'</span></span><br><span class="line"><span class="hljs-string">        ppm_range (float): PPM range for neighborhood comparison</span></span><br><span class="line"><span class="hljs-string">        missing_peak_list (pd.DataFrame): Known TOF apex m/z values (optional)</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    Returns:</span></span><br><span class="line"><span class="hljs-string">        pd.DataFrame: Filtered mf_result containing only retained peaks</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    <span class="hljs-keyword">if</span> missing_peak_list <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:</span><br><span class="line">        missing_peak_list = []</span><br><span class="line"></span><br><span class="line">    mf_result = mf_result.sort_values(by=<span class="hljs-string">'exp_mass'</span>).reset_index(drop=<span class="hljs-literal">True</span>)</span><br><span class="line">    exp_mass = mf_result[<span class="hljs-string">'exp_mass'</span>].values</span><br><span class="line">    abundance = mf_result[<span class="hljs-string">'abundance'</span>].values</span><br><span class="line">    keep_indices = np.ones(<span class="hljs-built_in">len</span>(exp_mass), dtype=<span class="hljs-built_in">bool</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(exp_mass)):</span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> keep_indices[i]:</span><br><span class="line">            <span class="hljs-keyword">continue</span></span><br><span class="line"></span><br><span class="line">        mz_i = exp_mass[i]</span><br><span class="line">        intensity_i = abundance[i]</span><br><span class="line">        ppm_tolerance = mz_i * ppm_range / <span class="hljs-number">1e6</span></span><br><span class="line"></span><br><span class="line">        lower = mz_i - ppm_tolerance</span><br><span class="line">        upper = mz_i + ppm_tolerance</span><br><span class="line"></span><br><span class="line">        mask = (exp_mass &gt;= lower) &amp; (exp_mass &lt;= upper) &amp; (np.arange(<span class="hljs-built_in">len</span>(exp_mass)) != i) &amp; keep_indices</span><br><span class="line">        neighbor_indices = np.where(mask)[<span class="hljs-number">0</span>]</span><br><span class="line"></span><br><span class="line">        is_max = <span class="hljs-built_in">all</span>(intensity_i &gt;= abundance[j] <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> neighbor_indices)</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> is_max:</span><br><span class="line">            <span class="hljs-comment"># Keep only if close to a known TOF apex</span></span><br><span class="line">            close_to_tof_apex = <span class="hljs-built_in">any</span>(<span class="hljs-built_in">abs</span>(mz_i - tof_mz) &lt;= <span class="hljs-number">0.001</span> <span class="hljs-keyword">for</span> tof_mz <span class="hljs-keyword">in</span> missing_peak_list[<span class="hljs-string">'m.z'</span>].values)</span><br><span class="line">            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> close_to_tof_apex:</span><br><span class="line">                keep_indices[i] = <span class="hljs-literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> mf_result[keep_indices].reset_index(drop=<span class="hljs-literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h2 id="4-Applying-the-Refiner"><a href="#4-Applying-the-Refiner" class="headerlink" title="4.  Applying the Refiner"></a>4.  Applying the Refiner</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">refining_distance = <span class="hljs-number">40</span>  <span class="hljs-comment"># in ppm</span></span><br><span class="line"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(orbi_list_all))  <span class="hljs-comment"># Before refinement</span></span><br><span class="line">refined_orbi_list = refiner_by_orbitrap_intensity_ratio(orbi_list_all, refining_distance, missing_peak_list)</span><br><span class="line"><span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(refined_orbi_list))  <span class="hljs-comment"># After refinement</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>After refinement, the final peak list can be exported in text format for direct use in TOFware fitting. This refined list includes:</p>
+<ul>
+<li>Orbitrap-resolved peaks</li>
+<li>TOF-reconstructed (“missing”) peaks</li>
+<li>Known inorganic salt peaks (primary ions and its clusters, K+, Mg+, etc)</li>
+</ul>
+<p> While isotope peaks are excluded from the fitting, unassigned ions are retained. Although these unassigned ions may not provide direct chemical information, their presence helps prevent signal over-allocation to nearby assigned peaks — particularly in dense or overlapping m/z regions.</p>
+<p>An illustration of the ion inflow–outflow process is shown below as a Sankey diagram.<br>Before integrating Orbitrap into the TOF fitting workflow, only ~2000 ions could be manually fit, often with significant chemical ambiguity. <strong>With the addition of Orbitrap’s ultra-high-resolution molecular information, the number of confidently assigned ions has increased to over 3500, significantly enhancing the chemical characterization of the analytes.</strong></p>
+<p><img src="/images/Orbitrack_log/Fig.Ion_flow_Orbi+TOF+.png"></p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Orbitrap/">#Orbitrap</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Mass-Spectrometry/">#Mass Spectrometry</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/">From Formula to Function: Inferring Compound Class from MS1 + MS2</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2024/11/01/37.%5BMS%5DOrbiTrack_Dev_Log_5_Formula_Assignment/">OrbiTrack Dev Log 5: Chemical Formula Assignment</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+
+
+<div class="comments">
+    <h3 class="title is-4">Kommentare</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://envhyf.github.io/2024/11/01/38.[MS]OrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/';
+        this.page.identifier = '2024/11/01/38.[MS]OrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'taipingta' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2025 Hao Yufang&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/envhyf/">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery > p > .gallery-item').unwrap();
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Seiten',
+                CATEGORIES: 'Kategorien',
+                TAGS: 'Tags',
+                UNTITLED: '(Sans Titre)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

@@ -106,7 +106,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Chercher" href="javascript:;">
+            <a class="navbar-item search" title="Suche" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -155,7 +155,7 @@
         <span class="column is-narrow">
             
             
-            1 分钟 lire (À propos 137 mots)
+            1 分钟 lesen (Über 137 Wörter)
         </span>
         
     </div>
@@ -164,7 +164,7 @@
         <html><head></head><body><p>In this post, I document the full formula assignment pipeline using <code>MFAssignR</code>, tailored for Orbitrap-MS data post-peak list processing.</p>
 <p>The steps include quality control filtering, noise estimation via Kendrick Mass Defect (KMD) plots, isotopic filtering, recalibrant inspection, and final formula assignment.</p></body></html>
         <p class="article-more-link">
-            <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/#more">Lire la Suite</a>
+            <a href="/2025/04/01/41.%5BMS%5DFrom_Formula_to%20Function_Inferring_Compound_Class_from_MS1+MS2/#more">mehr</a>
         </p>
     
     </div>
@@ -179,13 +179,13 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            <a href="/2024/11/24/38.%5BMS%5DOrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/" itemprop="url">OrbiTrack Dev Log 6: TOF missing peaks adding</a>
+            <a href="/2024/11/01/38.%5BMS%5DOrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/" itemprop="url">OrbiTrack Dev Log 6: TOF Fitting Refiner</a>
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
         <span class="column is-narrow">
             
-                <time datetime="2024-11-24T17:45:00.000Z" itemprop="datePublished">11月 24 2024</time>
+                <time datetime="2024-11-01T15:40:00.000Z" itemprop="datePublished">11月 1 2024</time>
             
         </span>
         
@@ -198,13 +198,17 @@
         <span class="column is-narrow">
             
             
-            几秒 lire (À propos 0 mots)
+            4 分钟 lesen (Über 657 Wörter)
         </span>
         
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        
+        <html><head></head><body><h2 id="1-Motivation"><a href="#1-Motivation" class="headerlink" title="1. Motivation"></a>1. Motivation</h2><p>Continuing from the previous post on molecular formula assignment, I encountered a common issue: <strong>overfitting</strong> during TOF peak assignment. In some cases, a narrow TOF m/z window was being assigned with <strong>too many candidate formulas</strong>, resulting in <strong>high uncertainty</strong> for each individual ion. In other words, we might obtain a wrong intensity for a correct formula, which affecting the dat reliability.</p>
+<p>To address this, I implemented a refinement step after formula assignment:<br><strong>Only the local maxima within a given ppm range are retained</strong>, along with known TOF apex peaks.</p></body></html>
+        <p class="article-more-link">
+            <a href="/2024/11/01/38.%5BMS%5DOrbiTrack_Dev_Log_6_Using_TOF_Fitting_Refiner/#more">mehr</a>
+        </p>
     
     </div>
     
@@ -237,7 +241,7 @@
         <span class="column is-narrow">
             
             
-            6 分钟 lire (À propos 837 mots)
+            6 分钟 lesen (Über 837 Wörter)
         </span>
         
     </div>
@@ -246,7 +250,7 @@
         <html><head></head><body><p>In this post, I document the full formula assignment pipeline using <code>MFAssignR</code>, tailored for Orbitrap-MS data post-peak list processing (There is no need to reinvent the wheel here).    </p>
 <p>The steps include quality control filtering, noise estimation via Kendrick Mass Defect (KMD) plots, isotopic filtering, recalibrant inspection, and final formula assignment.</p></body></html>
         <p class="article-more-link">
-            <a href="/2024/11/01/37.%5BMS%5DOrbiTrack_Dev_Log_5_Formula_Assignment/#more">Lire la Suite</a>
+            <a href="/2024/11/01/37.%5BMS%5DOrbiTrack_Dev_Log_5_Formula_Assignment/#more">mehr</a>
         </p>
     
     </div>
@@ -261,7 +265,7 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            <a href="/2024/10/24/35.%5BMS%5DOrbiTrack%20Dev%20Log%204_Enhancing_Peak_Coverage_via_TOF_Integration/" itemprop="url">OrbiTrack Dev Log 4: TOF missing peaks adding</a>
+            <a href="/2024/10/24/35.%5BMS%5DOrbiTrack%20Dev%20Log%204_Enhancing_Peak_Coverage_via_TOF_Integration/" itemprop="url">OrbiTrack Dev Log 4: TOF Missing Peaks Adding</a>
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
@@ -280,23 +284,17 @@
         <span class="column is-narrow">
             
             
-            4 分钟 lire (À propos 536 mots)
+            4 分钟 lesen (Über 634 Wörter)
         </span>
         
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><p>After m/z calibration, the next step is to align ions detected across different retention times that likely originate from the same chemical species but appear at slightly shifted m/z values. To ensure robust clustering, it’s important to first remove rare or noisy ions that could interfere with pattern recognition.</p>
-<p>We apply two types of filtering strategies to isolate meaningful signals:</p>
-<ul>
-<li><p>Frequency filtering using K-means to eliminate low-frequency clusters.</p>
-</li>
-<li><p>Density-score filtering using Kernel Density Estimation (KDE) to adaptively remove low-density regions.</p>
-</li>
-</ul>
-<p>This pre-filtering step reduces the data size and computational load while preserving the integrity of true signal clusters, as shown in the examples below.</p></body></html>
+        <html><head></head><body><h2 id="1-Motivation"><a href="#1-Motivation" class="headerlink" title="1. Motivation"></a>1. Motivation</h2><p>In the previous post, I described the procedures for combining molecular information from both EESI-TOF and Orbitrap measurements. In our offline system, EESI-TOF can be regarded as semi-quantitative and more stable for long-term monitoring, making it ideal for tracking consistent ion trends. One key purpose of Orbitrap data is to guide the identification and fitting of TOF-detected ions, using its ultra-high resolution and accurate mass information.</p>
+<p>However, in some cases, certain peaks are clearly detected by TOF but are either missing in Orbitrap or filtered out during the Orbitrap peak filtering and clustering process. These are often real chemical features, especially in complex mixtures, that may be weak or distorted in Orbitrap but still prominent in TOF.</p>
+<p>To address this, I implemented a strategy to embed missing TOF peaks into the final clustered peak list, ensuring a more complete molecular representation, especially important in non-targeted or mixture-rich analyses.</p></body></html>
         <p class="article-more-link">
-            <a href="/2024/10/24/35.%5BMS%5DOrbiTrack%20Dev%20Log%204_Enhancing_Peak_Coverage_via_TOF_Integration/#more">Lire la Suite</a>
+            <a href="/2024/10/24/35.%5BMS%5DOrbiTrack%20Dev%20Log%204_Enhancing_Peak_Coverage_via_TOF_Integration/#more">mehr</a>
         </p>
     
     </div>
@@ -330,7 +328,7 @@
         <span class="column is-narrow">
             
             
-            16 分钟 lire (À propos 2335 mots)
+            16 分钟 lesen (Über 2337 Wörter)
         </span>
         
     </div>
@@ -338,7 +336,7 @@
     
         <html><head></head><body><p>After m/z calibration, the next step is to align ions detected across different retention times that likely originate from the same chemical species but appear at slightly shifted m/z values. To ensure robust clustering, it’s important to first remove rare or noisy ions that could interfere with pattern recognition.</p></body></html>
         <p class="article-more-link">
-            <a href="/2024/10/23/34.%5BMS%5DOrbiTrack_Dev_Log_3_Ion_Filtering_and_Clustering/#more">Lire la Suite</a>
+            <a href="/2024/10/23/34.%5BMS%5DOrbiTrack_Dev_Log_3_Ion_Filtering_and_Clustering/#more">mehr</a>
         </p>
     
     </div>
@@ -372,7 +370,7 @@
         <span class="column is-narrow">
             
             
-            9 分钟 lire (À propos 1285 mots)
+            9 分钟 lesen (Über 1285 Wörter)
         </span>
         
     </div>
@@ -381,7 +379,7 @@
         <html><head></head><body><p>After reading m/z data from Orbitrap raw files, it is essential to perform m/z calibration based on known reference masses of internal calibrants.</p>
 <p>For long-term measurements, especially those spanning days or weeks, dynamic calibration is critical, since m/z drift can occur over time, and calibration parameters from Day 1 may not hold by Day 7. The function below allows automated chunk-wise recalibration across retention time.</p></body></html>
         <p class="article-more-link">
-            <a href="/2024/10/22/33.%5BMS%5DOrbiTrack_Dev_Log_2_MZ_calibration/#more">Lire la Suite</a>
+            <a href="/2024/10/22/33.%5BMS%5DOrbiTrack_Dev_Log_2_MZ_calibration/#more">mehr</a>
         </p>
     
     </div>
@@ -415,7 +413,7 @@
         <span class="column is-narrow">
             
             
-            9 分钟 lire (À propos 1420 mots)
+            9 分钟 lesen (Über 1420 Wörter)
         </span>
         
     </div>
@@ -425,7 +423,7 @@
 <p>(1) <strong>TOF peak guidance</strong>: Guiding ion fitting in EESI-TOF using high-resolution chemical information acquired at 120k resolution from Orbitrap.</p>
 <p>(2) <strong>Directly utilization of Orbitrap MS1 data</strong> by integrating full time-series MS1 outputs, enabling online untargted molecular analysis without chromatographic sepeartion. </p></body></html>
         <p class="article-more-link">
-            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/#more">Lire la Suite</a>
+            <a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/#more">mehr</a>
         </p>
     
     </div>
@@ -440,7 +438,7 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
-            <a href="/2024/05/29/39.%5BMS%5DUntargeted_Analysis_on_Tea/" itemprop="url">🍵非靶向质谱方法探索各类茶饮的分子组成</a>
+            <a href="/2024/05/29/39.%5BMS%5DUntargeted_Analysis_on_Tea/" itemprop="url">🍵非靶向质谱方法探索茶叶的分子组成</a>
         
     </h1>
     <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
@@ -459,16 +457,16 @@
         <span class="column is-narrow">
             
             
-            6 分钟 lire (À propos 864 mots)
+            11 分钟 lesen (Über 1682 Wörter)
         </span>
         
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><p>我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。</p>
+        <html><head></head><body><p>我一直想对茶叶中复杂的化学成分充满兴趣。实验室有同事需要测量生物气溶胶样品（如孢子、真菌等），借助这次协助其调试维护质谱仪器的机会，开展了一项课外探索：使用高分辨率质谱方法，探索不同类型茶叶在分子层面是否具有可辨识的特征。</p>
 <p>本次尝试使用非靶向直接注入分析，结合Orbitrap与TOF两台质谱，评估我构建的分析流程在实际复杂样品中的表现。</p></body></html>
         <p class="article-more-link">
-            <a href="/2024/05/29/39.%5BMS%5DUntargeted_Analysis_on_Tea/#more">Lire la Suite</a>
+            <a href="/2024/05/29/39.%5BMS%5DUntargeted_Analysis_on_Tea/#more">mehr</a>
         </p>
     
     </div>
@@ -488,7 +486,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -596,7 +594,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -609,8 +607,8 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Catégories',
+                PAGES: 'Seiten',
+                CATEGORIES: 'Kategorien',
                 TAGS: 'Tags',
                 UNTITLED: '(Sans Titre)',
             },

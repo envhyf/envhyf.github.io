@@ -22,7 +22,7 @@
 <meta property="og:description" content="Linear regression is a fundamental method in data analysis to understand the relationship between two variables. Here, I summarize four reusable Python functions for performing and visualizing linear">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-02-10T18:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-05T22:48:21.942Z">
+<meta property="article:modified_time" content="2025-08-05T22:54:08.644Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Visualization">
@@ -115,7 +115,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Chercher" href="javascript:;">
+            <a class="navbar-item search" title="Suche" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -156,7 +156,7 @@
         <span class="column is-narrow">
             
             
-            4 分钟 lire (À propos 673 mots)
+            4 分钟 lesen (Über 650 Wörter)
         </span>
         
     </div>
@@ -176,9 +176,7 @@
 </ul>
 <span id="more"></span>
 
-<h2 id="1-Matplotlib-—-Linear-Fit-with-Intercept"><a href="#1-Matplotlib-—-Linear-Fit-with-Intercept" class="headerlink" title="1. Matplotlib — Linear Fit with Intercept"></a><font color="blue">1. Matplotlib — Linear Fit with Intercept</font></h2><figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def add_mpl_subplot_with_intercept(ax, df, x_col, y_col, color='blue'):</span><br><span class="line">    x = df[x_col]</span><br><span class="line">    y = df[y_col]</span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.stats <span class="hljs-keyword">import</span> linregress</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">add_mpl_subplot_with_intercept</span>(<span class="hljs-params">ax, df, x_col, y_col, color=<span class="hljs-string">'blue'</span></span>):</span><br><span class="line">    x = df[x_col]</span><br><span class="line">    y = df[y_col]</span><br><span class="line">    valid = ~(x.isna() | y.isna())</span><br><span class="line">    x = x[valid]</span><br><span class="line">    y = y[valid]</span><br><span class="line"></span><br><span class="line">    ax.scatter(x, y, color=color, alpha=<span class="hljs-number">0.6</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Linear regression with intercept</span></span><br><span class="line">    slope, intercept, r_value, _, _ = linregress(x, y)</span><br><span class="line">    line_x = np.linspace(x.<span class="hljs-built_in">min</span>(), x.<span class="hljs-built_in">max</span>(), <span class="hljs-number">100</span>)</span><br><span class="line">    line_y = slope * line_x + intercept</span><br><span class="line">    ax.plot(line_x, line_y, <span class="hljs-string">'r--'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Annotate equation and R</span></span><br><span class="line">    eq_text = <span class="hljs-string">f"y = <span class="hljs-subst">{slope:<span class="hljs-number">.2</span>f}</span>x + <span class="hljs-subst">{intercept:<span class="hljs-number">.2</span>f}</span>\nR = <span class="hljs-subst">{r_value:<span class="hljs-number">.2</span>f}</span>"</span></span><br><span class="line">    ax.annotate(eq_text,</span><br><span class="line">                xy=(<span class="hljs-number">0.05</span>, <span class="hljs-number">0.95</span>), xycoords=<span class="hljs-string">'axes fraction'</span>,</span><br><span class="line">                ha=<span class="hljs-string">'left'</span>, va=<span class="hljs-string">'top'</span>, fontsize=<span class="hljs-number">10</span>, color=<span class="hljs-string">'black'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-Matplotlib-—-Linear-Fit-with-Intercept"><a href="#1-Matplotlib-—-Linear-Fit-with-Intercept" class="headerlink" title="1. Matplotlib — Linear Fit with Intercept"></a><font color="blue">1. Matplotlib — Linear Fit with Intercept</font></h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.stats <span class="hljs-keyword">import</span> linregress</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">add_mpl_subplot_with_intercept</span>(<span class="hljs-params">ax, df, x_col, y_col, color=<span class="hljs-string">'blue'</span></span>):</span><br><span class="line">    x = df[x_col]</span><br><span class="line">    y = df[y_col]</span><br><span class="line">    valid = ~(x.isna() | y.isna())</span><br><span class="line">    x = x[valid]</span><br><span class="line">    y = y[valid]</span><br><span class="line"></span><br><span class="line">    ax.scatter(x, y, color=color, alpha=<span class="hljs-number">0.6</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Linear regression with intercept</span></span><br><span class="line">    slope, intercept, r_value, _, _ = linregress(x, y)</span><br><span class="line">    line_x = np.linspace(x.<span class="hljs-built_in">min</span>(), x.<span class="hljs-built_in">max</span>(), <span class="hljs-number">100</span>)</span><br><span class="line">    line_y = slope * line_x + intercept</span><br><span class="line">    ax.plot(line_x, line_y, <span class="hljs-string">'r--'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Annotate equation and R</span></span><br><span class="line">    eq_text = <span class="hljs-string">f"y = <span class="hljs-subst">{slope:<span class="hljs-number">.2</span>f}</span>x + <span class="hljs-subst">{intercept:<span class="hljs-number">.2</span>f}</span>\nR = <span class="hljs-subst">{r_value:<span class="hljs-number">.2</span>f}</span>"</span></span><br><span class="line">    ax.annotate(eq_text,</span><br><span class="line">                xy=(<span class="hljs-number">0.05</span>, <span class="hljs-number">0.95</span>), xycoords=<span class="hljs-string">'axes fraction'</span>,</span><br><span class="line">                ha=<span class="hljs-string">'left'</span>, va=<span class="hljs-string">'top'</span>, fontsize=<span class="hljs-number">10</span>, color=<span class="hljs-string">'black'</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="2-Matplotlib-—-Linear-Fit-without-Intercept"><a href="#2-Matplotlib-—-Linear-Fit-without-Intercept" class="headerlink" title="2. Matplotlib — Linear Fit without Intercept"></a><font color="blue">2. Matplotlib — Linear Fit without Intercept</font></h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">add_mpl_subplot_no_intercept</span>(<span class="hljs-params">ax, df, x_col, y_col, color=<span class="hljs-string">'green'</span></span>):</span><br><span class="line">    x = df[x_col]</span><br><span class="line">    y = df[y_col]</span><br><span class="line">    valid = ~(x.isna() | y.isna())</span><br><span class="line">    x = x[valid]</span><br><span class="line">    y = y[valid]</span><br><span class="line"></span><br><span class="line">    ax.scatter(x, y, color=color, alpha=<span class="hljs-number">0.6</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Linear regression without intercept</span></span><br><span class="line">    slope = np.<span class="hljs-built_in">sum</span>(x * y) / np.<span class="hljs-built_in">sum</span>(x ** <span class="hljs-number">2</span>)</span><br><span class="line">    r_value = x.corr(y)</span><br><span class="line">    line_x = np.linspace(x.<span class="hljs-built_in">min</span>(), x.<span class="hljs-built_in">max</span>(), <span class="hljs-number">100</span>)</span><br><span class="line">    line_y = slope * line_x</span><br><span class="line">    ax.plot(line_x, line_y, <span class="hljs-string">'r--'</span>)</span><br><span class="line"></span><br><span class="line">    eq_text = <span class="hljs-string">f"y = <span class="hljs-subst">{slope:<span class="hljs-number">.2</span>f}</span>x\nR = <span class="hljs-subst">{r_value:<span class="hljs-number">.2</span>f}</span>"</span></span><br><span class="line">    ax.annotate(eq_text,</span><br><span class="line">                xy=(<span class="hljs-number">0.05</span>, <span class="hljs-number">0.95</span>), xycoords=<span class="hljs-string">'axes fraction'</span>,</span><br><span class="line">                ha=<span class="hljs-string">'left'</span>, va=<span class="hljs-string">'top'</span>, fontsize=<span class="hljs-number">10</span>, color=<span class="hljs-string">'black'</span>)</span><br></pre></td></tr></tbody></table></figure>
 
@@ -222,7 +220,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Commentaires</h3>
+    <h3 class="title is-4">Kommentare</h3>
     
 <script>
     var disqus_config = function () {
@@ -253,7 +251,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -361,7 +359,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -374,8 +372,8 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Catégories',
+                PAGES: 'Seiten',
+                CATEGORIES: 'Kategorien',
                 TAGS: 'Tags',
                 UNTITLED: '(Sans Titre)',
             },

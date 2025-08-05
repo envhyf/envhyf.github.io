@@ -2,7 +2,7 @@
 <html class="has-navbar-fixed-top">
 <head>
     <meta charset="utf-8">
-<title>Archiv - 太平塔</title>
+<title>목록 - 太平塔</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
@@ -106,7 +106,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="검색" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -126,25 +126,6 @@
     <section class="section">
     <div class="container">
     
-    
-        <div class="archive content">
-            <h4 class="title is-4" id="2022">2022</h4>
-            <div class="articles">
-            
-                <div class="article content>">
-                    <time class="is-text-small" datetime="2022-07-10T08:00:00.000Z" itemprop="datePublished">
-                        7月 10</time>
-                    <h6 class="title is-6"><a href="/2022/07/10/26.%5BDataset%5D-Easy-Steps-For-NOAA-Weather-Data/">2 Easy Steps to Download Historical Weather Data</a></h6>
-                </div>
-            
-                <div class="article content>">
-                    <time class="is-text-small" datetime="2022-03-01T15:26:26.000Z" itemprop="datePublished">
-                        3月 1</time>
-                    <h6 class="title is-6"><a href="/2022/03/01/25.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%84%8F%E5%A4%A7%E5%88%A9%E6%96%87%E5%8C%96%E7%AE%80%E5%8F%B2/">读书笔记-意大利文化简史</a></h6>
-                </div>
-            
-            </div>
-        </div>
     
         <div class="archive content">
             <h4 class="title is-4" id="2021">2021</h4>
@@ -212,6 +193,25 @@
                     <h6 class="title is-6"><a href="/2019/03/11/17.%5BModel%5DWRF-technique-merging-datasets/">WRF post processing 1: Merging datafiles for specific spots</a></h6>
                 </div>
             
+                <div class="article content>">
+                    <time class="is-text-small" datetime="2019-02-28T15:26:26.000Z" itemprop="datePublished">
+                        2月 28</time>
+                    <h6 class="title is-6"><a href="/2019/02/28/16.%5BSoftware%5DQGIS%E6%93%8D%E4%BD%9C-%E4%BE%9D%E6%8D%AE%E5%9B%BE%E5%83%8F%E7%BB%98%E5%88%B6%E7%9F%A2%E9%87%8F%E6%96%87%E4%BB%B6/">QGIS: 依照现有图片资料绘制矢量文件</a></h6>
+                </div>
+            
+            </div>
+        </div>
+    
+        <div class="archive content">
+            <h4 class="title is-4" id="2018">2018</h4>
+            <div class="articles">
+            
+                <div class="article content>">
+                    <time class="is-text-small" datetime="2018-12-06T15:26:26.000Z" itemprop="datePublished">
+                        12月 6</time>
+                    <h6 class="title is-6"><a href="/2018/12/06/15.%5BCode%5DMethods-to-mask-raster-by-polygons/">Two method to mask the raster data by specific geometry</a></h6>
+                </div>
+            
             </div>
         </div>
     
@@ -219,10 +219,10 @@
     
 <nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
     <div class="pagination-previous">
-        <a href="/archives/page/2/">Vorheriges</a>
+        <a href="/archives/page/2/">이전</a>
     </div>
     <div class="pagination-next">
-        <a href="/archives/page/4/">Nächstes</a>
+        <a href="/archives/page/4/">다음</a>
     </div>
     <ul class="pagination-list is-hidden-mobile">
         
@@ -354,7 +354,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="아무거나 입력하세요" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -366,11 +366,11 @@
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '글',
+                PAGES: '페이지',
+                CATEGORIES: '카테고리 목록',
+                TAGS: '태그 목록',
+                UNTITLED: '(제목없음)',
             },
             CONTENT_URL: '/content.json',
         };

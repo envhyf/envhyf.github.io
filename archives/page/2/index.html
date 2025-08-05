@@ -2,7 +2,7 @@
 <html class="has-navbar-fixed-top">
 <head>
     <meta charset="utf-8">
-<title>Archiv - 太平塔</title>
+<title>목록 - 太平塔</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
@@ -106,7 +106,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="검색" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -130,18 +130,6 @@
         <div class="archive content">
             <h4 class="title is-4" id="2024">2024</h4>
             <div class="articles">
-            
-                <div class="article content>">
-                    <time class="is-text-small" datetime="2024-10-21T10:45:00.000Z" itemprop="datePublished">
-                        10月 21</time>
-                    <h6 class="title is-6"><a href="/2024/10/21/32.%5BMS%5DOrbiTrack_Dev_Log_1_Parsing_Orbitrap_data/">OrbiTrack Dev Log 1: Overview and MS1 Data Parsing for Orbitrap</a></h6>
-                </div>
-            
-                <div class="article content>">
-                    <time class="is-text-small" datetime="2024-10-10T22:15:26.000Z" itemprop="datePublished">
-                        10月 11</time>
-                    <h6 class="title is-6"><a href="/2024/10/11/31.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BA%A7%E4%B8%9A%E4%B8%8E%E6%96%87%E6%98%8E/">读书笔记-张笑宇文明三部曲</a></h6>
-                </div>
             
                 <div class="article content>">
                     <time class="is-text-small" datetime="2024-10-05T18:15:26.000Z" itemprop="datePublished">
@@ -201,14 +189,33 @@
             </div>
         </div>
     
+        <div class="archive content">
+            <h4 class="title is-4" id="2022">2022</h4>
+            <div class="articles">
+            
+                <div class="article content>">
+                    <time class="is-text-small" datetime="2022-07-10T08:00:00.000Z" itemprop="datePublished">
+                        7月 10</time>
+                    <h6 class="title is-6"><a href="/2022/07/10/26.%5BDataset%5D-Easy-Steps-For-NOAA-Weather-Data/">2 Easy Steps to Download Historical Weather Data</a></h6>
+                </div>
+            
+                <div class="article content>">
+                    <time class="is-text-small" datetime="2022-03-01T15:26:26.000Z" itemprop="datePublished">
+                        3月 1</time>
+                    <h6 class="title is-6"><a href="/2022/03/01/25.%5BReading%5D%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%84%8F%E5%A4%A7%E5%88%A9%E6%96%87%E5%8C%96%E7%AE%80%E5%8F%B2/">读书笔记-意大利文化简史</a></h6>
+                </div>
+            
+            </div>
+        </div>
+    
     
     
 <nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
     <div class="pagination-previous">
-        <a href="/archives/">Vorheriges</a>
+        <a href="/archives/">이전</a>
     </div>
     <div class="pagination-next">
-        <a href="/archives/page/3/">Nächstes</a>
+        <a href="/archives/page/3/">다음</a>
     </div>
     <ul class="pagination-list is-hidden-mobile">
         
@@ -340,7 +347,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="아무거나 입력하세요" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -352,11 +359,11 @@
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '글',
+                PAGES: '페이지',
+                CATEGORIES: '카테고리 목록',
+                TAGS: '태그 목록',
+                UNTITLED: '(제목없음)',
             },
             CONTENT_URL: '/content.json',
         };

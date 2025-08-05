@@ -25,8 +25,8 @@
 <meta property="article:published_time" content="2018-04-04T21:32:26.000Z">
 <meta property="article:modified_time" content="2025-07-23T22:00:49.469Z">
 <meta property="article:author" content="Hao Yufang">
-<meta property="article:tag" content="Python">
 <meta property="article:tag" content="Air quality">
+<meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://envhyf.github.io/images/8.China_Air_Quality_Map/Fig.1.png">
 
@@ -45,7 +45,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
 
 
 <link rel="stylesheet" href="/css/style.css">
@@ -114,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -155,7 +155,7 @@
         <span class="column is-narrow">
             
             
-            9 分钟 de lectura (Alrededor de 1353 palabras)
+            9 分钟 lire (À propos 1353 mots)
         </span>
         
     </div>
@@ -167,93 +167,10 @@
 <span id="more"></span>
 
 <h2 id="1-全站点数据整合"><a href="#1-全站点数据整合" class="headerlink" title=" 1. 全站点数据整合 "></a><font color="blue"> 1. 全站点数据整合 </font></h2><p>截至2018年，我国367座城市共设置有1437处国控空气质量监测站点。下文为全年数据打理流程</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">#library
-import pandas as pd
-from pandas import HDFStore, DataFrame
-from pandas import read_hdf
-import os,sys,string
-import numpy as np
-
-### CREAT A EMPTY HDF5 FILE
-
-hdf = HDFStore("site_2017_whole_year.h5")
-
-### READ THE CSV FILES AND SAVE IT INTO HDF5 FORMAT
-os.chdir("./site_2017/")
-files = os.listdir("./")
-files.sort()
-
-print files[0]
-test_file= "./../china_sites_20170101.csv"
-test_f = pd.read_csv(test_file,encoding='utf_8')
-site_columns = list(test_f.columns[3:])
-print site_columns[1]
-
-### AFTER 2017_2 PUTUO SITE IN SHANGHAI (1141A) is in.
-### 注意，2017年2月后上海市增加了普陀站点(1141A),需在site_columns中补充上
-#site_columns = site_columns.append(u'1141A')
-
-feature =  ['pm25','pm10','O3','O3_8h','CO',"NO2",'SO2',"aqi"]
-fe_dict = {"pm25":1,"aqi":0, 'pm10':3, 'SO2':5,'NO2':7, 'O3':9,"O3_8h":11, "CO": 13}
-for k in range(0,len(feature),1):
-    data_2017 = {"date":[],'hour':[],}
-    for i in range(0,len(site_columns),1):
-        data_2017[site_columns[i]] = []
-    for file in files[0:]:
-        print file
-        filename,extname = os.path.splitext(file)
-        if (extname == ".csv"):
-            datafile =file
-            f_day = pd.read_csv(datafile,encoding='utf_8')
-             #site_columns = list(f_day.columns[3:])
-            for i in range(0,len(f_day),15):
-                datetime = str(f_day["date"].iloc[i])
-                hour = "%02d" % ((f_day["hour"].iloc[i]))
-                data_2017["date"].append(datetime)
-                data_2017["hour"].append(hour)
-                for t in range(0,len(site_columns),1):
-                    data_2017[site_columns[t]].append(f_day[site_columns[t]].iloc[i+fe_dict[feature[k]]])
-    print feature[k]
-    data_2017  = pd.DataFrame(data_2017)
-    hdf.put(feature[k], data_2017, format='table', encoding="utf-8")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#library</span></span><br><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"><span class="hljs-keyword">from</span> pandas <span class="hljs-keyword">import</span> HDFStore, DataFrame</span><br><span class="line"><span class="hljs-keyword">from</span> pandas <span class="hljs-keyword">import</span> read_hdf</span><br><span class="line"><span class="hljs-keyword">import</span> os,sys,string</span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">### CREAT A EMPTY HDF5 FILE</span></span><br><span class="line"></span><br><span class="line">hdf = HDFStore(<span class="hljs-string">"site_2017_whole_year.h5"</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">### READ THE CSV FILES AND SAVE IT INTO HDF5 FORMAT</span></span><br><span class="line">os.chdir(<span class="hljs-string">"./site_2017/"</span>)</span><br><span class="line">files = os.listdir(<span class="hljs-string">"./"</span>)</span><br><span class="line">files.sort()</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">print</span> files[<span class="hljs-number">0</span>]</span><br><span class="line">test_file= <span class="hljs-string">"./../china_sites_20170101.csv"</span></span><br><span class="line">test_f = pd.read_csv(test_file,encoding=<span class="hljs-string">'utf_8'</span>)</span><br><span class="line">site_columns = <span class="hljs-built_in">list</span>(test_f.columns[<span class="hljs-number">3</span>:])</span><br><span class="line"><span class="hljs-built_in">print</span> site_columns[<span class="hljs-number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">### AFTER 2017_2 PUTUO SITE IN SHANGHAI (1141A) is in.</span></span><br><span class="line"><span class="hljs-comment">### 注意，2017年2月后上海市增加了普陀站点(1141A),需在site_columns中补充上</span></span><br><span class="line"><span class="hljs-comment">#site_columns = site_columns.append(u'1141A')</span></span><br><span class="line"></span><br><span class="line">feature =  [<span class="hljs-string">'pm25'</span>,<span class="hljs-string">'pm10'</span>,<span class="hljs-string">'O3'</span>,<span class="hljs-string">'O3_8h'</span>,<span class="hljs-string">'CO'</span>,<span class="hljs-string">"NO2"</span>,<span class="hljs-string">'SO2'</span>,<span class="hljs-string">"aqi"</span>]</span><br><span class="line">fe_dict = {<span class="hljs-string">"pm25"</span>:<span class="hljs-number">1</span>,<span class="hljs-string">"aqi"</span>:<span class="hljs-number">0</span>, <span class="hljs-string">'pm10'</span>:<span class="hljs-number">3</span>, <span class="hljs-string">'SO2'</span>:<span class="hljs-number">5</span>,<span class="hljs-string">'NO2'</span>:<span class="hljs-number">7</span>, <span class="hljs-string">'O3'</span>:<span class="hljs-number">9</span>,<span class="hljs-string">"O3_8h"</span>:<span class="hljs-number">11</span>, <span class="hljs-string">"CO"</span>: <span class="hljs-number">13</span>}</span><br><span class="line"><span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(feature),<span class="hljs-number">1</span>):</span><br><span class="line">    data_2017 = {<span class="hljs-string">"date"</span>:[],<span class="hljs-string">'hour'</span>:[],}</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(site_columns),<span class="hljs-number">1</span>):</span><br><span class="line">        data_2017[site_columns[i]] = []</span><br><span class="line">    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files[<span class="hljs-number">0</span>:]:</span><br><span class="line">        <span class="hljs-built_in">print</span> file</span><br><span class="line">        filename,extname = os.path.splitext(file)</span><br><span class="line">        <span class="hljs-keyword">if</span> (extname == <span class="hljs-string">".csv"</span>):</span><br><span class="line">            datafile =file</span><br><span class="line">            f_day = pd.read_csv(datafile,encoding=<span class="hljs-string">'utf_8'</span>)</span><br><span class="line">             <span class="hljs-comment">#site_columns = list(f_day.columns[3:])</span></span><br><span class="line">            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(f_day),<span class="hljs-number">15</span>):</span><br><span class="line">                datetime = <span class="hljs-built_in">str</span>(f_day[<span class="hljs-string">"date"</span>].iloc[i])</span><br><span class="line">                hour = <span class="hljs-string">"%02d"</span> % ((f_day[<span class="hljs-string">"hour"</span>].iloc[i]))</span><br><span class="line">                data_2017[<span class="hljs-string">"date"</span>].append(datetime)</span><br><span class="line">                data_2017[<span class="hljs-string">"hour"</span>].append(hour)</span><br><span class="line">                <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(site_columns),<span class="hljs-number">1</span>):</span><br><span class="line">                    data_2017[site_columns[t]].append(f_day[site_columns[t]].iloc[i+fe_dict[feature[k]]])</span><br><span class="line">    <span class="hljs-built_in">print</span> feature[k]</span><br><span class="line">    data_2017  = pd.DataFrame(data_2017)</span><br><span class="line">    hdf.put(feature[k], data_2017, <span class="hljs-built_in">format</span>=<span class="hljs-string">'table'</span>, encoding=<span class="hljs-string">"utf-8"</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="2-全城市数据整合"><a href="#2-全城市数据整合" class="headerlink" title=" 2. 全城市数据整合 "></a><font color="blue"> 2. 全城市数据整合 </font></h2><p>方法类似，每次写入367座城市某一类污染物信息</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">### CREAT A EMPTY HDF5 FILE
-hdf = HDFStore("city_2017_whole_year.h5")
-
-### READ THE CSV FILES AND SAVE IT INTO HDF5 FORMAT
-os.chdir("./city_2017/")
-files = os.listdir("./")
-files.sort()
-
-print files[0]
-test_file= "china_cities_20170101.csv"
-test_f = pd.read_csv(test_file,encoding='utf_8')
-city_columns = list(test_f.columns[3:])
-print city_columns[1]
-
-feature =  ['pm25','pm10','O3','O3_8h','CO',"NO2",'SO2',"aqi"]
-fe_dict = {"pm25":1,"aqi":0, 'pm10':3, 'SO2':5,'NO2':7, 'O3':9,"O3_8h":11, "CO": 13}
-for k in range(0,len(feature),1):
-    data_2017 = {"date":[],'hour':[],}
-    for i in range(0,len(city_columns),1):
-        data_2017[city_columns[i]] = []
-    for file in files[0:]:
-        filename,extname = os.path.splitext(file)
-        if (extname == ".csv"):
-            datafile =file
-            f_day = pd.read_csv(datafile,encoding='utf_8')
-            city_columns = list(f_day.columns[3:])
-            for i in range(0,len(f_day),15):
-                datetime = str(f_day["date"].iloc[i])
-                hour = "%02d" % ((f_day["hour"].iloc[i]))
-                data_2017["date"].append(datetime)
-                data_2017["hour"].append(hour)
-                for t in range(0,len(city_columns),1):
-                    data_2017[city_columns[t]].append(f_day[city_columns[t]].iloc[i+fe_dict[feature[k]]])
-    print feature[k]
-    data_2017  = pd.DataFrame(data_2017)
-    hdf.put(feature[k], data_2017, format='table', encoding="utf-8")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">### CREAT A EMPTY HDF5 FILE</span></span><br><span class="line">hdf = HDFStore(<span class="hljs-string">"city_2017_whole_year.h5"</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">### READ THE CSV FILES AND SAVE IT INTO HDF5 FORMAT</span></span><br><span class="line">os.chdir(<span class="hljs-string">"./city_2017/"</span>)</span><br><span class="line">files = os.listdir(<span class="hljs-string">"./"</span>)</span><br><span class="line">files.sort()</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">print</span> files[<span class="hljs-number">0</span>]</span><br><span class="line">test_file= <span class="hljs-string">"china_cities_20170101.csv"</span></span><br><span class="line">test_f = pd.read_csv(test_file,encoding=<span class="hljs-string">'utf_8'</span>)</span><br><span class="line">city_columns = <span class="hljs-built_in">list</span>(test_f.columns[<span class="hljs-number">3</span>:])</span><br><span class="line"><span class="hljs-built_in">print</span> city_columns[<span class="hljs-number">1</span>]</span><br><span class="line"></span><br><span class="line">feature =  [<span class="hljs-string">'pm25'</span>,<span class="hljs-string">'pm10'</span>,<span class="hljs-string">'O3'</span>,<span class="hljs-string">'O3_8h'</span>,<span class="hljs-string">'CO'</span>,<span class="hljs-string">"NO2"</span>,<span class="hljs-string">'SO2'</span>,<span class="hljs-string">"aqi"</span>]</span><br><span class="line">fe_dict = {<span class="hljs-string">"pm25"</span>:<span class="hljs-number">1</span>,<span class="hljs-string">"aqi"</span>:<span class="hljs-number">0</span>, <span class="hljs-string">'pm10'</span>:<span class="hljs-number">3</span>, <span class="hljs-string">'SO2'</span>:<span class="hljs-number">5</span>,<span class="hljs-string">'NO2'</span>:<span class="hljs-number">7</span>, <span class="hljs-string">'O3'</span>:<span class="hljs-number">9</span>,<span class="hljs-string">"O3_8h"</span>:<span class="hljs-number">11</span>, <span class="hljs-string">"CO"</span>: <span class="hljs-number">13</span>}</span><br><span class="line"><span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(feature),<span class="hljs-number">1</span>):</span><br><span class="line">    data_2017 = {<span class="hljs-string">"date"</span>:[],<span class="hljs-string">'hour'</span>:[],}</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(city_columns),<span class="hljs-number">1</span>):</span><br><span class="line">        data_2017[city_columns[i]] = []</span><br><span class="line">    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files[<span class="hljs-number">0</span>:]:</span><br><span class="line">        filename,extname = os.path.splitext(file)</span><br><span class="line">        <span class="hljs-keyword">if</span> (extname == <span class="hljs-string">".csv"</span>):</span><br><span class="line">            datafile =file</span><br><span class="line">            f_day = pd.read_csv(datafile,encoding=<span class="hljs-string">'utf_8'</span>)</span><br><span class="line">            city_columns = <span class="hljs-built_in">list</span>(f_day.columns[<span class="hljs-number">3</span>:])</span><br><span class="line">            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(f_day),<span class="hljs-number">15</span>):</span><br><span class="line">                datetime = <span class="hljs-built_in">str</span>(f_day[<span class="hljs-string">"date"</span>].iloc[i])</span><br><span class="line">                hour = <span class="hljs-string">"%02d"</span> % ((f_day[<span class="hljs-string">"hour"</span>].iloc[i]))</span><br><span class="line">                data_2017[<span class="hljs-string">"date"</span>].append(datetime)</span><br><span class="line">                data_2017[<span class="hljs-string">"hour"</span>].append(hour)</span><br><span class="line">                <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(city_columns),<span class="hljs-number">1</span>):</span><br><span class="line">                    data_2017[city_columns[t]].append(f_day[city_columns[t]].iloc[i+fe_dict[feature[k]]])</span><br><span class="line">    <span class="hljs-built_in">print</span> feature[k]</span><br><span class="line">    data_2017  = pd.DataFrame(data_2017)</span><br><span class="line">    hdf.put(feature[k], data_2017, <span class="hljs-built_in">format</span>=<span class="hljs-string">'table'</span>, encoding=<span class="hljs-string">"utf-8"</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <p>在此处分享我已转制的数据文件，欢迎大家学习、使用：</p>
 <ul>
@@ -262,58 +179,11 @@ for k in range(0,len(feature),1):
 <li>2015年 <a target="_blank" rel="noopener" href="https://drive.google.com/open?id=1J16zum1t4YHSLwTc3oekFRNaDccveYfP">所有站点</a>/<a target="_blank" rel="noopener" href="https://drive.google.com/open?id=1kST06WbMfPtxZ3oQMwbLgaU36vAHOsK1">所有城市</a>   </li>
 <li><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1OWMp6Z8VBEjkuAZNbA7h_yidAKxmiiQG/view?usp=sharing">全国国控环境监测点列表及经纬度</a></li>
 </ul>
-<h2 id="3-HDF读取应用例举"><a href="#3-HDF读取应用例举" class="headerlink" title=" 3. HDF读取应用例举 "></a><font color="blue"> 3. HDF读取应用例举 </font></h2><h3 id="3-1-提取某个城市的站点浓度信息"><a href="#3-1-提取某个城市的站点浓度信息" class="headerlink" title="3.1 提取某个城市的站点浓度信息"></a>3.1 提取某个城市的站点浓度信息</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">import pandas as pd
-from pandas import ExcelWriter
-import sys,csv,os
-
-#### SELECT THE SPECIES ####
-feature = ['pm25', 'pm10', 'O3', 'O3_8h', 'CO', 'NO2', 'SO2', 'aqi']
-writer = ExcelWriter('./city_2017.xlsx')
-for i in range(0,len(feature),1):
-    df = pd.read_hdf("./site_2017_whole_year.h5",\
-                     feature[i], encoding = 'utf-8')
-    df = df[['date','hour','1744A','1745A','1746A','1747A']]
-    df.to_excel(writer,feature[i], index = False)
-writer.save()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3-HDF读取应用例举"><a href="#3-HDF读取应用例举" class="headerlink" title=" 3. HDF读取应用例举 "></a><font color="blue"> 3. HDF读取应用例举 </font></h2><h3 id="3-1-提取某个城市的站点浓度信息"><a href="#3-1-提取某个城市的站点浓度信息" class="headerlink" title="3.1 提取某个城市的站点浓度信息"></a>3.1 提取某个城市的站点浓度信息</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"><span class="hljs-keyword">from</span> pandas <span class="hljs-keyword">import</span> ExcelWriter</span><br><span class="line"><span class="hljs-keyword">import</span> sys,csv,os</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#### SELECT THE SPECIES ####</span></span><br><span class="line">feature = [<span class="hljs-string">'pm25'</span>, <span class="hljs-string">'pm10'</span>, <span class="hljs-string">'O3'</span>, <span class="hljs-string">'O3_8h'</span>, <span class="hljs-string">'CO'</span>, <span class="hljs-string">'NO2'</span>, <span class="hljs-string">'SO2'</span>, <span class="hljs-string">'aqi'</span>]</span><br><span class="line">writer = ExcelWriter(<span class="hljs-string">'./city_2017.xlsx'</span>)</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(feature),<span class="hljs-number">1</span>):</span><br><span class="line">    df = pd.read_hdf(<span class="hljs-string">"./site_2017_whole_year.h5"</span>,\</span><br><span class="line">                     feature[i], encoding = <span class="hljs-string">'utf-8'</span>)</span><br><span class="line">    df = df[[<span class="hljs-string">'date'</span>,<span class="hljs-string">'hour'</span>,<span class="hljs-string">'1744A'</span>,<span class="hljs-string">'1745A'</span>,<span class="hljs-string">'1746A'</span>,<span class="hljs-string">'1747A'</span>]]</span><br><span class="line">    df.to_excel(writer,feature[i], index = <span class="hljs-literal">False</span>)</span><br><span class="line">writer.save()</span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h3 id="3-2-全国PM2-5年均浓度分布"><a href="#3-2-全国PM2-5年均浓度分布" class="headerlink" title="3.2 全国PM2.5年均浓度分布"></a>3.2 全国PM2.5年均浓度分布</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">#library
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-import cartopy
-from cartopy.io.shapereader import Reader
-from cartopy.feature import ShapelyFeature
-from mpl_toolkits.basemap import cm as base_cm
-
-
-#Load the data select the variable
-data_city = {"city":[],'pm25':[],'pm10':[]}
-pm25 = pd.read_hdf("./../data/city_2017_whole_year.h5",'pm25', encoding = 'utf-8')
-pm10 = pd.read_hdf("./../data/city_2017_whole_year.h5",'pm10', encoding = 'utf-8')
-
-for i,t in enumerate(pm25.columns[2:]):
- data_city['city'].append(t) 
- data_city['pm25'].append(pm25[t].mean())
- data_city['pm10'].append(pm10[t].mean())    
-data_city = pd.DataFrame(data_city)    
-
-## Add the lon,lat for each city
-## 加载所有国控站点名称，位置的xls文件，已上传至google drive，下载链接见上文
-Df = pd.ExcelFile("./站点列表含经纬度-1497个.xlsx", )
-df = Df.parse(u'Sheet1')
-data_city['lon'] =  [df[df[u'城市'].str[0:2]==k[0:2]][u'经度'].mean() for k in data_city['city']]
-data_city['lat'] =  [df[df[u'城市'].str[0:2]==k[:2]][u'纬度'].mean() for k in data_city['city']]
-
-#Plotting 
-fig = plt.figure(figsize=(6, 5))
-ax = plt.subplot(projection=ccrs.PlateCarree())
-ax.set_extent([73, 135, 17, 55])
-ax.coastlines(linewidth = 0.2)
-ax.add_feature(cartopy.feature.OCEAN)
-ax.add_feature(cartopy.feature.BORDERS,linewidth = 0.4)
-
-pm25_plot = ax.scatter(data_city['lon'],data_city['lat'],s = 45,zorder = 2,c = data_city['pm25'],\
-                        cmap=base_cm.GMT_seis_r,  lw = 0,alpha = 0.9)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-2-全国PM2-5年均浓度分布"><a href="#3-2-全国PM2-5年均浓度分布" class="headerlink" title="3.2 全国PM2.5年均浓度分布"></a>3.2 全国PM2.5年均浓度分布</h3><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#library</span></span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.axes_grid1 <span class="hljs-keyword">import</span> make_axes_locatable</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.io.shapereader <span class="hljs-keyword">import</span> Reader</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.feature <span class="hljs-keyword">import</span> ShapelyFeature</span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.basemap <span class="hljs-keyword">import</span> cm <span class="hljs-keyword">as</span> base_cm</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#Load the data select the variable</span></span><br><span class="line">data_city = {<span class="hljs-string">"city"</span>:[],<span class="hljs-string">'pm25'</span>:[],<span class="hljs-string">'pm10'</span>:[]}</span><br><span class="line">pm25 = pd.read_hdf(<span class="hljs-string">"./../data/city_2017_whole_year.h5"</span>,<span class="hljs-string">'pm25'</span>, encoding = <span class="hljs-string">'utf-8'</span>)</span><br><span class="line">pm10 = pd.read_hdf(<span class="hljs-string">"./../data/city_2017_whole_year.h5"</span>,<span class="hljs-string">'pm10'</span>, encoding = <span class="hljs-string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i,t <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(pm25.columns[<span class="hljs-number">2</span>:]):</span><br><span class="line"> data_city[<span class="hljs-string">'city'</span>].append(t) </span><br><span class="line"> data_city[<span class="hljs-string">'pm25'</span>].append(pm25[t].mean())</span><br><span class="line"> data_city[<span class="hljs-string">'pm10'</span>].append(pm10[t].mean())    </span><br><span class="line">data_city = pd.DataFrame(data_city)    </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## Add the lon,lat for each city</span></span><br><span class="line"><span class="hljs-comment">## 加载所有国控站点名称，位置的xls文件，已上传至google drive，下载链接见上文</span></span><br><span class="line">Df = pd.ExcelFile(<span class="hljs-string">"./站点列表含经纬度-1497个.xlsx"</span>, )</span><br><span class="line">df = Df.parse(<span class="hljs-string">u'Sheet1'</span>)</span><br><span class="line">data_city[<span class="hljs-string">'lon'</span>] =  [df[df[<span class="hljs-string">u'城市'</span>].<span class="hljs-built_in">str</span>[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]==k[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]][<span class="hljs-string">u'经度'</span>].mean() <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> data_city[<span class="hljs-string">'city'</span>]]</span><br><span class="line">data_city[<span class="hljs-string">'lat'</span>] =  [df[df[<span class="hljs-string">u'城市'</span>].<span class="hljs-built_in">str</span>[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]==k[:<span class="hljs-number">2</span>]][<span class="hljs-string">u'纬度'</span>].mean() <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> data_city[<span class="hljs-string">'city'</span>]]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#Plotting </span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">6</span>, <span class="hljs-number">5</span>))</span><br><span class="line">ax = plt.subplot(projection=ccrs.PlateCarree())</span><br><span class="line">ax.set_extent([<span class="hljs-number">73</span>, <span class="hljs-number">135</span>, <span class="hljs-number">17</span>, <span class="hljs-number">55</span>])</span><br><span class="line">ax.coastlines(linewidth = <span class="hljs-number">0.2</span>)</span><br><span class="line">ax.add_feature(cartopy.feature.OCEAN)</span><br><span class="line">ax.add_feature(cartopy.feature.BORDERS,linewidth = <span class="hljs-number">0.4</span>)</span><br><span class="line"></span><br><span class="line">pm25_plot = ax.scatter(data_city[<span class="hljs-string">'lon'</span>],data_city[<span class="hljs-string">'lat'</span>],s = <span class="hljs-number">45</span>,zorder = <span class="hljs-number">2</span>,c = data_city[<span class="hljs-string">'pm25'</span>],\</span><br><span class="line">                        cmap=base_cm.GMT_seis_r,  lw = <span class="hljs-number">0</span>,alpha = <span class="hljs-number">0.9</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <p> 例图<br><img src="/images/8.China_Air_Quality_Map/Fig.1.png">   </p>
 </body></html>
@@ -322,9 +192,9 @@ pm25_plot = ax.scatter(data_city['lon'],data_city['lat'],s = 45,zorder = 2,c = d
     
     <div class="columns is-variable is-1 is-multiline is-mobile">
     
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
-    
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
     
     </div>
     
@@ -348,7 +218,7 @@ pm25_plot = ax.scatter(data_city['lon'],data_city['lat'],s = 45,zorder = 2,c = d
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
@@ -379,7 +249,7 @@ pm25_plot = ax.scatter(data_city['lon'],data_city['lat'],s = 45,zorder = 2,c = d
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -487,7 +357,7 @@ pm25_plot = ax.scatter(data_city['lon'],data_city['lat'],s = 45,zorder = 2,c = d
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -500,10 +370,10 @@ pm25_plot = ax.scatter(data_city['lon'],data_city['lat'],s = 45,zorder = 2,c = d
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

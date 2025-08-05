@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
 
 
 <link rel="stylesheet" href="/css/style.css">
@@ -113,7 +113,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -154,7 +154,7 @@
         <span class="column is-narrow">
             
             
-            4 分钟 de lectura (Alrededor de 550 palabras)
+            4 分钟 lire (À propos 550 mots)
         </span>
         
     </div>
@@ -164,82 +164,8 @@
 <span id="more"></span>
 
 <h1 id="Environment-Setup"><a href="#Environment-Setup" class="headerlink" title="Environment Setup"></a>Environment Setup</h1><p>First, create a new conda environment and install the required packages:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">conda create --name new_panel_env python=3.8
-conda activate new_panel_env
-## those package version are tested by myself with no conflict
-conda install -c conda-forge panel bokeh==2.4.3 holoviews==1.14.8 pandas==1.2.4 hvplot==0.8.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="Plotting-Script"><a href="#Plotting-Script" class="headerlink" title="Plotting Script"></a>Plotting Script</h1><pre class="line-numbers language-python" data-language="python"><code class="language-python">import panel as pn
-import holoviews as hv
-import pandas as pd
-import numpy as np
-import hvplot.pandas
-hv.extension('bokeh')
-
-# 1. Read the data
-df_merge = pd.read_csv("./data/df_merge.csv")
-factor_name = [c for c in df_merge.columns if 'factor_' in c]
-var_ = factor_name + [...]
-
-# Replace 'if tag bellow after columns definition
-df_var = df_merge[var_]
-df_var = df_var.replace('&lt;LD', np.nan)
-df_var = df_var.replace('&lt;DL', np.nan)
-df_var = df_var.dropna(axis=1, how='all')
-df_corr = df_var.corr()
-corr = df_corr  # .abs()
-
-# Mask the upper triangle of the heatmap
-corr.values[np.triu_indices_from(corr, 0)] = np.nan
-tick_label = [...]
-
-# 2. Create heatmap
-heatmap = hv.HeatMap((corr.columns, corr.index, corr)) \
-    .opts(
-        tools=['hover'], height=1400, width=1400, fontsize=12,
-        toolbar='above', colorbar=False, cmap='RdBu_r',
-        invert_yaxis=True, xrotation=90, xlabel='', ylabel='',
-        title='Correlation heatmap'
-    )
-
-# Define tap stream with heatmap as source
-tap_xy = hv.streams.Tap(source=heatmap, x='As', y='K')
-
-# Calculate correlation plot based on tap
-def tap_corrplot(x, y):
-    # Drop missing values if there are any
-    df_notnull = df_merge[['time_x', x, y]].dropna(how='any')
-    scatter1 = hv.Scatter((df_notnull[x], df_notnull[y]), x, y, label='scatterplot') \
-        .opts(
-            tools=['hover'], height=700, width=900, fontsize=12, size=5,
-            alpha=0.2, ylim=(df_notnull[y].min(), df_notnull[y].max()),
-            color='#30a2da', framewise=True,
-        )
-
-    timeseries1 = df_merge.hvplot(x='time_x', y=x, label=x, ylabel='Value').opts(
-        height=700, width=900
-    )
-
-    timeseries2 = df_merge.hvplot(x='time_x', y=y, label=y, ylabel='Value').opts(
-        height=700, width=900
-    )
-
-    return hv.Layout([scatter1, timeseries1 * timeseries2]).cols(1)
-
-tap_dmap = hv.DynamicMap(tap_corrplot, streams=[tap_xy])
-
-app_bar = pn.pane.Markdown("# Correlation Matrix Checker")
-app = pn.Column(
-    app_bar,
-    pn.Spacer(height=10),
-    pn.Row(
-        heatmap,
-        pn.Column(
-            tap_dmap,
-        ),
-    ),
-)
-
-app.servable(title='Correlation matrix checker')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">conda create --name new_panel_env python=3.8</span><br><span class="line">conda activate new_panel_env</span><br><span class="line"><span class="hljs-comment">## those package version are tested by myself with no conflict</span></span><br><span class="line">conda install -c conda-forge panel bokeh==2.4.3 holoviews==1.14.8 pandas==1.2.4 hvplot==0.8.2</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Plotting-Script"><a href="#Plotting-Script" class="headerlink" title="Plotting Script"></a>Plotting Script</h1><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> panel <span class="hljs-keyword">as</span> pn</span><br><span class="line"><span class="hljs-keyword">import</span> holoviews <span class="hljs-keyword">as</span> hv</span><br><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> hvplot.pandas</span><br><span class="line">hv.extension(<span class="hljs-string">'bokeh'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 1. Read the data</span></span><br><span class="line">df_merge = pd.read_csv(<span class="hljs-string">"./data/df_merge.csv"</span>)</span><br><span class="line">factor_name = [c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> df_merge.columns <span class="hljs-keyword">if</span> <span class="hljs-string">'factor_'</span> <span class="hljs-keyword">in</span> c]</span><br><span class="line">var_ = factor_name + [...]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Replace 'if tag bellow after columns definition</span></span><br><span class="line">df_var = df_merge[var_]</span><br><span class="line">df_var = df_var.replace(<span class="hljs-string">'&lt;LD'</span>, np.nan)</span><br><span class="line">df_var = df_var.replace(<span class="hljs-string">'&lt;DL'</span>, np.nan)</span><br><span class="line">df_var = df_var.dropna(axis=<span class="hljs-number">1</span>, how=<span class="hljs-string">'all'</span>)</span><br><span class="line">df_corr = df_var.corr()</span><br><span class="line">corr = df_corr  <span class="hljs-comment"># .abs()</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Mask the upper triangle of the heatmap</span></span><br><span class="line">corr.values[np.triu_indices_from(corr, <span class="hljs-number">0</span>)] = np.nan</span><br><span class="line">tick_label = [...]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 2. Create heatmap</span></span><br><span class="line">heatmap = hv.HeatMap((corr.columns, corr.index, corr)) \</span><br><span class="line">    .opts(</span><br><span class="line">        tools=[<span class="hljs-string">'hover'</span>], height=<span class="hljs-number">1400</span>, width=<span class="hljs-number">1400</span>, fontsize=<span class="hljs-number">12</span>,</span><br><span class="line">        toolbar=<span class="hljs-string">'above'</span>, colorbar=<span class="hljs-literal">False</span>, cmap=<span class="hljs-string">'RdBu_r'</span>,</span><br><span class="line">        invert_yaxis=<span class="hljs-literal">True</span>, xrotation=<span class="hljs-number">90</span>, xlabel=<span class="hljs-string">''</span>, ylabel=<span class="hljs-string">''</span>,</span><br><span class="line">        title=<span class="hljs-string">'Correlation heatmap'</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Define tap stream with heatmap as source</span></span><br><span class="line">tap_xy = hv.streams.Tap(source=heatmap, x=<span class="hljs-string">'As'</span>, y=<span class="hljs-string">'K'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Calculate correlation plot based on tap</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">tap_corrplot</span>(<span class="hljs-params">x, y</span>):</span><br><span class="line">    <span class="hljs-comment"># Drop missing values if there are any</span></span><br><span class="line">    df_notnull = df_merge[[<span class="hljs-string">'time_x'</span>, x, y]].dropna(how=<span class="hljs-string">'any'</span>)</span><br><span class="line">    scatter1 = hv.Scatter((df_notnull[x], df_notnull[y]), x, y, label=<span class="hljs-string">'scatterplot'</span>) \</span><br><span class="line">        .opts(</span><br><span class="line">            tools=[<span class="hljs-string">'hover'</span>], height=<span class="hljs-number">700</span>, width=<span class="hljs-number">900</span>, fontsize=<span class="hljs-number">12</span>, size=<span class="hljs-number">5</span>,</span><br><span class="line">            alpha=<span class="hljs-number">0.2</span>, ylim=(df_notnull[y].<span class="hljs-built_in">min</span>(), df_notnull[y].<span class="hljs-built_in">max</span>()),</span><br><span class="line">            color=<span class="hljs-string">'#30a2da'</span>, framewise=<span class="hljs-literal">True</span>,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    timeseries1 = df_merge.hvplot(x=<span class="hljs-string">'time_x'</span>, y=x, label=x, ylabel=<span class="hljs-string">'Value'</span>).opts(</span><br><span class="line">        height=<span class="hljs-number">700</span>, width=<span class="hljs-number">900</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    timeseries2 = df_merge.hvplot(x=<span class="hljs-string">'time_x'</span>, y=y, label=y, ylabel=<span class="hljs-string">'Value'</span>).opts(</span><br><span class="line">        height=<span class="hljs-number">700</span>, width=<span class="hljs-number">900</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> hv.Layout([scatter1, timeseries1 * timeseries2]).cols(<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">tap_dmap = hv.DynamicMap(tap_corrplot, streams=[tap_xy])</span><br><span class="line"></span><br><span class="line">app_bar = pn.pane.Markdown(<span class="hljs-string">"# Correlation Matrix Checker"</span>)</span><br><span class="line">app = pn.Column(</span><br><span class="line">    app_bar,</span><br><span class="line">    pn.Spacer(height=<span class="hljs-number">10</span>),</span><br><span class="line">    pn.Row(</span><br><span class="line">        heatmap,</span><br><span class="line">        pn.Column(</span><br><span class="line">            tap_dmap,</span><br><span class="line">        ),</span><br><span class="line">    ),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">app.servable(title=<span class="hljs-string">'Correlation matrix checker'</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <p>Save the above code in a Python file named <code>app.py</code>. This app has a heatmap of correlations between variables, which serves as the backdrop for an interactive scatterplot and time series based on your selections.</p>
 <h1 id="Running-the-Web-App"><a href="#Running-the-Web-App" class="headerlink" title="Running the Web App"></a>Running the Web App</h1><p>Finally, to run your web app, open a terminal in the folder containing the <code>app.py</code> script and execute the following command:</p>
@@ -281,7 +207,7 @@ app.servable(title='Correlation matrix checker')<span aria-hidden="true" class="
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
@@ -312,7 +238,7 @@ app.servable(title='Correlation matrix checker')<span aria-hidden="true" class="
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -420,7 +346,7 @@ app.servable(title='Correlation matrix checker')<span aria-hidden="true" class="
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -433,10 +359,10 @@ app.servable(title='Correlation matrix checker')<span aria-hidden="true" class="
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

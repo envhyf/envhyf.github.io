@@ -43,7 +43,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
 
 
 <link rel="stylesheet" href="/css/style.css">
@@ -112,7 +112,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -153,7 +153,7 @@
         <span class="column is-narrow">
             
             
-            11 分钟 de lectura (Alrededor de 1665 palabras)
+            11 分钟 lire (À propos 1665 mots)
         </span>
         
     </div>
@@ -163,104 +163,49 @@
 <span id="more"></span>
 
 <p>服务器的基本信息</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$cat /etc/redhat-release
-CentOS release 5.9 (Final)
-$gcc --version
-gcc (GCC) 4.9.4
-$ncdump --version
-netcdf library version 4.6.1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-variable">$cat</span> /etc/redhat-release</span><br><span class="line">CentOS release 5.9 (Final)</span><br><span class="line"><span class="hljs-variable">$gcc</span> --version</span><br><span class="line">gcc (GCC) 4.9.4</span><br><span class="line"><span class="hljs-variable">$ncdump</span> --version</span><br><span class="line">netcdf library version 4.6.1</span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <h2 id="1-gdal库安装"><a href="#1-gdal库安装" class="headerlink" title=" 1. gdal库安装"></a><font color="blue"> 1. gdal库安装</font></h2><p>gdal是一个常用的地学数据库，可用于读取、编写netCDF等格式的数值文件。尝试利用conda工具安装：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$conda install -c conda-forge gdal<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-variable">$conda</span> install -c conda-forge gdal</span><br></pre></td></tr></tbody></table></figure>
 
 <p>安装完毕后，无法启动python，错误信息如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python: /lib64/libc.so.6: version `GLIBC_2.7' not found (required by /home/hyf/anaconda2/bin/../lib/libpython2.7.so.1.0) <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python: /lib64/libc.so.6: version `GLIBC_2.7<span class="hljs-string">' not found (required by /home/hyf/anaconda2/bin/../lib/libpython2.7.so.1.0) </span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>上文已述，服务器系统为Cent OS 5.9版本，并不支持glibc_2.7。可用以下指令进行检查：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$strings /lib64/libc.so.6 |grep GLIBC_ 
-GLIBC_2.2.5
-GLIBC_2.2.6
-GLIBC_2.3
-GLIBC_2.3.2
-GLIBC_2.3.3
-GLIBC_2.3.4
-GLIBC_2.4
-GLIBC_2.5
-GLIBC_PRIVATE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-variable">$strings</span> /lib64/libc.so.6 |grep GLIBC_ </span><br><span class="line">GLIBC_2.2.5</span><br><span class="line">GLIBC_2.2.6</span><br><span class="line">GLIBC_2.3</span><br><span class="line">GLIBC_2.3.2</span><br><span class="line">GLIBC_2.3.3</span><br><span class="line">GLIBC_2.3.4</span><br><span class="line">GLIBC_2.4</span><br><span class="line">GLIBC_2.5</span><br><span class="line">GLIBC_PRIVATE</span><br></pre></td></tr></tbody></table></figure>
 
 <p>同时，gdal安装过程conda环境也升级至Anaconda5，不再适配于CentOS 5.X/glibc_2.5的系统环境，导致Python环境崩坏，无法启动。因而，我只得重新安装Anaconda，并设置安装package阶段不升级conda环境至5.x版本，以避免该错误的再次出现。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 已安装的库文件名称存一下
-printf '%s\n' ~/anaconda2/pkgs/* | paste -sd "," - &gt; log.csv
-# 卸载ananconda
-rm -rf ~/anaconda2
-rm -rf ~/.condarc ~/.conda ~/.continuum
-#重新安装Anaconda，在其下载文件夹内进行
-./Anaconda2-4.0.0-Linux-x86_64.sh <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 已安装的库文件名称存一下</span></span><br><span class="line"><span class="hljs-built_in">printf</span> <span class="hljs-string">'%s\n'</span> ~/anaconda2/pkgs/* | <span class="hljs-built_in">paste</span> -sd <span class="hljs-string">","</span> - &gt; log.csv</span><br><span class="line"><span class="hljs-comment"># 卸载ananconda</span></span><br><span class="line"><span class="hljs-built_in">rm</span> -rf ~/anaconda2</span><br><span class="line"><span class="hljs-built_in">rm</span> -rf ~/.condarc ~/.conda ~/.continuum</span><br><span class="line"><span class="hljs-comment">#重新安装Anaconda，在其下载文件夹内进行</span></span><br><span class="line">./Anaconda2-4.0.0-Linux-x86_64.sh </span><br></pre></td></tr></tbody></table></figure>
 
 <p>参考<a target="_blank" rel="noopener" href="https://github.com/conda/conda/issues/6041">conda github issue#6041</a>，按如下指令对conda环境进行限制，防止其升级</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$conda config --set auto_update_conda false
-# 新的错误再次出现
-Error: Error key must be one of always_yes, root_dir, channel_alias, add_anaconda_token, add_pip_as_python_dependency, show_channel_urls, update_dependencies, changeps1, allow_softlinks, anaconda_upload, binstar_upload, use_pip, offline, allow_other_channels, add_binstar_token, ssl_verify, always_copy, not auto_update_conda <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-variable">$conda</span> config --<span class="hljs-built_in">set</span> auto_update_conda <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment"># 新的错误再次出现</span></span><br><span class="line">Error: Error key must be one of always_yes, root_dir, channel_alias, add_anaconda_token, add_pip_as_python_dependency, show_channel_urls, update_dependencies, changeps1, allow_softlinks, anaconda_upload, binstar_upload, use_pip, offline, allow_other_channels, add_binstar_token, ssl_verify, always_copy, not auto_update_conda </span><br></pre></td></tr></tbody></table></figure>
 
 <p>查询网络资料得知，在conda 4.2版本后，该bug得以修复。因而<code>conda install conda =4.2</code>指令后再强制其不升级，不再出现上述错误。</p>
 <p>重新安装gdal库文件，python可正常启用，但在调用gdal库函数时，又出现了新的错误（༼ ͠ຈ Ĺ̯ ͠ຈ ༽）：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">from osgeo import gdal
-&gt;ImportError: /home/hyf/anaconda2/lib/python2.7/site-packages/osgeo/../../../libgdal.so.20: ELF file OS ABI invalid <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> osgeo <span class="hljs-keyword">import</span> gdal</span><br><span class="line">&gt;ImportError: /home/hyf/anaconda2/lib/python2<span class="hljs-number">.7</span>/site-packages/osgeo/../../../libgdal.so<span class="hljs-number">.20</span>: ELF file OS ABI invalid </span><br></pre></td></tr></tbody></table></figure>
 
 <p>参考<a target="_blank" rel="noopener" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal">这篇文章的解释</a>，该错误上文“glibc_2.7”报错是类似的。系统的ldd version同样陈旧(2.5)，无法支持gdal库正常使用。将Cent OS升级成6.x版本可一劳永逸地解决这类问题，但我并无权限，也无决心重新配置整个系统。</p>
 <p>在反复安装测试未果后，我决定放弃╮(╯_╰)╭，转向安装其他支持读取netcdf格式的python库。在此期间，我还尝试在服务器上安装了R语言环境和ncdf package，以后有时间专文记述。</p>
 <h2 id="2-netCDF4-python库安装"><a href="#2-netCDF4-python库安装" class="headerlink" title=" 2. netCDF4-python库安装"></a><font color="blue"> 2. netCDF4-python库安装</font></h2><p>首先尝试<a target="_blank" rel="noopener" href="https://anaconda.org/anaconda/netcdf4">Anaconda网站</a>提供的方法，直接利用conda工具安装</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$conda install -c anaconda netcdf4<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-variable">$conda</span> install -c anaconda netcdf4</span><br></pre></td></tr></tbody></table></figure>
 
 <p>安装后，出现python无法启动的错误，具体为“importError: cannot import name md5”。<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/46605138/anaconda2-cannot-import-name-md5">Stackoverflow</a>上类似题的回答表明，该错误是在anaocnda5.0.1版本中得以修复。但是，我不能安5.x版本的conda啊இдஇ，于是再想其他办法。</p>
 <p>重新安装anaconda环境后，我尝试用手动install from source的方法来安装，具体<a target="_blank" rel="noopener" href="https://github.com/Unidata/netcdf4-python">netcdf4-python的github主页</a>中的介绍：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$git clone https://github.com/Unidata/netcdf4-python.git
-cd netcdf4-python
-# 修改 setup.cfg中的netcdf, hdf5存放路径
-sed -i '/\[directories\]/a \
-HDF5_dir = $DIR/hdf5 \
-netCDF4_dir = $DIR/netcdf' setup.cfg
-# run setup.py
-$python setup.py build
-$python setup.py install
-
-
-# run test.py
-$cd test
-$python run_all.py<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-variable">$git</span> <span class="hljs-built_in">clone</span> https://github.com/Unidata/netcdf4-python.git</span><br><span class="line"><span class="hljs-built_in">cd</span> netcdf4-python</span><br><span class="line"><span class="hljs-comment"># 修改 setup.cfg中的netcdf, hdf5存放路径</span></span><br><span class="line">sed -i <span class="hljs-string">'/\[directories\]/a \</span></span><br><span class="line"><span class="hljs-string">HDF5_dir = $DIR/hdf5 \</span></span><br><span class="line"><span class="hljs-string">netCDF4_dir = $DIR/netcdf'</span> setup.cfg</span><br><span class="line"><span class="hljs-comment"># run setup.py</span></span><br><span class="line"><span class="hljs-variable">$python</span> setup.py build</span><br><span class="line"><span class="hljs-variable">$python</span> setup.py install</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># run test.py</span></span><br><span class="line"><span class="hljs-variable">$cd</span> <span class="hljs-built_in">test</span></span><br><span class="line"><span class="hljs-variable">$python</span> run_all.py</span><br></pre></td></tr></tbody></table></figure>
 
 <p>不出意外，安装过程肯定是要报错的，具体的错误信息如下：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/usr/bin/ld: /disk2/hyf/lib/netcdf/lib/libnetcdf.a(libdispatch_la-att.o): relocation R_X86_64_32 against `a local symbol' can not be used when making a shared object; recompile with -fPIC
-/disk2/hyf/lib/netcdf/lib/libnetcdf.a: could not read symbols: Bad value
-collect2: error: ld returned 1 exit status
-error: command 'gcc' failed with exit status 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ld: /disk2/hyf/lib/netcdf/lib/libnetcdf.a(libdispatch_la-att.o): relocation R_X86_64_32 against `a <span class="hljs-built_in">local</span> symbol<span class="hljs-string">' can not be used when making a shared object; recompile with -fPIC</span></span><br><span class="line"><span class="hljs-string">/disk2/hyf/lib/netcdf/lib/libnetcdf.a: could not read symbols: Bad value</span></span><br><span class="line"><span class="hljs-string">collect2: error: ld returned 1 exit status</span></span><br><span class="line"><span class="hljs-string">error: command '</span>gcc<span class="hljs-string">' failed with exit status 1</span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>该结果表明，netcdf库在安装过程，关闭了enable-shared，共享库未进行编译，并进一步导致了<code>"a local symbol" can not be used …</code>的问题。正好在flexpart安装过程(参见之前的博文<a target="_blank" rel="noopener" href="http://paisheng.me/2018/08/10/FLEXPART_INSTALLATION_NOTE/">FLEXPART installation notes</a>)中，我又安装了一套netCDF库，在该环境下重新手动安装，该错误不再显示。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># change netCDF
-$source ~/.bashrc_forFlex
-$ncdump --version
-netcdf library version 4.6.1
-
-# run setup.py
-$python setup.py build
-$python setup.py install
-
-# run test.py
-$cd test
-$python run_all.py<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># change netCDF</span></span><br><span class="line"><span class="hljs-variable">$source</span> ~/.bashrc_forFlex</span><br><span class="line"><span class="hljs-variable">$ncdump</span> --version</span><br><span class="line">netcdf library version 4.6.1</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># run setup.py</span></span><br><span class="line"><span class="hljs-variable">$python</span> setup.py build</span><br><span class="line"><span class="hljs-variable">$python</span> setup.py install</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># run test.py</span></span><br><span class="line"><span class="hljs-variable">$cd</span> <span class="hljs-built_in">test</span></span><br><span class="line"><span class="hljs-variable">$python</span> run_all.py</span><br></pre></td></tr></tbody></table></figure>
 
 <p>成功安装后，在/netcdf4-python/test/文件夹下可运行，并调用netCDF4库函数(<code>from netCDF4 import Dataset</code>)。测试结果表明，写netCDF格式文件(mode=’w’)一切正常，但有两个致命问题：1. 仅能在该文件夹内，方可成功<code>import netCDF4 </code>，2. 无法读取现有的nc数据，报错如下：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">filepath method not enabled.  To enable, install Cython, make sure you have version 4.1.2 or higher of the netcdf C lib, and rebuild netcdf4-python.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filepath method <span class="hljs-keyword">not</span> enabled.  To enable, install Cython, make sure you have version <span class="hljs-number">4.1</span><span class="hljs-number">.2</span> <span class="hljs-keyword">or</span> higher of the netcdf C lib, <span class="hljs-keyword">and</span> rebuild netcdf4-python.</span><br></pre></td></tr></tbody></table></figure>
 
 <p>Cython我已经安装了，netcdf C 版本也高于4.1.2，到底是哪里出问题了呢？参考<a target="_blank" rel="noopener" href="https://github.com/Unidata/netcdf4-python/issues/263">github上netcdf-python issue#263</a>，我检查了<code>python setup.py build</code>时的output，其明确显示</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">netcdf lib does not have group rename capability
-netcdf lib does not have nc_inq_path function
-netcdf lib does not have nc_inq_format_extended function
-netcdf lib does not have nc_open_mem function
-netcdf lib does not have cdf-5 format capability
-netcdf lib does not have netcdf4 parallel functions<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">netcdf lib does not have group rename capability</span><br><span class="line">netcdf lib does not have nc_inq_path <span class="hljs-keyword">function</span></span><br><span class="line">netcdf lib does not have nc_inq_format_extended <span class="hljs-keyword">function</span></span><br><span class="line">netcdf lib does not have nc_open_mem <span class="hljs-keyword">function</span></span><br><span class="line">netcdf lib does not have cdf-5 format capability</span><br><span class="line">netcdf lib does not have netcdf4 parallel <span class="hljs-built_in">functions</span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>初步断定”nc_inq_path function” 的缺失，是导致”filepath method not enabled”的根本原因。反复搜索相关资料，也未查询到相似的问题以及解决方法。</p>
 <p>完全放弃前，我尝试<code>conda install netcdf4 </code>，竟然意外成功，可以正常读取nc格式文件了。</p>
@@ -303,7 +248,7 @@ netcdf lib does not have netcdf4 parallel functions<span aria-hidden="true" clas
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
@@ -334,7 +279,7 @@ netcdf lib does not have netcdf4 parallel functions<span aria-hidden="true" clas
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -442,7 +387,7 @@ netcdf lib does not have netcdf4 parallel functions<span aria-hidden="true" clas
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -455,10 +400,10 @@ netcdf lib does not have netcdf4 parallel functions<span aria-hidden="true" clas
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

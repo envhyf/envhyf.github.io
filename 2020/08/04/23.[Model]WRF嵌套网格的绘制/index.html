@@ -27,8 +27,8 @@
 <meta property="article:modified_time" content="2025-08-02T09:37:24.000Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
-<meta property="article:tag" content="WRF">
 <meta property="article:tag" content="Visualization">
+<meta property="article:tag" content="WRF">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://envhyf.github.io/images/22.WRF_nested/Fig.1.png">
 
@@ -47,7 +47,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
 
 
 <link rel="stylesheet" href="/css/style.css">
@@ -116,7 +116,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -157,7 +157,7 @@
         <span class="column is-narrow">
             
             
-            7 分钟 de lectura (Alrededor de 1117 palabras)
+            7 分钟 lire (À propos 1117 mots)
         </span>
         
     </div>
@@ -167,13 +167,7 @@
 <span id="more"></span>
 
 <h2 id="1-替换底图"><a href="#1-替换底图" class="headerlink" title=" 1. 替换底图"></a><font color="blue"> 1. 替换底图</font></h2><p>Salem是用于地理数据处理和可视化的Python小工具，其功能强大，使用简便。例如，Salem可直接读取WRF模型的namelist.input，绘制网格嵌套图。    </p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">import salem
-from salem.utils import get_demo_file
-from salem import geogrid_simulator
-fpath = r'./namelist.wps'
-g, maps = geogrid_simulator(fpath)
-maps[0].set_rgb(natural_earth='lr')  # add a background image
-maps[0].visualize(title='WRF Simlated Domains 1 to 3')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> salem</span><br><span class="line"><span class="hljs-keyword">from</span> salem.utils <span class="hljs-keyword">import</span> get_demo_file</span><br><span class="line"><span class="hljs-keyword">from</span> salem <span class="hljs-keyword">import</span> geogrid_simulator</span><br><span class="line">fpath = <span class="hljs-string">r'./namelist.wps'</span></span><br><span class="line">g, maps = geogrid_simulator(fpath)</span><br><span class="line">maps[<span class="hljs-number">0</span>].set_rgb(natural_earth=<span class="hljs-string">'lr'</span>)  <span class="hljs-comment"># add a background image</span></span><br><span class="line">maps[<span class="hljs-number">0</span>].visualize(title=<span class="hljs-string">'WRF Simlated Domains 1 to 3'</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <p><a href="/images/22.WRF_nested/Fig.1.png"><img src="/images/22.WRF_nested/Fig.1.png" alt="enter image description here"></a>   </p>
 <p>Cartopy底图存放位置<br><code>/User/HYF/anaconda3/lib/⁨python3.7/⁨site-packages⁩/cartopy/⁨data⁩/raster⁩</code><br>高清图像下载地址</p>
@@ -182,122 +176,10 @@ maps[0].visualize(title='WRF Simlated Domains 1 to 3')<span aria-hidden="true" c
 <li><a target="_blank" rel="noopener" href="http://www.shadedrelief.com/natural3/pages/textures.html">Natural Earth III</a></li>
 <li><a target="_blank" rel="noopener" href="http://shadedrelief.com/natural3/ne3_data/8192/textures/2_no_clouds_8k.jpg">Natural Earth III with no clouds</a><br>⁩<br>下载新image后，需修改相同文件夹下的image.json，举例如下:</li>
 </ul>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">{</span><span class="token string-property property">"__comment__"</span><span class="token operator">:</span> <span class="token string">"JSON file specifying the image to use for a given type/name and resolution. Read in by cartopy.mpl.geoaxes.read_user_background_images."</span><span class="token punctuation">,</span>
-  <span class="token string-property property">"ne_shaded"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token string-property property">"__comment__"</span><span class="token operator">:</span> <span class="token string">"Natural Earth shaded relief"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"__source__"</span><span class="token operator">:</span> <span class="token string">"http://www.naturalearthdata.com/downloads/50m-raster-data/50m-natural-earth-1/"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"__projection__"</span><span class="token operator">:</span> <span class="token string">"PlateCarree"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"low"</span><span class="token operator">:</span> <span class="token string">"50-natural-earth-1-downsampled.png"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"high"</span><span class="token operator">:</span> <span class="token string">"natural-earth-1_large8192px.png"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"medium"</span><span class="token operator">:</span> <span class="token string">"natural-earth-1_large4096px.png"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token string-property property">"ne_shaded"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token string-property property">"__comment__"</span><span class="token operator">:</span> <span class="token string">"Natural Earth shaded relief III"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"__source__"</span><span class="token operator">:</span> <span class="token string">"http://www.shadedrelief.com/natural3/pages/textures.html⁩"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"__projection__"</span><span class="token operator">:</span> <span class="token string">"PlateCarree"</span><span class="token punctuation">,</span>
-    <span class="token string-property property">"high"</span><span class="token operator">:</span> <span class="token string">"natural-earth-3_large4096px"</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight javascript hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">{<span class="hljs-string">"__comment__"</span>: <span class="hljs-string">"JSON file specifying the image to use for a given type/name and resolution. Read in by cartopy.mpl.geoaxes.read_user_background_images."</span>,</span><br><span class="line">  <span class="hljs-string">"ne_shaded"</span>: {</span><br><span class="line">    <span class="hljs-string">"__comment__"</span>: <span class="hljs-string">"Natural Earth shaded relief"</span>,</span><br><span class="line">    <span class="hljs-string">"__source__"</span>: <span class="hljs-string">"http://www.naturalearthdata.com/downloads/50m-raster-data/50m-natural-earth-1/"</span>,</span><br><span class="line">    <span class="hljs-string">"__projection__"</span>: <span class="hljs-string">"PlateCarree"</span>,</span><br><span class="line">    <span class="hljs-string">"low"</span>: <span class="hljs-string">"50-natural-earth-1-downsampled.png"</span>,</span><br><span class="line">    <span class="hljs-string">"high"</span>: <span class="hljs-string">"natural-earth-1_large8192px.png"</span>,</span><br><span class="line">    <span class="hljs-string">"medium"</span>: <span class="hljs-string">"natural-earth-1_large4096px.png"</span>},</span><br><span class="line">  <span class="hljs-string">"ne_shaded"</span>: {</span><br><span class="line">    <span class="hljs-string">"__comment__"</span>: <span class="hljs-string">"Natural Earth shaded relief III"</span>,</span><br><span class="line">    <span class="hljs-string">"__source__"</span>: <span class="hljs-string">"http://www.shadedrelief.com/natural3/pages/textures.html⁩"</span>,</span><br><span class="line">    <span class="hljs-string">"__projection__"</span>: <span class="hljs-string">"PlateCarree"</span>,</span><br><span class="line">    <span class="hljs-string">"high"</span>: <span class="hljs-string">"natural-earth-3_large4096px"</span>}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="2-中国行政边界重新绘制"><a href="#2-中国行政边界重新绘制" class="headerlink" title=" 2. 中国行政边界重新绘制"></a><font color="blue"> 2. 中国行政边界重新绘制</font></h2><p>原始Salem工具包的中国行政地图存在错误。因此，自行绘制国家边界，以准确绘制图形。具体实现相对简单，首先应用Salem工具读取WRF模型的namelist文件，然后应用Cartopy工具绘制，并换用上一节介绍的更为清晰的地形底图。</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">import salem
-from salem import geogrid_simulator
-from salem import wgs84
-
-fpath = r'./namelist.wps'
-g, maps,rect= geogrid_simulator(fpath) 
-
-x0,y0 = pyproj.transform(g[0].proj,wgs84,g[0].extent[0], g[0].extent[2])
-x1,y1 = pyproj.transform(g[0].proj,wgs84,g[0].extent[1], g[0].extent[3])  
-
-def background(ax):   
-    fname = './bou2_4p.shp' ## 省界shapefile
-    shape_feature = ShapelyFeature(Reader(fname).geometries(),
-                                    ccrs.PlateCarree(),facecolor='none',edgecolor ='k',linewidth = 0.25)
-    ax.add_feature(shape_feature)
-    
-    fname = './中国轮廓_含南海.shp' ## 国界shapefile
-    shape_feature = ShapelyFeature(Reader(fname).geometries(),ccrs.PlateCarree(),facecolor='none',edgecolor ='k',linewidth = 0.75)
-    ax.add_feature(shape_feature)
-    
-    fname = './country1.shp' ## 各国边界shapefile
-    shape_feature = ShapelyFeature(Reader(fname).geometries(),ccrs.PlateCarree(),facecolor='none',edgecolor ='k',linewidth = 0.75)
-    ax.add_feature(shape_feature) 
-
-    ax.set_extent([x0,125,y0+3,55], crs=ccrs.PlateCarree())     
-    xticks = [80,90,100,110,120,130,140]
-    yticks = [10,20,30,40,50,60]
-    fig.canvas.draw()
-    ax.gridlines(xlocs=xticks, ylocs=yticks, color='gray', alpha=0.5, linestyle='--',linewidth = 0.75)
-    ax.xaxis.set_major_formatter(LONGITUDE_FORMATTER) 
-    ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)
-    lambert_xticks(ax, xticks)
-    lambert_yticks(ax, yticks) 
-## Lambert投影系统下网格线绘制代码参考https://gist.github.com/ajdawson/dd536f786741e987ae4e
-def find_side(ls, side):
-    """
-    Given a shapely LineString which is assumed to be rectangular, return the
-    line corresponding to a given side of the rectangle.
-    
-    """
-    minx, miny, maxx, maxy = ls.bounds
-    points = {'left': [(minx, miny), (minx, maxy)],
-              'right': [(maxx, miny), (maxx, maxy)],
-              'bottom': [(minx, miny), (maxx, miny)],
-              'top': [(minx, maxy), (maxx, maxy)],}
-    return sgeom.LineString(points[side])
-def lambert_xticks(ax, ticks):
-    """Draw ticks on the bottom x-axis of a Lambert Conformal projection."""
-    te = lambda xy: xy[0]
-    lc = lambda t, n, b: np.vstack((np.zeros(n) + t, np.linspace(b[2], b[3], n))).T
-    xticks, xticklabels = _lambert_ticks(ax, ticks, 'bottom', lc, te)
-    ax.xaxis.tick_bottom()
-    ax.set_xticks(xticks)
-    ax.set_xticklabels([ax.xaxis.get_major_formatter()(xtick) for xtick in xticklabels])  
-def lambert_yticks(ax, ticks):
-    """Draw ricks on the left y-axis of a Lamber Conformal projection."""
-    te = lambda xy: xy[1]
-    lc = lambda t, n, b: np.vstack((np.linspace(b[0], b[1], n), np.zeros(n) + t)).T
-    yticks, yticklabels = _lambert_ticks(ax, ticks, 'left', lc, te)
-    ax.yaxis.tick_left()
-    ax.set_yticks(yticks)
-    ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) for ytick in yticklabels])
-def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
-    """Get the tick locations and labels for an axis of a Lambert Conformal projection."""
-    outline_patch = sgeom.LineString(ax.outline_patch.get_path().vertices.tolist())
-    axis = find_side(outline_patch, tick_location)
-    n_steps = 30
-    extent = ax.get_extent(ccrs.PlateCarree())
-    _ticks = []
-    for t in ticks:
-        xy = line_constructor(t, n_steps, extent)
-        proj_xyz = ax.projection.transform_points(ccrs.Geodetic(), xy[:, 0], xy[:, 1])
-        xyt = proj_xyz[..., :2]
-        ls = sgeom.LineString(xyt.tolist())
-        locs = axis.intersection(ls)
-        if not locs:
-            tick = [None]
-        else:
-            tick = tick_extractor(locs.xy)
-        _ticks.append(tick[0])
-    # Remove ticks that aren't visible:    
-    ticklabels = copy(ticks)
-    while True:
-        try:
-            index = _ticks.index(None)
-        except ValueError:
-            break
-        _ticks.pop(index)
-        ticklabels.pop(index)
-    return _ticks, ticklabels    
-
-proj = salem.proj_to_cartopy(g[0].proj)
-
-fig = plt.figure(figsize=(6.,5), frameon=True)
-ax1 = plt.subplot(111, projection=proj)
-cs = cn_back_plot(ax1)
-ax1.background_img(name='ne_shaded3',resolution='low')
-ax1.add_geometries([rect[0][0]], crs = proj,facecolor='none', edgecolor='k', lw=2.5)
-plt.savefig("./模拟嵌套网格.png",dpi=400)
-plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> salem</span><br><span class="line"><span class="hljs-keyword">from</span> salem <span class="hljs-keyword">import</span> geogrid_simulator</span><br><span class="line"><span class="hljs-keyword">from</span> salem <span class="hljs-keyword">import</span> wgs84</span><br><span class="line"></span><br><span class="line">fpath = <span class="hljs-string">r'./namelist.wps'</span></span><br><span class="line">g, maps,rect= geogrid_simulator(fpath) </span><br><span class="line"></span><br><span class="line">x0,y0 = pyproj.transform(g[<span class="hljs-number">0</span>].proj,wgs84,g[<span class="hljs-number">0</span>].extent[<span class="hljs-number">0</span>], g[<span class="hljs-number">0</span>].extent[<span class="hljs-number">2</span>])</span><br><span class="line">x1,y1 = pyproj.transform(g[<span class="hljs-number">0</span>].proj,wgs84,g[<span class="hljs-number">0</span>].extent[<span class="hljs-number">1</span>], g[<span class="hljs-number">0</span>].extent[<span class="hljs-number">3</span>])  </span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">background</span>(<span class="hljs-params">ax</span>):   </span><br><span class="line">    fname = <span class="hljs-string">'./bou2_4p.shp'</span> <span class="hljs-comment">## 省界shapefile</span></span><br><span class="line">    shape_feature = ShapelyFeature(Reader(fname).geometries(),</span><br><span class="line">                                    ccrs.PlateCarree(),facecolor=<span class="hljs-string">'none'</span>,edgecolor =<span class="hljs-string">'k'</span>,linewidth = <span class="hljs-number">0.25</span>)</span><br><span class="line">    ax.add_feature(shape_feature)</span><br><span class="line">    </span><br><span class="line">    fname = <span class="hljs-string">'./中国轮廓_含南海.shp'</span> <span class="hljs-comment">## 国界shapefile</span></span><br><span class="line">    shape_feature = ShapelyFeature(Reader(fname).geometries(),ccrs.PlateCarree(),facecolor=<span class="hljs-string">'none'</span>,edgecolor =<span class="hljs-string">'k'</span>,linewidth = <span class="hljs-number">0.75</span>)</span><br><span class="line">    ax.add_feature(shape_feature)</span><br><span class="line">    </span><br><span class="line">    fname = <span class="hljs-string">'./country1.shp'</span> <span class="hljs-comment">## 各国边界shapefile</span></span><br><span class="line">    shape_feature = ShapelyFeature(Reader(fname).geometries(),ccrs.PlateCarree(),facecolor=<span class="hljs-string">'none'</span>,edgecolor =<span class="hljs-string">'k'</span>,linewidth = <span class="hljs-number">0.75</span>)</span><br><span class="line">    ax.add_feature(shape_feature) </span><br><span class="line"></span><br><span class="line">    ax.set_extent([x0,<span class="hljs-number">125</span>,y0+<span class="hljs-number">3</span>,<span class="hljs-number">55</span>], crs=ccrs.PlateCarree())     </span><br><span class="line">    xticks = [<span class="hljs-number">80</span>,<span class="hljs-number">90</span>,<span class="hljs-number">100</span>,<span class="hljs-number">110</span>,<span class="hljs-number">120</span>,<span class="hljs-number">130</span>,<span class="hljs-number">140</span>]</span><br><span class="line">    yticks = [<span class="hljs-number">10</span>,<span class="hljs-number">20</span>,<span class="hljs-number">30</span>,<span class="hljs-number">40</span>,<span class="hljs-number">50</span>,<span class="hljs-number">60</span>]</span><br><span class="line">    fig.canvas.draw()</span><br><span class="line">    ax.gridlines(xlocs=xticks, ylocs=yticks, color=<span class="hljs-string">'gray'</span>, alpha=<span class="hljs-number">0.5</span>, linestyle=<span class="hljs-string">'--'</span>,linewidth = <span class="hljs-number">0.75</span>)</span><br><span class="line">    ax.xaxis.set_major_formatter(LONGITUDE_FORMATTER) </span><br><span class="line">    ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)</span><br><span class="line">    lambert_xticks(ax, xticks)</span><br><span class="line">    lambert_yticks(ax, yticks) </span><br><span class="line"><span class="hljs-comment">## Lambert投影系统下网格线绘制代码参考https://gist.github.com/ajdawson/dd536f786741e987ae4e</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_side</span>(<span class="hljs-params">ls, side</span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Given a shapely LineString which is assumed to be rectangular, return the</span></span><br><span class="line"><span class="hljs-string">    line corresponding to a given side of the rectangle.</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    minx, miny, maxx, maxy = ls.bounds</span><br><span class="line">    points = {<span class="hljs-string">'left'</span>: [(minx, miny), (minx, maxy)],</span><br><span class="line">              <span class="hljs-string">'right'</span>: [(maxx, miny), (maxx, maxy)],</span><br><span class="line">              <span class="hljs-string">'bottom'</span>: [(minx, miny), (maxx, miny)],</span><br><span class="line">              <span class="hljs-string">'top'</span>: [(minx, maxy), (maxx, maxy)],}</span><br><span class="line">    <span class="hljs-keyword">return</span> sgeom.LineString(points[side])</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">lambert_xticks</span>(<span class="hljs-params">ax, ticks</span>):</span><br><span class="line">    <span class="hljs-string">"""Draw ticks on the bottom x-axis of a Lambert Conformal projection."""</span></span><br><span class="line">    te = <span class="hljs-keyword">lambda</span> xy: xy[<span class="hljs-number">0</span>]</span><br><span class="line">    lc = <span class="hljs-keyword">lambda</span> t, n, b: np.vstack((np.zeros(n) + t, np.linspace(b[<span class="hljs-number">2</span>], b[<span class="hljs-number">3</span>], n))).T</span><br><span class="line">    xticks, xticklabels = _lambert_ticks(ax, ticks, <span class="hljs-string">'bottom'</span>, lc, te)</span><br><span class="line">    ax.xaxis.tick_bottom()</span><br><span class="line">    ax.set_xticks(xticks)</span><br><span class="line">    ax.set_xticklabels([ax.xaxis.get_major_formatter()(xtick) <span class="hljs-keyword">for</span> xtick <span class="hljs-keyword">in</span> xticklabels])  </span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">lambert_yticks</span>(<span class="hljs-params">ax, ticks</span>):</span><br><span class="line">    <span class="hljs-string">"""Draw ricks on the left y-axis of a Lamber Conformal projection."""</span></span><br><span class="line">    te = <span class="hljs-keyword">lambda</span> xy: xy[<span class="hljs-number">1</span>]</span><br><span class="line">    lc = <span class="hljs-keyword">lambda</span> t, n, b: np.vstack((np.linspace(b[<span class="hljs-number">0</span>], b[<span class="hljs-number">1</span>], n), np.zeros(n) + t)).T</span><br><span class="line">    yticks, yticklabels = _lambert_ticks(ax, ticks, <span class="hljs-string">'left'</span>, lc, te)</span><br><span class="line">    ax.yaxis.tick_left()</span><br><span class="line">    ax.set_yticks(yticks)</span><br><span class="line">    ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) <span class="hljs-keyword">for</span> ytick <span class="hljs-keyword">in</span> yticklabels])</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">_lambert_ticks</span>(<span class="hljs-params">ax, ticks, tick_location, line_constructor, tick_extractor</span>):</span><br><span class="line">    <span class="hljs-string">"""Get the tick locations and labels for an axis of a Lambert Conformal projection."""</span></span><br><span class="line">    outline_patch = sgeom.LineString(ax.outline_patch.get_path().vertices.tolist())</span><br><span class="line">    axis = find_side(outline_patch, tick_location)</span><br><span class="line">    n_steps = <span class="hljs-number">30</span></span><br><span class="line">    extent = ax.get_extent(ccrs.PlateCarree())</span><br><span class="line">    _ticks = []</span><br><span class="line">    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> ticks:</span><br><span class="line">        xy = line_constructor(t, n_steps, extent)</span><br><span class="line">        proj_xyz = ax.projection.transform_points(ccrs.Geodetic(), xy[:, <span class="hljs-number">0</span>], xy[:, <span class="hljs-number">1</span>])</span><br><span class="line">        xyt = proj_xyz[..., :<span class="hljs-number">2</span>]</span><br><span class="line">        ls = sgeom.LineString(xyt.tolist())</span><br><span class="line">        locs = axis.intersection(ls)</span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> locs:</span><br><span class="line">            tick = [<span class="hljs-literal">None</span>]</span><br><span class="line">        <span class="hljs-keyword">else</span>:</span><br><span class="line">            tick = tick_extractor(locs.xy)</span><br><span class="line">        _ticks.append(tick[<span class="hljs-number">0</span>])</span><br><span class="line">    <span class="hljs-comment"># Remove ticks that aren't visible:    </span></span><br><span class="line">    ticklabels = copy(ticks)</span><br><span class="line">    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:</span><br><span class="line">        <span class="hljs-keyword">try</span>:</span><br><span class="line">            index = _ticks.index(<span class="hljs-literal">None</span>)</span><br><span class="line">        <span class="hljs-keyword">except</span> ValueError:</span><br><span class="line">            <span class="hljs-keyword">break</span></span><br><span class="line">        _ticks.pop(index)</span><br><span class="line">        ticklabels.pop(index)</span><br><span class="line">    <span class="hljs-keyword">return</span> _ticks, ticklabels    </span><br><span class="line"></span><br><span class="line">proj = salem.proj_to_cartopy(g[<span class="hljs-number">0</span>].proj)</span><br><span class="line"></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">6.</span>,<span class="hljs-number">5</span>), frameon=<span class="hljs-literal">True</span>)</span><br><span class="line">ax1 = plt.subplot(<span class="hljs-number">111</span>, projection=proj)</span><br><span class="line">cs = cn_back_plot(ax1)</span><br><span class="line">ax1.background_img(name=<span class="hljs-string">'ne_shaded3'</span>,resolution=<span class="hljs-string">'low'</span>)</span><br><span class="line">ax1.add_geometries([rect[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]], crs = proj,facecolor=<span class="hljs-string">'none'</span>, edgecolor=<span class="hljs-string">'k'</span>, lw=<span class="hljs-number">2.5</span>)</span><br><span class="line">plt.savefig(<span class="hljs-string">"./模拟嵌套网格.png"</span>,dpi=<span class="hljs-number">400</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
 
 <p><a href="/images/22.WRF_nested/Fig.2.png"><img src="/images/22.WRF_nested/Fig.2.png" alt="enter image description here"></a></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
@@ -315,9 +197,9 @@ plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
     
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
     
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/WRF/">#WRF</a></span>
-    
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/WRF/">#WRF</a></span>
     
     </div>
     
@@ -341,7 +223,7 @@ plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
@@ -372,7 +254,7 @@ plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -480,7 +362,7 @@ plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -493,10 +375,10 @@ plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

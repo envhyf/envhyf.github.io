@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
 
 
 <link rel="stylesheet" href="/css/style.css">
@@ -113,7 +113,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -154,7 +154,7 @@
         <span class="column is-narrow">
             
             
-            5 分钟 de lectura (Alrededor de 785 palabras)
+            5 分钟 lire (À propos 785 mots)
         </span>
         
     </div>
@@ -163,80 +163,14 @@
         <html><head></head><body><p>部分互联网资料仅提供在线预览，无法直接下载。若预览系统设计欠佳，或限于网速内容加载过慢，都会对阅读体验造成严重影响。在此分别以国家自然基金研究报告和学位论文为例，介绍两种不同的下载合成方法，供有需要的老师同学们参考。欢迎大家提出宝贵意见。</p>
 <span id="more"></span>
 <h2 id="1-国家自然基金研究报告"><a href="#1-国家自然基金研究报告" class="headerlink" title=" 1. 国家自然基金研究报告"></a><font color="blue"> 1. 国家自然基金研究报告</font></h2><p><a target="_blank" rel="noopener" href="http://output.nsfc.gov.cn/">国家自然科学基金共享服务网</a>中公开的项目报告只能在线阅览。以《颗粒物质基本性质的研究》研究为例，在其结题报告全文页，获取首页图片网址-<a target="_blank" rel="noopener" href="http://output.nsfc.gov.cn/report/10/10274071_1.png">http://output.nsfc.gov.cn/report/10/10274071_1.png</a><br>确定目标页URL后，接下来的工作可用Python代码自动完成，代码具体如下：    </p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">import os
-import natsort
-from fpdf import FPDF
-
-for i in range(0,200,1):
-    os.system("wget http://output.nsfc.gov.cn/report/10/10274071_%i.png" %i)
-
-files = os.listdir('./')
-files = natsort.natsorted(files, reverse = False)
-files = files[0:]
-pdf = FPDF()
-
-for image in files[0:]:
-    if image[-3:]=='png':
-        pdf.add_page()  
-        pdf.image(image,0,0,210,297)  
-pdf.output("../颗粒物质基本性质的研究.pdf", "F")  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> os</span><br><span class="line"><span class="hljs-keyword">import</span> natsort</span><br><span class="line"><span class="hljs-keyword">from</span> fpdf <span class="hljs-keyword">import</span> FPDF</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-number">200</span>,<span class="hljs-number">1</span>):</span><br><span class="line">    os.system(<span class="hljs-string">"wget http://output.nsfc.gov.cn/report/10/10274071_%i.png"</span> %i)</span><br><span class="line"></span><br><span class="line">files = os.listdir(<span class="hljs-string">'./'</span>)</span><br><span class="line">files = natsort.natsorted(files, reverse = <span class="hljs-literal">False</span>)</span><br><span class="line">files = files[<span class="hljs-number">0</span>:]</span><br><span class="line">pdf = FPDF()</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> image <span class="hljs-keyword">in</span> files[<span class="hljs-number">0</span>:]:</span><br><span class="line">    <span class="hljs-keyword">if</span> image[-<span class="hljs-number">3</span>:]==<span class="hljs-string">'png'</span>:</span><br><span class="line">        pdf.add_page()  </span><br><span class="line">        pdf.image(image,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">210</span>,<span class="hljs-number">297</span>)  </span><br><span class="line">pdf.output(<span class="hljs-string">"../颗粒物质基本性质的研究.pdf"</span>, <span class="hljs-string">"F"</span>)  </span><br></pre></td></tr></tbody></table></figure>
 <p>该方法缺陷有二：    </p>
 <ul>
 <li>报告总页数需要人工查询，下载时应尽量设置较大的循环次数(如200次)；</li>
 <li>报告部分横置页面，在合成前未做旋转调整。</li>
 </ul>
 <h2 id="2-研究生学位论文"><a href="#2-研究生学位论文" class="headerlink" title=" 2. 研究生学位论文"></a><font color="blue"> 2. 研究生学位论文</font></h2><p>一些大学的学位论文不能在中国知网等数据库直接下载，本校在线预览方式也不太方便。考虑到原始网页采用javascript动态加载论文内容(实为jpg格式图片)，无法通过wget或urllib等简单工具直接获取。因此，选用selenium工具模拟chrome浏览器鼠标操作，逐页下载。</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"># 主要参考网页 https://www.devdungeon.com/content/grab-image-clipboard-python-pillow
-from selenium import webdriver
-from time import sleep
-import pyperclip,pyautogui
-import numpy as np
-
-# 下载环节
-chrome_options = webdriver.ChromeOptions()
-prefs = {'download.default_directory' : '/user/defined/path'}
-chrome_options.add_experimental_option('prefs', prefs)
-driver = webdriver.Chrome(executable_path="./geckodriver/chromedriver", chrome_options=chrome_options)
-## 此url具体位置如下图
-driver.get("https://thesis.lib.pku.edu.cn/onlinePDF?dbid=72&amp;objid=53_57_54_50_56_49&amp;flag=online")
-for t in np.arange(1,3,1):
-    img_url = driver.find_element_by_id('ViewContainer_BG_0').get_attribute('src')[:-10]
-    driver.get(img_url+"_%s.jpg" %"{:05d}".format(t))
-    #  Move to the specified location, right click
-    pyautogui.rightClick(x=600, y=500)
-    # V
-    pyautogui.typewrite(['V'])
-    pyautogui.hotkey('ctrlleft','V')
-    sleep(0.8)
-    pyautogui.press('enter')
-    sleep(0.8)
-    pyautogui.press('enter')
-driver.close()
-
-# 图片调整环节
-## 有些图片是横置的，逆时针旋转90度
-import os
-import natsort
-from fpdf import FPDF
-import cv2
-files = os.listdir('/DOWNLOAD_PATH/')
-files = natsort.natsorted(files, reverse = False)
-files = files[0:]
-for file in files:
-    if file[-3:]=='jpg':
-        img   = cv2.imread('/DOWNLOAD_PATH/'+file)
-        h,w,c = img.shape
-        if h&lt;w:
-            imgrot = cv2.rotate(img,cv2.ROTATE_90_COUNTERCLOCKWISE)
-            cv2.imwrite('/DOWNLOAD_PATH/'+file,imgrot)         
-
-# 合成PDF    
-pdf = FPDF()
-for file in files[0:]:
-    if file[-3:]=='jpg':
-        pdf.add_page()  
-        pdf.image('/DOWNLOAD_PATH/'+file,0,0,210,297)  
-pdf.output("FILENAME.pdf", "F")        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 主要参考网页 https://www.devdungeon.com/content/grab-image-clipboard-python-pillow</span></span><br><span class="line"><span class="hljs-keyword">from</span> selenium <span class="hljs-keyword">import</span> webdriver</span><br><span class="line"><span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> sleep</span><br><span class="line"><span class="hljs-keyword">import</span> pyperclip,pyautogui</span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 下载环节</span></span><br><span class="line">chrome_options = webdriver.ChromeOptions()</span><br><span class="line">prefs = {<span class="hljs-string">'download.default_directory'</span> : <span class="hljs-string">'/user/defined/path'</span>}</span><br><span class="line">chrome_options.add_experimental_option(<span class="hljs-string">'prefs'</span>, prefs)</span><br><span class="line">driver = webdriver.Chrome(executable_path=<span class="hljs-string">"./geckodriver/chromedriver"</span>, chrome_options=chrome_options)</span><br><span class="line"><span class="hljs-comment">## 此url具体位置如下图</span></span><br><span class="line">driver.get(<span class="hljs-string">"https://thesis.lib.pku.edu.cn/onlinePDF?dbid=72&amp;objid=53_57_54_50_56_49&amp;flag=online"</span>)</span><br><span class="line"><span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> np.arange(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>):</span><br><span class="line">    img_url = driver.find_element_by_id(<span class="hljs-string">'ViewContainer_BG_0'</span>).get_attribute(<span class="hljs-string">'src'</span>)[:-<span class="hljs-number">10</span>]</span><br><span class="line">    driver.get(img_url+<span class="hljs-string">"_%s.jpg"</span> %<span class="hljs-string">"{:05d}"</span>.<span class="hljs-built_in">format</span>(t))</span><br><span class="line">    <span class="hljs-comment">#  Move to the specified location, right click</span></span><br><span class="line">    pyautogui.rightClick(x=<span class="hljs-number">600</span>, y=<span class="hljs-number">500</span>)</span><br><span class="line">    <span class="hljs-comment"># V</span></span><br><span class="line">    pyautogui.typewrite([<span class="hljs-string">'V'</span>])</span><br><span class="line">    pyautogui.hotkey(<span class="hljs-string">'ctrlleft'</span>,<span class="hljs-string">'V'</span>)</span><br><span class="line">    sleep(<span class="hljs-number">0.8</span>)</span><br><span class="line">    pyautogui.press(<span class="hljs-string">'enter'</span>)</span><br><span class="line">    sleep(<span class="hljs-number">0.8</span>)</span><br><span class="line">    pyautogui.press(<span class="hljs-string">'enter'</span>)</span><br><span class="line">driver.close()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 图片调整环节</span></span><br><span class="line"><span class="hljs-comment">## 有些图片是横置的，逆时针旋转90度</span></span><br><span class="line"><span class="hljs-keyword">import</span> os</span><br><span class="line"><span class="hljs-keyword">import</span> natsort</span><br><span class="line"><span class="hljs-keyword">from</span> fpdf <span class="hljs-keyword">import</span> FPDF</span><br><span class="line"><span class="hljs-keyword">import</span> cv2</span><br><span class="line">files = os.listdir(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>)</span><br><span class="line">files = natsort.natsorted(files, reverse = <span class="hljs-literal">False</span>)</span><br><span class="line">files = files[<span class="hljs-number">0</span>:]</span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">    <span class="hljs-keyword">if</span> file[-<span class="hljs-number">3</span>:]==<span class="hljs-string">'jpg'</span>:</span><br><span class="line">        img   = cv2.imread(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>+file)</span><br><span class="line">        h,w,c = img.shape</span><br><span class="line">        <span class="hljs-keyword">if</span> h&lt;w:</span><br><span class="line">            imgrot = cv2.rotate(img,cv2.ROTATE_90_COUNTERCLOCKWISE)</span><br><span class="line">            cv2.imwrite(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>+file,imgrot)         </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 合成PDF    </span></span><br><span class="line">pdf = FPDF()</span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files[<span class="hljs-number">0</span>:]:</span><br><span class="line">    <span class="hljs-keyword">if</span> file[-<span class="hljs-number">3</span>:]==<span class="hljs-string">'jpg'</span>:</span><br><span class="line">        pdf.add_page()  </span><br><span class="line">        pdf.image(<span class="hljs-string">'/DOWNLOAD_PATH/'</span>+file,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">210</span>,<span class="hljs-number">297</span>)  </span><br><span class="line">pdf.output(<span class="hljs-string">"FILENAME.pdf"</span>, <span class="hljs-string">"F"</span>)        </span><br></pre></td></tr></tbody></table></figure>
 
 <p>在北大图书馆检索后，点击目标文献，在该页码打开chrome开发者工具，寻找到下列标记字段，右键选择“copy link element”即为预览页url。</p>
 <p><a href="/images/20.Report_downloader/Fig.1.png"><img src="/images/20.Report_downloader/Fig.1.png" alt="enter image description here"></a></p>
@@ -270,7 +204,7 @@ pdf.output("FILENAME.pdf", "F")        <span aria-hidden="true" class="line-numb
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
@@ -301,7 +235,7 @@ pdf.output("FILENAME.pdf", "F")        <span aria-hidden="true" class="line-numb
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -409,7 +343,7 @@ pdf.output("FILENAME.pdf", "F")        <span aria-hidden="true" class="line-numb
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -422,10 +356,10 @@ pdf.output("FILENAME.pdf", "F")        <span aria-hidden="true" class="line-numb
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

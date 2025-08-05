@@ -28,8 +28,8 @@
 <meta property="article:published_time" content="2018-11-06T15:26:26.000Z">
 <meta property="article:modified_time" content="2025-07-23T22:10:35.487Z">
 <meta property="article:author" content="Hao Yufang">
-<meta property="article:tag" content="Python">
 <meta property="article:tag" content="Air quality">
+<meta property="article:tag" content="Python">
 <meta property="article:tag" content="Model">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://envhyf.github.io/images/10.Flexpart_installation/Fig.1.png">
@@ -49,7 +49,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
 
 
 <link rel="stylesheet" href="/css/style.css">
@@ -118,7 +118,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Buscar" href="javascript:;">
+            <a class="navbar-item search" title="Chercher" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -159,7 +159,7 @@
         <span class="column is-narrow">
             
             
-            7 分钟 de lectura (Alrededor de 1062 palabras)
+            7 分钟 lire (À propos 1062 mots)
         </span>
         
     </div>
@@ -172,47 +172,7 @@
 
 <h1 id="Merging-datasets"><a href="#Merging-datasets" class="headerlink" title="Merging datasets"></a>Merging datasets</h1><p>In the output path, the result (e.g., flxout_d01_20160304_030000.nc ) for each run was saved as an independent file. It would be inconvenient to loop them for every post-processing function. Therefore, I zip them into a hdf5 file. </p>
 <p>Here is the code and some instructions.</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">"""pre-reading an template file for capture the geogrid information"""
-test_file_path = output_path+"flxout_d01_20160304_030000.nc"
-test_file      = Dataset(test_file_path)
-pes = np.zeros_like(test_file['/CONC'][:,0,0,0,:,:].sum(axis = 0))
-pos=Dataset(output_path+"header_d01.nc")
-xx = pos['XLONG'][:]
-yy = pos['XLAT'][:]
-
-"""Creat HDF FILES"""
-hdf_filename ='Chifeng_PES_72hour.hdf'
-os.system("rm "+hdf_filename)
-with h5py.File(hdf_filename, "w") as nf:
-    dset = nf.create_dataset("test", (100,), dtype='i')
-nf = h5py.File(hdf_filename, 'r+')
-grp = nf.create_group("PES")
-dset1 = grp.create_dataset("lon", data= xx)
-dset2 = grp.create_dataset("lat", data= yy)
-
-"""Loop the datasets for each month"""
-"""Take the winter months for example"""
-print "## WINTER ##"
-for mo in ['01','02','12']:
-	## The arrays include 6 dimensions, time, ageclass, releases (species), Z, Y, X
-    ##  Since most sources are located within the footprint layer (~300 m above the ground), we only calculated the residence time of bottom vertical layer.
-    pes = np.zeros_like(test_file['/CONC'][:,0,0,0,:,:].sum(axis = 0))
-    t   = 0
-    Dir = output_path+"winter/"+mo+"/"
-    files = os.listdir(Dir)
-    files = sorted(files)
-    for file in files:
-        filename,extname = os.path.splitext(file)
-        if filename[0:4] == 'flxo':
-            fc = Dataset(Dir+file)
-            if fc['/CONC'].shape[0]&gt;70.0:
-                pes+=fc['/CONC'][:,0,0,0,:,:].sum(axis = 0)
-                t+=1
-    print mo+" "+str(t)
-    pes = pes/t
-    dset = grp.create_dataset(mo, data= pes)
-    print 'Done' 
-nf.close()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""pre-reading an template file for capture the geogrid information"""</span></span><br><span class="line">test_file_path = output_path+<span class="hljs-string">"flxout_d01_20160304_030000.nc"</span></span><br><span class="line">test_file      = Dataset(test_file_path)</span><br><span class="line">pes = np.zeros_like(test_file[<span class="hljs-string">'/CONC'</span>][:,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,:,:].<span class="hljs-built_in">sum</span>(axis = <span class="hljs-number">0</span>))</span><br><span class="line">pos=Dataset(output_path+<span class="hljs-string">"header_d01.nc"</span>)</span><br><span class="line">xx = pos[<span class="hljs-string">'XLONG'</span>][:]</span><br><span class="line">yy = pos[<span class="hljs-string">'XLAT'</span>][:]</span><br><span class="line"></span><br><span class="line"><span class="hljs-string">"""Creat HDF FILES"""</span></span><br><span class="line">hdf_filename =<span class="hljs-string">'Chifeng_PES_72hour.hdf'</span></span><br><span class="line">os.system(<span class="hljs-string">"rm "</span>+hdf_filename)</span><br><span class="line"><span class="hljs-keyword">with</span> h5py.File(hdf_filename, <span class="hljs-string">"w"</span>) <span class="hljs-keyword">as</span> nf:</span><br><span class="line">    dset = nf.create_dataset(<span class="hljs-string">"test"</span>, (<span class="hljs-number">100</span>,), dtype=<span class="hljs-string">'i'</span>)</span><br><span class="line">nf = h5py.File(hdf_filename, <span class="hljs-string">'r+'</span>)</span><br><span class="line">grp = nf.create_group(<span class="hljs-string">"PES"</span>)</span><br><span class="line">dset1 = grp.create_dataset(<span class="hljs-string">"lon"</span>, data= xx)</span><br><span class="line">dset2 = grp.create_dataset(<span class="hljs-string">"lat"</span>, data= yy)</span><br><span class="line"></span><br><span class="line"><span class="hljs-string">"""Loop the datasets for each month"""</span></span><br><span class="line"><span class="hljs-string">"""Take the winter months for example"""</span></span><br><span class="line"><span class="hljs-built_in">print</span> <span class="hljs-string">"## WINTER ##"</span></span><br><span class="line"><span class="hljs-keyword">for</span> mo <span class="hljs-keyword">in</span> [<span class="hljs-string">'01'</span>,<span class="hljs-string">'02'</span>,<span class="hljs-string">'12'</span>]:</span><br><span class="line">	<span class="hljs-comment">## The arrays include 6 dimensions, time, ageclass, releases (species), Z, Y, X</span></span><br><span class="line">    <span class="hljs-comment">##  Since most sources are located within the footprint layer (~300 m above the ground), we only calculated the residence time of bottom vertical layer.</span></span><br><span class="line">    pes = np.zeros_like(test_file[<span class="hljs-string">'/CONC'</span>][:,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,:,:].<span class="hljs-built_in">sum</span>(axis = <span class="hljs-number">0</span>))</span><br><span class="line">    t   = <span class="hljs-number">0</span></span><br><span class="line">    Dir = output_path+<span class="hljs-string">"winter/"</span>+mo+<span class="hljs-string">"/"</span></span><br><span class="line">    files = os.listdir(Dir)</span><br><span class="line">    files = <span class="hljs-built_in">sorted</span>(files)</span><br><span class="line">    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">        filename,extname = os.path.splitext(file)</span><br><span class="line">        <span class="hljs-keyword">if</span> filename[<span class="hljs-number">0</span>:<span class="hljs-number">4</span>] == <span class="hljs-string">'flxo'</span>:</span><br><span class="line">            fc = Dataset(Dir+file)</span><br><span class="line">            <span class="hljs-keyword">if</span> fc[<span class="hljs-string">'/CONC'</span>].shape[<span class="hljs-number">0</span>]&gt;<span class="hljs-number">70.0</span>:</span><br><span class="line">                pes+=fc[<span class="hljs-string">'/CONC'</span>][:,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,:,:].<span class="hljs-built_in">sum</span>(axis = <span class="hljs-number">0</span>)</span><br><span class="line">                t+=<span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-built_in">print</span> mo+<span class="hljs-string">" "</span>+<span class="hljs-built_in">str</span>(t)</span><br><span class="line">    pes = pes/t</span><br><span class="line">    dset = grp.create_dataset(mo, data= pes)</span><br><span class="line">    <span class="hljs-built_in">print</span> <span class="hljs-string">'Done'</span> </span><br><span class="line">nf.close()</span><br></pre></td></tr></tbody></table></figure>
 
 <p>Then, we can download the “.hdf5” file for further analysis.</p>
 <h1 id="Colormap-setting"><a href="#Colormap-setting" class="headerlink" title="Colormap setting"></a>Colormap setting</h1><p>A good colormap can really improve the representability for the figure. Here, I recommend and generate three colormaps  using different approaches.</p>
@@ -220,152 +180,23 @@ nf.close()<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
 <li>cmap1: generated by user-defined RGB values</li>
 <li>cmap2: subsets of an existing</li>
 </ul>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">## CMAP1 from pflexible.py on https://git.nilu.no/
-from matplotlib.colors import ListedColormap
-color_list = [1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-            9.9607843e-01, 9.1372549e-01, 1.0000000e+00,
-            9.8431373e-01, 8.2352941e-01, 1.0000000e+00,
-            9.6470588e-01, 7.1764706e-01, 1.0000000e+00,
-            9.3333333e-01, 6.0000000e-01, 1.0000000e+00,
-            8.9019608e-01, 4.4705882e-01, 1.0000000e+00,
-            8.3137255e-01, 2.0000000e-01, 1.0000000e+00,
-            7.5686275e-01, 0.0000000e+00, 1.0000000e+00,
-            6.6274510e-01, 0.0000000e+00, 1.0000000e+00,
-            5.4901961e-01, 0.0000000e+00, 1.0000000e+00,
-            4.0784314e-01, 0.0000000e+00, 1.0000000e+00,
-            2.4705882e-01, 0.0000000e+00, 1.0000000e+00,
-            7.4509804e-02, 0.0000000e+00, 1.0000000e+00,
-            0.0000000e+00, 2.8235294e-01, 1.0000000e+00,
-            0.0000000e+00, 4.8627451e-01, 1.0000000e+00,
-            0.0000000e+00, 6.3137255e-01, 1.0000000e+00,
-            0.0000000e+00, 7.4509804e-01, 1.0000000e+00,
-            0.0000000e+00, 8.4705882e-01, 1.0000000e+00,
-            0.0000000e+00, 9.3725490e-01, 1.0000000e+00,
-            0.0000000e+00, 1.0000000e+00, 9.7647059e-01,
-            0.0000000e+00, 1.0000000e+00, 8.9411765e-01,
-            0.0000000e+00, 1.0000000e+00, 8.0000000e-01,
-            0.0000000e+00, 1.0000000e+00, 6.9019608e-01,
-            0.0000000e+00, 1.0000000e+00, 5.6470588e-01,
-            0.0000000e+00, 1.0000000e+00, 4.0000000e-01,
-            0.0000000e+00, 1.0000000e+00, 0.0000000e+00,
-            3.9607843e-01, 1.0000000e+00, 0.0000000e+00,
-            5.6470588e-01, 1.0000000e+00, 0.0000000e+00,
-            6.9019608e-01, 1.0000000e+00, 0.0000000e+00,
-            7.9607843e-01, 1.0000000e+00, 0.0000000e+00,
-            8.9411765e-01, 1.0000000e+00, 0.0000000e+00,
-            9.7647059e-01, 1.0000000e+00, 0.0000000e+00,
-            1.0000000e+00, 9.4509804e-01, 0.0000000e+00,
-            1.0000000e+00, 8.7450980e-01, 0.0000000e+00,
-            1.0000000e+00, 7.9215686e-01, 0.0000000e+00,
-            1.0000000e+00, 7.0588235e-01, 0.0000000e+00,
-            1.0000000e+00, 6.0392157e-01, 0.0000000e+00,
-            1.0000000e+00, 4.8235294e-01, 0.0000000e+00,
-            1.0000000e+00, 3.1372549e-01, 0.0000000e+00,
-            1.0000000e+00, 0.0000000e+00, 1.4901961e-01,
-            1.0000000e+00, 0.0000000e+00, 3.3333333e-01,
-            1.0000000e+00, 0.0000000e+00, 4.4705882e-01,
-            1.0000000e+00, 0.0000000e+00, 5.3725490e-01,
-            1.0000000e+00, 0.0000000e+00, 6.1176471e-01,
-            9.7647059e-01, 0.0000000e+00, 6.6666667e-01,
-            8.9411765e-01, 0.0000000e+00, 6.6666667e-01,
-            7.9607843e-01, 0.0000000e+00, 6.3921569e-01,
-            6.9019608e-01, 0.0000000e+00, 5.9215686e-01,
-            5.6470588e-01, 0.0000000e+00, 5.0980392e-01,
-            3.9607843e-01, 0.0000000e+00, 3.8039216e-01]
-color_list = np.reshape(color_list, (-1, 3))
-name = 'flexpart_cmap'
-cmap1 = ListedColormap(color_list, name)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## CMAP1 from pflexible.py on https://git.nilu.no/</span></span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib.colors <span class="hljs-keyword">import</span> ListedColormap</span><br><span class="line">color_list = [<span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">9.9607843e-01</span>, <span class="hljs-number">9.1372549e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">9.8431373e-01</span>, <span class="hljs-number">8.2352941e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">9.6470588e-01</span>, <span class="hljs-number">7.1764706e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">9.3333333e-01</span>, <span class="hljs-number">6.0000000e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">8.9019608e-01</span>, <span class="hljs-number">4.4705882e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">8.3137255e-01</span>, <span class="hljs-number">2.0000000e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">7.5686275e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">6.6274510e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">5.4901961e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">4.0784314e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">2.4705882e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">7.4509804e-02</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">2.8235294e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">4.8627451e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">6.3137255e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">7.4509804e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">8.4705882e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">9.3725490e-01</span>, <span class="hljs-number">1.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">9.7647059e-01</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">8.9411765e-01</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">8.0000000e-01</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">6.9019608e-01</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">5.6470588e-01</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">4.0000000e-01</span>,</span><br><span class="line">            <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">3.9607843e-01</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">5.6470588e-01</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">6.9019608e-01</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">7.9607843e-01</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">8.9411765e-01</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">9.7647059e-01</span>, <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">9.4509804e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">8.7450980e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">7.9215686e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">7.0588235e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">6.0392157e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">4.8235294e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">3.1372549e-01</span>, <span class="hljs-number">0.0000000e+00</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">1.4901961e-01</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">3.3333333e-01</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">4.4705882e-01</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">5.3725490e-01</span>,</span><br><span class="line">            <span class="hljs-number">1.0000000e+00</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">6.1176471e-01</span>,</span><br><span class="line">            <span class="hljs-number">9.7647059e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">6.6666667e-01</span>,</span><br><span class="line">            <span class="hljs-number">8.9411765e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">6.6666667e-01</span>,</span><br><span class="line">            <span class="hljs-number">7.9607843e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">6.3921569e-01</span>,</span><br><span class="line">            <span class="hljs-number">6.9019608e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">5.9215686e-01</span>,</span><br><span class="line">            <span class="hljs-number">5.6470588e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">5.0980392e-01</span>,</span><br><span class="line">            <span class="hljs-number">3.9607843e-01</span>, <span class="hljs-number">0.0000000e+00</span>, <span class="hljs-number">3.8039216e-01</span>]</span><br><span class="line">color_list = np.reshape(color_list, (-<span class="hljs-number">1</span>, <span class="hljs-number">3</span>))</span><br><span class="line">name = <span class="hljs-string">'flexpart_cmap'</span></span><br><span class="line">cmap1 = ListedColormap(color_list, name)</span><br></pre></td></tr></tbody></table></figure>
 
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">## CMAP2 extracted from an existing colormap
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-import numpy as np
-def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-    new_cmap = colors.LinearSegmentedColormap.from_list(
-        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
-        cmap(np.linspace(minval, maxval, n)))
-    return new_cmap
-cmap2 = truncate_colormap(plt.cm.gist_ncar, 0.3,0.9)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## CMAP2 extracted from an existing colormap</span></span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.colors <span class="hljs-keyword">as</span> colors</span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">truncate_colormap</span>(<span class="hljs-params">cmap, minval=<span class="hljs-number">0.0</span>, maxval=<span class="hljs-number">1.0</span>, n=<span class="hljs-number">100</span></span>):</span><br><span class="line">    new_cmap = colors.LinearSegmentedColormap.from_list(</span><br><span class="line">        <span class="hljs-string">'trunc({n},{a:.2f},{b:.2f})'</span>.<span class="hljs-built_in">format</span>(n=cmap.name, a=minval, b=maxval),</span><br><span class="line">        cmap(np.linspace(minval, maxval, n)))</span><br><span class="line">    <span class="hljs-keyword">return</span> new_cmap</span><br><span class="line">cmap2 = truncate_colormap(plt.cm.gist_ncar, <span class="hljs-number">0.3</span>,<span class="hljs-number">0.9</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 <p><em>cmap3</em> is an interesting colormap which I clipped from an existing figure.</p>
 <p><img src="/images/10.Flexpart_installation/Fig.1.png"></p>
 <p> I cut the colorbar from the above figure, read its RGB values, and generate a new colormap</p>
 <p><img src="/images/12.FLEXPART-WRF_visualization/Fig,2.png"></p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">## CMAP3 from a current colorbar
-from PIL import Image
-import pandas as pd
-im = Image.open('./colorbar_3.png')
-rgb_im = im.convert('RGB')
-r, g, b = rgb_im.getpixel((1, 1))
-k = []
-for i in range(18,321,1):
-    k.append(rgb_im.getpixel((i,20)))
-color_list = np.array(k)    
-color_list = np.array([(i/255.0,j/255.0,k/255.0) for i,j,k in color_list])
-name  = 'copy_cmap'
-cmap3 = ListedColormap(color_list, name)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## CMAP3 from a current colorbar</span></span><br><span class="line"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image</span><br><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line">im = Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">'./colorbar_3.png'</span>)</span><br><span class="line">rgb_im = im.convert(<span class="hljs-string">'RGB'</span>)</span><br><span class="line">r, g, b = rgb_im.getpixel((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))</span><br><span class="line">k = []</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">18</span>,<span class="hljs-number">321</span>,<span class="hljs-number">1</span>):</span><br><span class="line">    k.append(rgb_im.getpixel((i,<span class="hljs-number">20</span>)))</span><br><span class="line">color_list = np.array(k)    </span><br><span class="line">color_list = np.array([(i/<span class="hljs-number">255.0</span>,j/<span class="hljs-number">255.0</span>,k/<span class="hljs-number">255.0</span>) <span class="hljs-keyword">for</span> i,j,k <span class="hljs-keyword">in</span> color_list])</span><br><span class="line">name  = <span class="hljs-string">'copy_cmap'</span></span><br><span class="line">cmap3 = ListedColormap(color_list, name)</span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"># plotting them
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-def sample_plot(ax,arr,cmap):
-    s = ax.imshow(arr, interpolation='nearest', cmap=cmap)
-    divider = make_axes_locatable(ax)
-    cax = divider.new_vertical(size="5%", pad=0.3, pack_start=True)
-    fig.add_axes(cax)
-    fig.colorbar(s, cax=cax, orientation="horizontal")    
-
-arr = np.linspace(0, 50, 100).reshape((10, 10))
-fig, ax = plt.subplots(ncols=3)
-sample_plot(ax[0],arr, cmap1)
-sample_plot(ax[1],arr, cmap2)
-sample_plot(ax[2],arr, cmap3)    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># plotting them</span></span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.axes_grid1 <span class="hljs-keyword">import</span> make_axes_locatable</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">sample_plot</span>(<span class="hljs-params">ax,arr,cmap</span>):</span><br><span class="line">    s = ax.imshow(arr, interpolation=<span class="hljs-string">'nearest'</span>, cmap=cmap)</span><br><span class="line">    divider = make_axes_locatable(ax)</span><br><span class="line">    cax = divider.new_vertical(size=<span class="hljs-string">"5%"</span>, pad=<span class="hljs-number">0.3</span>, pack_start=<span class="hljs-literal">True</span>)</span><br><span class="line">    fig.add_axes(cax)</span><br><span class="line">    fig.colorbar(s, cax=cax, orientation=<span class="hljs-string">"horizontal"</span>)    </span><br><span class="line"></span><br><span class="line">arr = np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">50</span>, <span class="hljs-number">100</span>).reshape((<span class="hljs-number">10</span>, <span class="hljs-number">10</span>))</span><br><span class="line">fig, ax = plt.subplots(ncols=<span class="hljs-number">3</span>)</span><br><span class="line">sample_plot(ax[<span class="hljs-number">0</span>],arr, cmap1)</span><br><span class="line">sample_plot(ax[<span class="hljs-number">1</span>],arr, cmap2)</span><br><span class="line">sample_plot(ax[<span class="hljs-number">2</span>],arr, cmap3)    </span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="/images/12.FLEXPART-WRF_visualization/Fig,3.png"></p>
 <p>Finally, we can read and visualize the datasets.</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"># reading the hdf5 data 
-PES_data = h5py.File("/Users/HYF/Downloads/Chifeng_PES_pbl_72hour.hdf")
-lon   = PES_data['/PES/lon'][:]
-lat   = PES_data['/PES/lat'][:]
-# sample arrray of the results in January.
-PES_1 = PES_data['/PES/12'][:]
-PES_2 = PES_data['/PES/01'][:]
-PES_3 = PES_data['/PES/02'][:]
-PES_winter = (PES_1+PES_2+PES_12)/3.0     
-
-# plot the winter retroplume with colormap1
-fig = plt.figure(figsize=(4,3), frameon=True)
-proj = ccrs.LambertConformal(central_latitude = 42.715, 
-                             central_longitude = 118.79, 
-                             standard_parallels = (30, 60))
-ax   =plt.subplot(111, projection = proj)
-
-mask_v = np.ma.masked_less_equal(PES_winter,0)
-cs = ax.pcolormesh(lon,lat,mask_v,transform=ccrs.PlateCarree(),cmap =cmap1,alpha = 0.85,zorder=1,norm=matplotlib.colors.LogNorm(),
-                      vmin = 1E-9) 
-ax.set_extent([105,133,31,52], crs=ccrs.PlateCarree())
-ax.coastlines(linewidth = 0.5,resolution='50m')
-ax.add_feature(cfeature.BORDERS, linewidth=0.5)
-
-## the xticks, yticks setting is referenced from 
-## https://github.com/ARM-DOE/pyart/blob/master/pyart/graph/radarmapdisplay_cartopy.py
-## I have not uploaded the original function here to make the code more tight.
-fig.canvas.draw()
-ax.gridlines(xlocs=xticks, ylocs=yticks, color='gray', alpha=0.5, linestyle='--',linewidth = 0.75)
-ax.xaxis.set_major_formatter(LONGITUDE_FORMATTER) 
-ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)
-lambert_xticks(ax, xticks)
-lambert_yticks(ax, yticks) 
-
-
-pos1 = ax.get_position()
-tax = fig.add_axes([pos1.x0,pos1.y1,pos1.x1-pos1.x0,0.03])#x0,y0,long,width
-tax.get_xaxis().set_visible(False)
-tax.get_yaxis().set_visible(False)
-tax.set_facecolor('#FFE5CE')
-tax.text(0.4,0.3,"Winter",color = 'k',fontsize =9,fontweight = 'bold',transform=tax.transAxes)       
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># reading the hdf5 data </span></span><br><span class="line">PES_data = h5py.File(<span class="hljs-string">"/Users/HYF/Downloads/Chifeng_PES_pbl_72hour.hdf"</span>)</span><br><span class="line">lon   = PES_data[<span class="hljs-string">'/PES/lon'</span>][:]</span><br><span class="line">lat   = PES_data[<span class="hljs-string">'/PES/lat'</span>][:]</span><br><span class="line"><span class="hljs-comment"># sample arrray of the results in January.</span></span><br><span class="line">PES_1 = PES_data[<span class="hljs-string">'/PES/12'</span>][:]</span><br><span class="line">PES_2 = PES_data[<span class="hljs-string">'/PES/01'</span>][:]</span><br><span class="line">PES_3 = PES_data[<span class="hljs-string">'/PES/02'</span>][:]</span><br><span class="line">PES_winter = (PES_1+PES_2+PES_12)/<span class="hljs-number">3.0</span>     </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># plot the winter retroplume with colormap1</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">4</span>,<span class="hljs-number">3</span>), frameon=<span class="hljs-literal">True</span>)</span><br><span class="line">proj = ccrs.LambertConformal(central_latitude = <span class="hljs-number">42.715</span>, </span><br><span class="line">                             central_longitude = <span class="hljs-number">118.79</span>, </span><br><span class="line">                             standard_parallels = (<span class="hljs-number">30</span>, <span class="hljs-number">60</span>))</span><br><span class="line">ax   =plt.subplot(<span class="hljs-number">111</span>, projection = proj)</span><br><span class="line"></span><br><span class="line">mask_v = np.ma.masked_less_equal(PES_winter,<span class="hljs-number">0</span>)</span><br><span class="line">cs = ax.pcolormesh(lon,lat,mask_v,transform=ccrs.PlateCarree(),cmap =cmap1,alpha = <span class="hljs-number">0.85</span>,zorder=<span class="hljs-number">1</span>,norm=matplotlib.colors.LogNorm(),</span><br><span class="line">                      vmin = <span class="hljs-number">1E-9</span>) </span><br><span class="line">ax.set_extent([<span class="hljs-number">105</span>,<span class="hljs-number">133</span>,<span class="hljs-number">31</span>,<span class="hljs-number">52</span>], crs=ccrs.PlateCarree())</span><br><span class="line">ax.coastlines(linewidth = <span class="hljs-number">0.5</span>,resolution=<span class="hljs-string">'50m'</span>)</span><br><span class="line">ax.add_feature(cfeature.BORDERS, linewidth=<span class="hljs-number">0.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## the xticks, yticks setting is referenced from </span></span><br><span class="line"><span class="hljs-comment">## https://github.com/ARM-DOE/pyart/blob/master/pyart/graph/radarmapdisplay_cartopy.py</span></span><br><span class="line"><span class="hljs-comment">## I have not uploaded the original function here to make the code more tight.</span></span><br><span class="line">fig.canvas.draw()</span><br><span class="line">ax.gridlines(xlocs=xticks, ylocs=yticks, color=<span class="hljs-string">'gray'</span>, alpha=<span class="hljs-number">0.5</span>, linestyle=<span class="hljs-string">'--'</span>,linewidth = <span class="hljs-number">0.75</span>)</span><br><span class="line">ax.xaxis.set_major_formatter(LONGITUDE_FORMATTER) </span><br><span class="line">ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)</span><br><span class="line">lambert_xticks(ax, xticks)</span><br><span class="line">lambert_yticks(ax, yticks) </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pos1 = ax.get_position()</span><br><span class="line">tax = fig.add_axes([pos1.x0,pos1.y1,pos1.x1-pos1.x0,<span class="hljs-number">0.03</span>])<span class="hljs-comment">#x0,y0,long,width</span></span><br><span class="line">tax.get_xaxis().set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">tax.get_yaxis().set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">tax.set_facecolor(<span class="hljs-string">'#FFE5CE'</span>)</span><br><span class="line">tax.text(<span class="hljs-number">0.4</span>,<span class="hljs-number">0.3</span>,<span class="hljs-string">"Winter"</span>,color = <span class="hljs-string">'k'</span>,fontsize =<span class="hljs-number">9</span>,fontweight = <span class="hljs-string">'bold'</span>,transform=tax.transAxes)       </span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="/images/12.FLEXPART-WRF_visualization/Fig.4.png"></p>
 </body></html>
@@ -374,9 +205,9 @@ tax.text(0.4,0.3,"Winter",color = 'k',fontsize =9,fontweight = 'bold',transform=
     
     <div class="columns is-variable is-1 is-multiline is-mobile">
     
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
-    
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
     
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Model/">#Model</a></span>
     
@@ -402,7 +233,7 @@ tax.text(0.4,0.3,"Winter",color = 'k',fontsize =9,fontweight = 'bold',transform=
 
 
 <div class="comments">
-    <h3 class="title is-4">Comentarios</h3>
+    <h3 class="title is-4">Commentaires</h3>
     
 <script>
     var disqus_config = function () {
@@ -433,7 +264,7 @@ tax.text(0.4,0.3,"Winter",color = 'k',fontsize =9,fontweight = 'bold',transform=
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -541,7 +372,7 @@ tax.text(0.4,0.3,"Winter",color = 'k',fontsize =9,fontweight = 'bold',transform=
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -554,10 +385,10 @@ tax.text(0.4,0.3,"Winter",color = 'k',fontsize =9,fontweight = 'bold',transform=
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Páginas',
-                CATEGORIES: 'Categorías',
+                PAGES: 'Pages',
+                CATEGORIES: 'Catégories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Sans Titre)',
             },
             CONTENT_URL: '/content.json',
         };

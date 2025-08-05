@@ -27,8 +27,8 @@
 <meta property="article:modified_time" content="2025-08-02T11:39:11.000Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
-<meta property="article:tag" content="Visualization">
 <meta property="article:tag" content="Air quality">
+<meta property="article:tag" content="Visualization">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://envhyf.github.io/images/14.Satellite_aq_map/Fig.1.png">
 
@@ -116,7 +116,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -157,7 +157,7 @@
         <span class="column is-narrow">
             
             
-            7 分钟 read (About 1016 words)
+            7 分钟 de lectura (Alrededor de 1016 palabras)
         </span>
         
     </div>
@@ -171,21 +171,134 @@
 <p>The  tropospheric NO<sub>2</sub>  concentration derived from satellite remote sensing techniques have been used on global, regional and urban scales since the mid-nineties. After the launch of the Ozone Monitoring Instrument (OMI) in 2004, the spatial resolution (up to 13 x 24 km<sup>2</sup>) ave been largely improved. The vetical column NO<sub>2</sub> dataset  have contributed to reveal the hotspots of air pollution around the world, or show the episodes with long-range transport.</p>
 <p>The TEMIS website provide the image and data for  NO<sub>2</sub>  concentration maps in individual days and monthly averages derived from different satellite sensors (e.g., OMI, GOME-2). Herein, I present the general processes to obtain DOMINO version 2.0 data</p>
 <h2 id="Obtaining-the-datasets"><a href="#Obtaining-the-datasets" class="headerlink" title="Obtaining the datasets"></a>Obtaining the datasets</h2><p>We start by downloading the essential data files using function of wget.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#Creat an loop for downloading the monthly averages from 2013-2017</span></span><br><span class="line"><span class="hljs-keyword">import</span> os</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-string">'2013'</span>,<span class="hljs-string">'2014'</span>,<span class="hljs-string">'2015'</span>,<span class="hljs-string">'2016'</span>,<span class="hljs-string">'2017'</span>]:</span><br><span class="line">	<span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> [<span class="hljs-string">'01'</span>,<span class="hljs-string">'02'</span>,<span class="hljs-string">'03'</span>,<span class="hljs-string">'04'</span>,<span class="hljs-string">'05'</span>,<span class="hljs-string">'06'</span>,<span class="hljs-string">'07'</span>,<span class="hljs-string">'08'</span>,<span class="hljs-string">'09'</span>,<span class="hljs-string">'10'</span>,<span class="hljs-string">'11'</span>,<span class="hljs-string">'12'</span>]:</span><br><span class="line">		filename = <span class="hljs-string">'http://www.temis.nl/airpollution/no2col/data/omi/data_v2/'</span>+i+<span class="hljs-string">'/'</span>+t+<span class="hljs-string">'/'</span>+<span class="hljs-string">'no2_'</span>+i+t+ <span class="hljs-string">'.grd.gz'</span></span><br><span class="line">		os.system(<span class="hljs-string">'wget %s'</span> %filename)</span><br><span class="line"><span class="hljs-built_in">print</span> <span class="hljs-string">"DOWNLOADING COMPLETE"</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">#Creat an loop for downloading the monthly averages from 2013-2017
+import os
+for i in ['2013','2014','2015','2016','2017']:
+	for t in ['01','02','03','04','05','06','07','08','09','10','11','12']:
+		filename = 'http://www.temis.nl/airpollution/no2col/data/omi/data_v2/'+i+'/'+t+'/'+'no2_'+i+t+ '.grd.gz'
+		os.system('wget %s' %filename)
+print "DOWNLOADING COMPLETE"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <h2 id="Merging-the-datasets"><a href="#Merging-the-datasets" class="headerlink" title="Merging the datasets"></a>Merging the datasets</h2><p>We then define a reading function and open those files to obtain essential information.  In the case of 2013, there are 12 monthly averages need to read and merge for further analysis.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">read_grd</span>(<span class="hljs-params">filename</span>):</span><br><span class="line">    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename) <span class="hljs-keyword">as</span> infile:</span><br><span class="line">        ncols = <span class="hljs-built_in">int</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">        nrows = <span class="hljs-built_in">int</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">        xllcorner = <span class="hljs-built_in">float</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">        yllcorner = <span class="hljs-built_in">float</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">        cellsize = <span class="hljs-built_in">float</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">        nodata_value = <span class="hljs-built_in">int</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">        version = <span class="hljs-built_in">float</span>(infile.readline().split()[<span class="hljs-number">1</span>])</span><br><span class="line">    longitude = xllcorner + cellsize * np.arange(ncols)</span><br><span class="line">    latitude = yllcorner + cellsize * np.arange(nrows)</span><br><span class="line">    value = np.loadtxt(filename, skiprows=<span class="hljs-number">7</span>)</span><br><span class="line">    <span class="hljs-keyword">return</span> longitude, latitude, value,nodata_value</span><br><span class="line"></span><br><span class="line">set_year = <span class="hljs-number">2013</span></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-number">12</span>,<span class="hljs-number">1</span>):</span><br><span class="line">    <span class="hljs-comment"># setting the file path which contains those original data.</span></span><br><span class="line">    file_path = <span class="hljs-string">'./NO2_POMINO/no2_'</span>+<span class="hljs-built_in">str</span>(set_year)+ <span class="hljs-string">'%02d'</span> %(i+<span class="hljs-number">1</span>)+<span class="hljs-string">'.grd'</span></span><br><span class="line">    lon,lat,value,nodata_value = read_grd(file_path)</span><br><span class="line">    value = value[::-<span class="hljs-number">1</span>]</span><br><span class="line">    value[value == nodata_value] = np.nan        </span><br><span class="line">    <span class="hljs-keyword">if</span> i ==<span class="hljs-number">0</span>:</span><br><span class="line">        value_ = value.reshape(<span class="hljs-number">1</span>,value.shape[<span class="hljs-number">0</span>],value.shape[<span class="hljs-number">1</span>])</span><br><span class="line">    <span class="hljs-keyword">else</span>:</span><br><span class="line">        value_ = np.vstack([value_,value[<span class="hljs-literal">None</span>, ...]])</span><br><span class="line"><span class="hljs-comment">## np.nanmean() is utilized to compute the arithmetic mean igonring NaNs</span></span><br><span class="line">no2_2013 = np.nanmean(value_,axis = <span class="hljs-number">0</span>)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">import numpy as np
+def read_grd(filename):
+    with open(filename) as infile:
+        ncols = int(infile.readline().split()[1])
+        nrows = int(infile.readline().split()[1])
+        xllcorner = float(infile.readline().split()[1])
+        yllcorner = float(infile.readline().split()[1])
+        cellsize = float(infile.readline().split()[1])
+        nodata_value = int(infile.readline().split()[1])
+        version = float(infile.readline().split()[1])
+    longitude = xllcorner + cellsize * np.arange(ncols)
+    latitude = yllcorner + cellsize * np.arange(nrows)
+    value = np.loadtxt(filename, skiprows=7)
+    return longitude, latitude, value,nodata_value
+
+set_year = 2013
+for i in range(0,12,1):
+    # setting the file path which contains those original data.
+    file_path = './NO2_POMINO/no2_'+str(set_year)+ '%02d' %(i+1)+'.grd'
+    lon,lat,value,nodata_value = read_grd(file_path)
+    value = value[::-1]
+    value[value == nodata_value] = np.nan        
+    if i ==0:
+        value_ = value.reshape(1,value.shape[0],value.shape[1])
+    else:
+        value_ = np.vstack([value_,value[None, ...]])
+## np.nanmean() is utilized to compute the arithmetic mean igonring NaNs
+no2_2013 = np.nanmean(value_,axis = 0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>##Cut 2-d array by shapefile </p>
 <p>Next,  we  import the necessary library and the specific shapefile to clip the global 2-d map.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#1. transform the shapefile to fiona polygon object</span></span><br><span class="line"><span class="hljs-keyword">import</span> fiona</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> shape,Polygon, Point</span><br><span class="line">cf_area = fiona.<span class="hljs-built_in">open</span>(<span class="hljs-string">"xxx.shp"</span>)</span><br><span class="line">pol = cf_area.<span class="hljs-built_in">next</span>()</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> shape</span><br><span class="line">geom = shape(pol[<span class="hljs-string">'geometry'</span>])</span><br><span class="line">poly_data = pol[<span class="hljs-string">"geometry"</span>][<span class="hljs-string">"coordinates"</span>][<span class="hljs-number">0</span>]</span><br><span class="line">poly = Polygon(poly_data)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#2. substract the dataset that can cover the polygon</span></span><br><span class="line">x1 =  np.array([t <span class="hljs-keyword">for</span> t,j <span class="hljs-keyword">in</span> (poly_data)]).<span class="hljs-built_in">min</span>()</span><br><span class="line">x2 =  np.array([t <span class="hljs-keyword">for</span> t,j <span class="hljs-keyword">in</span> (poly_data)]).<span class="hljs-built_in">max</span>()</span><br><span class="line">y1 =  np.array([j <span class="hljs-keyword">for</span> t,j <span class="hljs-keyword">in</span> (poly_data)]).<span class="hljs-built_in">min</span>()</span><br><span class="line">y2 =  np.array([j <span class="hljs-keyword">for</span> t,j <span class="hljs-keyword">in</span> (poly_data)]).<span class="hljs-built_in">max</span>()</span><br><span class="line">extent      = x1 -<span class="hljs-number">0.5</span>, x2+<span class="hljs-number">0.5</span>,y1-<span class="hljs-number">0.5</span>, y2+<span class="hljs-number">0.5</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_nearest</span>(<span class="hljs-params">array,value</span>):</span><br><span class="line">    idx = (np.<span class="hljs-built_in">abs</span>(array-value)).argmin()</span><br><span class="line">    <span class="hljs-keyword">return</span> array[idx]</span><br><span class="line">nx_st = np.where(lon == (find_nearest(lon,extent[<span class="hljs-number">0</span>])))[<span class="hljs-number">0</span>]</span><br><span class="line">nx_en = np.where(lon == (find_nearest(lon,extent[<span class="hljs-number">1</span>] )))[<span class="hljs-number">0</span>]</span><br><span class="line">ny_st = np.where(lat == (find_nearest(lat,extent[<span class="hljs-number">2</span>])))[<span class="hljs-number">0</span>]</span><br><span class="line">ny_en = np.where(lat == (find_nearest(lat,extent[<span class="hljs-number">3</span>] )))[<span class="hljs-number">0</span>]</span><br><span class="line">lon_,lat_ = lon[nx_st:nx_en+<span class="hljs-number">1</span>], lat[ny_st:ny_en+<span class="hljs-number">1</span>]</span><br><span class="line">so2_data= so2_data[ny_st:ny_en+<span class="hljs-number">1</span>, nx_st:nx_en+<span class="hljs-number">1</span>]  </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#3. test the dat points whether or not within the polygon</span></span><br><span class="line"><span class="hljs-keyword">import</span> time</span><br><span class="line">start_time = time.time()</span><br><span class="line">sh = (<span class="hljs-built_in">len</span>(lat_)*<span class="hljs-built_in">len</span>(lon_),<span class="hljs-number">2</span>)</span><br><span class="line">points = np.zeros(<span class="hljs-built_in">len</span>(lat_)*<span class="hljs-built_in">len</span>(lon_)*<span class="hljs-number">2</span>).reshape(*sh)</span><br><span class="line">k = <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(lat_),<span class="hljs-number">1</span>):</span><br><span class="line">    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(lon_),<span class="hljs-number">1</span>):</span><br><span class="line">        points[k] = np.array([lon_[j],lat_[i]],dtype=<span class="hljs-built_in">float</span>)</span><br><span class="line">        k+=<span class="hljs-number">1</span></span><br><span class="line">mask = np.array([poly.contains(Point(x, y)) <span class="hljs-keyword">for</span> x, y <span class="hljs-keyword">in</span> points])  </span><br><span class="line">mask = mask.reshape(<span class="hljs-built_in">len</span>(lat_),<span class="hljs-built_in">len</span>(lon_))</span><br><span class="line"><span class="hljs-built_in">print</span>(<span class="hljs-string">"--- %s seconds ---"</span> % (time.time() - start_time))</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">print</span> mask.shape</span><br><span class="line">np.savetxt(<span class="hljs-string">"mask_SO2.txt"</span>,mask)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#4. mask the data points outsied the polygon</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">shape_mask</span>(<span class="hljs-params">array, lon_,lat_,mask</span>):</span><br><span class="line">    arr = np.zeros_like(array)</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(lat_),<span class="hljs-number">1</span>):</span><br><span class="line">        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>( lon_),<span class="hljs-number">1</span>):</span><br><span class="line">            <span class="hljs-keyword">if</span> mask[i,j] == <span class="hljs-number">1</span>:</span><br><span class="line">                arr[i,j] = array[i,j]</span><br><span class="line">            <span class="hljs-keyword">else</span>:</span><br><span class="line">                arr[i,j] = -<span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">return</span> arr</span><br><span class="line">no2_mask   = shape_mask(no2_data, lon_,lat_,mask)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">#1. transform the shapefile to fiona polygon object
+import fiona
+from shapely.geometry import shape,Polygon, Point
+cf_area = fiona.open("xxx.shp")
+pol = cf_area.next()
+from shapely.geometry import shape
+geom = shape(pol['geometry'])
+poly_data = pol["geometry"]["coordinates"][0]
+poly = Polygon(poly_data)
+
+#2. substract the dataset that can cover the polygon
+x1 =  np.array([t for t,j in (poly_data)]).min()
+x2 =  np.array([t for t,j in (poly_data)]).max()
+y1 =  np.array([j for t,j in (poly_data)]).min()
+y2 =  np.array([j for t,j in (poly_data)]).max()
+extent      = x1 -0.5, x2+0.5,y1-0.5, y2+0.5
+
+def find_nearest(array,value):
+    idx = (np.abs(array-value)).argmin()
+    return array[idx]
+nx_st = np.where(lon == (find_nearest(lon,extent[0])))[0]
+nx_en = np.where(lon == (find_nearest(lon,extent[1] )))[0]
+ny_st = np.where(lat == (find_nearest(lat,extent[2])))[0]
+ny_en = np.where(lat == (find_nearest(lat,extent[3] )))[0]
+lon_,lat_ = lon[nx_st:nx_en+1], lat[ny_st:ny_en+1]
+so2_data= so2_data[ny_st:ny_en+1, nx_st:nx_en+1]  
+
+#3. test the dat points whether or not within the polygon
+import time
+start_time = time.time()
+sh = (len(lat_)*len(lon_),2)
+points = np.zeros(len(lat_)*len(lon_)*2).reshape(*sh)
+k = 0
+for i in range(0,len(lat_),1):
+    for j in range(0,len(lon_),1):
+        points[k] = np.array([lon_[j],lat_[i]],dtype=float)
+        k+=1
+mask = np.array([poly.contains(Point(x, y)) for x, y in points])  
+mask = mask.reshape(len(lat_),len(lon_))
+print("--- %s seconds ---" % (time.time() - start_time))
+
+print mask.shape
+np.savetxt("mask_SO2.txt",mask)
+
+#4. mask the data points outsied the polygon
+
+def shape_mask(array, lon_,lat_,mask):
+    arr = np.zeros_like(array)
+    for i in range(0,len(lat_),1):
+        for j in range(0,len( lon_),1):
+            if mask[i,j] == 1:
+                arr[i,j] = array[i,j]
+            else:
+                arr[i,j] = -1
+    return arr
+no2_mask   = shape_mask(no2_data, lon_,lat_,mask)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>The mask array as the rastered polygon is shown like this.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fig = plt.figure()</span><br><span class="line">ax = back_main_clean(fig,extent)</span><br><span class="line"><span class="hljs-keyword">for</span> spine <span class="hljs-keyword">in</span> plt.gca().spines.values():</span><br><span class="line">	spine.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">ax.outline_patch.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">ax.pcolormesh(mask)</span><br><span class="line">plt.tight_layout()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fig = plt.figure()
+ax = back_main_clean(fig,extent)
+for spine in plt.gca().spines.values():
+	spine.set_visible(False)
+ax.outline_patch.set_visible(False)
+ax.pcolormesh(mask)
+plt.tight_layout()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><a href="/images/14.Satellite_aq_map/Fig.1.png"><img src="/images/14.Satellite_aq_map/Fig.1.png" alt="enter image description here"></a></p>
-<h2 id="Visualization"><a href="#Visualization" class="headerlink" title="Visualization"></a>Visualization</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.axes_grid1 <span class="hljs-keyword">import</span> make_axes_locatable</span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = back_main_clean(fig,extent) <span class="hljs-comment"># the background map was prior-defined by specific uses.</span></span><br><span class="line">lon_x,lat_y = np.meshgrid(lon_,lat_)</span><br><span class="line"></span><br><span class="line">value_mask = np.ma.masked_array(no2_mask, np.isnan(no2_mask))</span><br><span class="line">value_mask = np.ma.masked_less(value_mask, <span class="hljs-number">0.0</span>)</span><br><span class="line">my_cmap = plt.cm.get_cmap(<span class="hljs-string">'Spectral_r'</span>)</span><br><span class="line">my_cmap.set_under(<span class="hljs-string">'w'</span>)</span><br><span class="line">cc = ax.pcolormesh(lon_x,lat_y,value_mask/<span class="hljs-number">100.0</span>,cmap =my_cmap,alpha = <span class="hljs-number">0.7</span>,transform=ccrs.PlateCarree(),zorder =<span class="hljs-number">2</span>,vmax = <span class="hljs-number">25</span>)<span class="hljs-comment">#</span></span><br><span class="line"></span><br><span class="line">cbaxes = fig.add_axes([<span class="hljs-number">0.58</span>, <span class="hljs-number">0.12</span>, <span class="hljs-number">0.16</span>, <span class="hljs-number">0.015</span>]) </span><br><span class="line">cbar = fig.colorbar(cc, cax=cbaxes, ticks=[<span class="hljs-number">4</span>,<span class="hljs-number">12</span>,<span class="hljs-number">20</span>],orientation=<span class="hljs-string">'horizontal'</span>)</span><br><span class="line">cbar.ax.set_title(<span class="hljs-string">r'$\mathregular{NO_2\ [10^{15}molec/cm^2]}$'</span>, fontsize = <span class="hljs-number">8</span>)</span><br><span class="line">cbar.ax.tick_params(color=<span class="hljs-string">'k'</span>, direction=<span class="hljs-string">'in'</span>,labelsize=<span class="hljs-number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> spine <span class="hljs-keyword">in</span> plt.gca().spines.values():</span><br><span class="line">    spine.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">ax.outline_patch.set_visible(<span class="hljs-literal">False</span>)</span><br><span class="line">plt.tight_layout()</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Visualization"><a href="#Visualization" class="headerlink" title="Visualization"></a>Visualization</h2><pre class="line-numbers language-python" data-language="python"><code class="language-python">from mpl_toolkits.axes_grid1 import make_axes_locatable
+fig = plt.figure()
+ax = back_main_clean(fig,extent) # the background map was prior-defined by specific uses.
+lon_x,lat_y = np.meshgrid(lon_,lat_)
+
+value_mask = np.ma.masked_array(no2_mask, np.isnan(no2_mask))
+value_mask = np.ma.masked_less(value_mask, 0.0)
+my_cmap = plt.cm.get_cmap('Spectral_r')
+my_cmap.set_under('w')
+cc = ax.pcolormesh(lon_x,lat_y,value_mask/100.0,cmap =my_cmap,alpha = 0.7,transform=ccrs.PlateCarree(),zorder =2,vmax = 25)#
+
+cbaxes = fig.add_axes([0.58, 0.12, 0.16, 0.015]) 
+cbar = fig.colorbar(cc, cax=cbaxes, ticks=[4,12,20],orientation='horizontal')
+cbar.ax.set_title(r'$\mathregular{NO_2\ [10^{15}molec/cm^2]}$', fontsize = 8)
+cbar.ax.tick_params(color='k', direction='in',labelsize=8)
+
+for spine in plt.gca().spines.values():
+    spine.set_visible(False)
+ax.outline_patch.set_visible(False)
+plt.tight_layout()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><a href="/images/14.Satellite_aq_map/Fig.2.png"><img src="/images/14.Satellite_aq_map/Fig.2.png" alt="enter image description here"></a></p>
 </body></html>
@@ -196,9 +309,9 @@
     
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Python/">#Python</a></span>
     
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
-    
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Visualization/">#Visualization</a></span>
     
     </div>
     
@@ -222,7 +335,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -361,7 +474,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -374,10 +487,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

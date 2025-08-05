@@ -112,7 +112,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -153,7 +153,7 @@
         <span class="column is-narrow">
             
             
-            5 分钟 read (About 807 words)
+            5 分钟 de lectura (Alrededor de 807 palabras)
         </span>
         
     </div>
@@ -163,10 +163,129 @@
 <span id="more"></span>
 
 <h1 id="1-Pretreatment"><a href="#1-Pretreatment" class="headerlink" title="1. Pretreatment"></a>1. Pretreatment</h1><p> In this post, the technique applied here is to extracting five meteorological variables for several grids. Those variables contain <em>wind speed (ws), wind direction (wd), relative humidity (RH), planetal boundary layer height (PBLH), Temperature at 2 m above ground (T2) and precipitation (PREP)</em>. Noticed that <em>ws, wd</em> and <em>rh</em> are not directly derived from standard output, some essential steps should be implemented.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">calulating wind speed by U and V components</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calc_ws</span>(<span class="hljs-params">fc,y,x</span>):</span><br><span class="line">    u = fc.variables[<span class="hljs-string">"U10"</span>][:,y,x]</span><br><span class="line">    v = fc.variables[<span class="hljs-string">"V10"</span>][:,y,x]</span><br><span class="line">    <span class="hljs-keyword">return</span>  (u**<span class="hljs-number">2</span>+v**<span class="hljs-number">2</span>)**<span class="hljs-number">0.5</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">calulating wind directionn by U and V components</span></span><br><span class="line"><span class="hljs-string">"""</span>    </span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calc_wd</span>(<span class="hljs-params">fc,y,x</span>): <span class="hljs-comment"># fc: input data, y/x: the index in y/x axis of targeted grid</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Reference: http://colaweb.gmu.edu/dev/clim301/lectures/wind/wind-uv</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    u = fc.variables[<span class="hljs-string">"U10"</span>][:,y,x]</span><br><span class="line">    v = fc.variables[<span class="hljs-string">"V10"</span>][:,y,x]</span><br><span class="line">    wd = []</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(u),<span class="hljs-number">1</span>):</span><br><span class="line">        <span class="hljs-keyword">if</span> u[i]==<span class="hljs-number">0</span>:</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]==<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(np.nan)</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]&gt;<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(<span class="hljs-number">180.0</span>)</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]&lt;<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(<span class="hljs-number">0</span>)</span><br><span class="line">        <span class="hljs-keyword">if</span> u[i]&gt;<span class="hljs-number">0</span>:</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]&gt;=<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(<span class="hljs-number">270</span>-np.arctan(v[i]/u[i])/<span class="hljs-number">2</span>/np.pi*<span class="hljs-number">360.0</span>)</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]&lt;<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(<span class="hljs-number">270</span>+np.arctan(v[i]/u[i])/<span class="hljs-number">2</span>/np.pi*<span class="hljs-number">360.0</span>)</span><br><span class="line">        <span class="hljs-keyword">if</span> u[i]&lt;<span class="hljs-number">0</span>:</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]&gt;=<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(<span class="hljs-number">90</span>+np.arctan(v[i]/u[i])/<span class="hljs-number">2</span>/np.pi*<span class="hljs-number">360.0</span>)</span><br><span class="line">            <span class="hljs-keyword">if</span> v[i]&lt;<span class="hljs-number">0</span>:</span><br><span class="line">                wd.append(<span class="hljs-number">90</span>-np.arctan(v[i]/u[i])/<span class="hljs-number">2</span>/np.pi*<span class="hljs-number">360.0</span>)</span><br><span class="line">    <span class="hljs-keyword">return</span> wd</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># calculate the relative humidity</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calc_rh</span>(<span class="hljs-params">fc,y,x</span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    referencing:</span></span><br><span class="line"><span class="hljs-string">    t:  perturbation potential temperature. "T"</span></span><br><span class="line"><span class="hljs-string">    p:  perturbation pressure. "P"</span></span><br><span class="line"><span class="hljs-string">    pb: base state pressure. "PB"</span></span><br><span class="line"><span class="hljs-string">    qv: Water vapor mixing ratio "QVAPOR"</span></span><br><span class="line"><span class="hljs-string">    noted that all these parameters from WRF have the vertical dimension.</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    t = fc.variables[<span class="hljs-string">'T'</span>][:,<span class="hljs-number">0</span>,y,x]</span><br><span class="line">    p0 = fc.variables[<span class="hljs-string">'P'</span>][:,<span class="hljs-number">0</span>,y,x]</span><br><span class="line">    pb = fc.variables[<span class="hljs-string">'PB'</span>][:,<span class="hljs-number">0</span>,y,x]</span><br><span class="line">    qv = fc.variables[<span class="hljs-string">'QVAPOR'</span>][:,<span class="hljs-number">0</span>,y,x]</span><br><span class="line">    theta = t+<span class="hljs-number">300</span></span><br><span class="line">    p = (p0+pb)/<span class="hljs-number">100.0</span></span><br><span class="line">    temp = theta*(p/<span class="hljs-number">1000.0</span>)**<span class="hljs-number">0.2854</span></span><br><span class="line">    e_0 = <span class="hljs-number">6.1173</span> <span class="hljs-comment">## mb</span></span><br><span class="line">    t_0 = <span class="hljs-number">273.16</span> <span class="hljs-comment">## K</span></span><br><span class="line">    Rv = <span class="hljs-number">461.50</span> <span class="hljs-comment">## J K-1 Kg-1</span></span><br><span class="line">    Lv_0 = <span class="hljs-number">2.501</span> * <span class="hljs-number">10</span>**<span class="hljs-number">6</span> <span class="hljs-comment">## J Kg-1</span></span><br><span class="line">    K1 = Lv_0 / Rv <span class="hljs-comment">## K</span></span><br><span class="line">    K2 = <span class="hljs-number">1</span> / t_0 <span class="hljs-comment">## K-1</span></span><br><span class="line">    K3 = <span class="hljs-number">1</span> / temp <span class="hljs-comment">## K-1</span></span><br><span class="line">    e_s = e_0 * np.exp(K1*(K2 - K3))</span><br><span class="line">    w_s = (<span class="hljs-number">0.622</span> * e_s)/(p - e_s)</span><br><span class="line">    <span class="hljs-keyword">return</span> (qv/w_s)*<span class="hljs-number">100.0</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">"""
+calulating wind speed by U and V components
+"""
+def calc_ws(fc,y,x):
+    u = fc.variables["U10"][:,y,x]
+    v = fc.variables["V10"][:,y,x]
+    return  (u**2+v**2)**0.5
+
+"""
+calulating wind directionn by U and V components
+"""    
+def calc_wd(fc,y,x): # fc: input data, y/x: the index in y/x axis of targeted grid
+    """
+    Reference: http://colaweb.gmu.edu/dev/clim301/lectures/wind/wind-uv
+    """
+    u = fc.variables["U10"][:,y,x]
+    v = fc.variables["V10"][:,y,x]
+    wd = []
+    for i in range(0,len(u),1):
+        if u[i]==0:
+            if v[i]==0:
+                wd.append(np.nan)
+            if v[i]&gt;0:
+                wd.append(180.0)
+            if v[i]&lt;0:
+                wd.append(0)
+        if u[i]&gt;0:
+            if v[i]&gt;=0:
+                wd.append(270-np.arctan(v[i]/u[i])/2/np.pi*360.0)
+            if v[i]&lt;0:
+                wd.append(270+np.arctan(v[i]/u[i])/2/np.pi*360.0)
+        if u[i]&lt;0:
+            if v[i]&gt;=0:
+                wd.append(90+np.arctan(v[i]/u[i])/2/np.pi*360.0)
+            if v[i]&lt;0:
+                wd.append(90-np.arctan(v[i]/u[i])/2/np.pi*360.0)
+    return wd
+
+# calculate the relative humidity
+def calc_rh(fc,y,x):
+    """
+    referencing:
+    t:  perturbation potential temperature. "T"
+    p:  perturbation pressure. "P"
+    pb: base state pressure. "PB"
+    qv: Water vapor mixing ratio "QVAPOR"
+    noted that all these parameters from WRF have the vertical dimension.
+    """
+    t = fc.variables['T'][:,0,y,x]
+    p0 = fc.variables['P'][:,0,y,x]
+    pb = fc.variables['PB'][:,0,y,x]
+    qv = fc.variables['QVAPOR'][:,0,y,x]
+    theta = t+300
+    p = (p0+pb)/100.0
+    temp = theta*(p/1000.0)**0.2854
+    e_0 = 6.1173 ## mb
+    t_0 = 273.16 ## K
+    Rv = 461.50 ## J K-1 Kg-1
+    Lv_0 = 2.501 * 10**6 ## J Kg-1
+    K1 = Lv_0 / Rv ## K
+    K2 = 1 / t_0 ## K-1
+    K3 = 1 / temp ## K-1
+    e_s = e_0 * np.exp(K1*(K2 - K3))
+    w_s = (0.622 * e_s)/(p - e_s)
+    return (qv/w_s)*100.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>Those functions were wrote in an independent file (function_lib.py) for further importing.</p>
 <h1 id="2-Main-function"><a href="#2-Main-function" class="headerlink" title="2. Main function"></a>2. Main function</h1><p>Now that we have the pre-defined tools, we can proceed to read and merge all the outputs into one <strong>hdf5</strong> file.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> netCDF4 <span class="hljs-keyword">import</span> Dataset</span><br><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"><span class="hljs-keyword">from</span> pandas <span class="hljs-keyword">import</span> HDFStore, DataFrame</span><br><span class="line"><span class="hljs-keyword">from</span> pandas <span class="hljs-keyword">import</span> read_hdf</span><br><span class="line"><span class="hljs-keyword">import</span> os,sys,string</span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-comment"># the Pretreatment functions</span></span><br><span class="line"><span class="hljs-keyword">import</span> function_lib <span class="hljs-keyword">as</span> func</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># targeted girds with specific names</span></span><br><span class="line">site_= [<span class="hljs-string">'YZ'</span>,<span class="hljs-string">'TY'</span>,<span class="hljs-string">'HD'</span>,<span class="hljs-string">'SS'</span>,<span class="hljs-string">'XS'</span>,<span class="hljs-string">'HS'</span>]</span><br><span class="line">loc_dic = {site_[<span class="hljs-number">0</span>]:[<span class="hljs-number">37</span>,<span class="hljs-number">65</span>],site_[<span class="hljs-number">1</span>]:[<span class="hljs-number">38</span>,<span class="hljs-number">64</span>],</span><br><span class="line">           site_[<span class="hljs-number">2</span>]:[<span class="hljs-number">37</span>,<span class="hljs-number">66</span>],site_[<span class="hljs-number">3</span>]:[<span class="hljs-number">28</span>,<span class="hljs-number">75</span>],</span><br><span class="line">           site_[<span class="hljs-number">4</span>]:[<span class="hljs-number">34</span>,<span class="hljs-number">63</span>],site_[<span class="hljs-number">5</span>]:[<span class="hljs-number">38</span>,<span class="hljs-number">68</span>]}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># creat an empty h5 file</span></span><br><span class="line">hdf = HDFStore(<span class="hljs-string">"simulated_meteo_chifeng.h5"</span>)</span><br><span class="line">feature = [<span class="hljs-string">'WS'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'PBLH'</span>,<span class="hljs-string">'RH'</span>,<span class="hljs-string">'T2'</span>,<span class="hljs-string">'PREP'</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># loop all the original files</span></span><br><span class="line">Dir = <span class="hljs-string">"/disk2/hyf/wrf/WRFV3/Chifeng_output/post-process/d03/"</span></span><br><span class="line">files = os.listdir(Dir)</span><br><span class="line">files.sort()</span><br><span class="line">files = files[<span class="hljs-number">0</span>:]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># write the varibales into h5 file</span></span><br><span class="line"><span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(feature),<span class="hljs-number">1</span>):</span><br><span class="line">    data = {<span class="hljs-string">'date'</span>:[],site_[<span class="hljs-number">0</span>]:[],site_[<span class="hljs-number">1</span>]:[],site_[<span class="hljs-number">2</span>]:[],</span><br><span class="line">                      site_[<span class="hljs-number">3</span>]:[],site_[<span class="hljs-number">4</span>]:[],site_[<span class="hljs-number">5</span>]:[],}</span><br><span class="line">    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">        filename,extname = os.path.splitext(file)</span><br><span class="line">        <span class="hljs-keyword">if</span> filename[<span class="hljs-number">7</span>:<span class="hljs-number">10</span>] ==<span class="hljs-string">'d03'</span>: <span class="hljs-comment">## restrict to specific nested domain</span></span><br><span class="line">            fc = Dataset(Dir+file)</span><br><span class="line">            data[<span class="hljs-string">'date'</span>].extend([<span class="hljs-string">''</span>.join(t) <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> fc.variables[<span class="hljs-string">'Times'</span>]])</span><br><span class="line">            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(site_),<span class="hljs-number">1</span>):</span><br><span class="line">                x,y = loc_dic[site_[i]][<span class="hljs-number">1</span>],loc_dic[site_[i]][<span class="hljs-number">0</span>]</span><br><span class="line">                <span class="hljs-keyword">if</span> feature[k]==<span class="hljs-string">'WD'</span>:</span><br><span class="line">                    data[site_[i]].extend(func.calc_wd(fc,y,x))</span><br><span class="line">                <span class="hljs-keyword">if</span> feature[k]==<span class="hljs-string">'WS'</span>:</span><br><span class="line">                    data[site_[i]].extend(func.calc_ws(fc,y,x))</span><br><span class="line">                <span class="hljs-keyword">if</span> feature[k]==<span class="hljs-string">'PBLH'</span>:</span><br><span class="line">                    data[site_[i]].extend(fc.variables[<span class="hljs-string">'PBLH'</span>][:,y,x])</span><br><span class="line">                <span class="hljs-keyword">if</span> feature[k]==<span class="hljs-string">'RH'</span>:</span><br><span class="line">                    data[site_[i]].extend(func.calc_rh(fc,y,x))</span><br><span class="line">                <span class="hljs-keyword">if</span> feature[k]==<span class="hljs-string">'T2'</span>:</span><br><span class="line">                    data[site_[i]].extend(fc.variables[<span class="hljs-string">'T2'</span>][:,y,x])</span><br><span class="line">                <span class="hljs-keyword">if</span> feature[k]==<span class="hljs-string">'PREP'</span>:</span><br><span class="line">                    <span class="hljs-comment">#RAINC is the rain calculation by cumulus scheme and RAINNC is the rain calculation by micrphysics scheme.                  </span></span><br><span class="line">                    rain = (fc.variables[<span class="hljs-string">'RAINC'</span>][:,y,x]+fc.variables[<span class="hljs-string">'RAINNC'</span>][:,y,x])*<span class="hljs-number">1000.0</span>/<span class="hljs-number">997.0</span></span><br><span class="line">                    data[site_[i]].extend(rain)</span><br><span class="line">    data  = pd.DataFrame(data)</span><br><span class="line">    <span class="hljs-comment"># a efficient way to deal with those spin-up frames.</span></span><br><span class="line">    data = data.drop_duplicates(subset=<span class="hljs-string">'date'</span>, keep=<span class="hljs-string">'first'</span>, inplace=<span class="hljs-literal">False</span>)</span><br><span class="line">    <span class="hljs-built_in">print</span> <span class="hljs-built_in">len</span>(data)</span><br><span class="line">    data = data.reset_index()</span><br><span class="line">    hdf.put(feature[k], data, <span class="hljs-built_in">format</span>=<span class="hljs-string">'table'</span>, encoding=<span class="hljs-string">"utf-8"</span>)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">from netCDF4 import Dataset
+import pandas as pd
+from pandas import HDFStore, DataFrame
+from pandas import read_hdf
+import os,sys,string
+import numpy as np
+# the Pretreatment functions
+import function_lib as func
+
+# targeted girds with specific names
+site_= ['YZ','TY','HD','SS','XS','HS']
+loc_dic = {site_[0]:[37,65],site_[1]:[38,64],
+           site_[2]:[37,66],site_[3]:[28,75],
+           site_[4]:[34,63],site_[5]:[38,68]}
+
+# creat an empty h5 file
+hdf = HDFStore("simulated_meteo_chifeng.h5")
+feature = ['WS','WD','PBLH','RH','T2','PREP']
+
+# loop all the original files
+Dir = "/disk2/hyf/wrf/WRFV3/Chifeng_output/post-process/d03/"
+files = os.listdir(Dir)
+files.sort()
+files = files[0:]
+
+# write the varibales into h5 file
+for k in range(0,len(feature),1):
+    data = {'date':[],site_[0]:[],site_[1]:[],site_[2]:[],
+                      site_[3]:[],site_[4]:[],site_[5]:[],}
+    for file in files:
+        filename,extname = os.path.splitext(file)
+        if filename[7:10] =='d03': ## restrict to specific nested domain
+            fc = Dataset(Dir+file)
+            data['date'].extend([''.join(t) for t in fc.variables['Times']])
+            for i in range(0,len(site_),1):
+                x,y = loc_dic[site_[i]][1],loc_dic[site_[i]][0]
+                if feature[k]=='WD':
+                    data[site_[i]].extend(func.calc_wd(fc,y,x))
+                if feature[k]=='WS':
+                    data[site_[i]].extend(func.calc_ws(fc,y,x))
+                if feature[k]=='PBLH':
+                    data[site_[i]].extend(fc.variables['PBLH'][:,y,x])
+                if feature[k]=='RH':
+                    data[site_[i]].extend(func.calc_rh(fc,y,x))
+                if feature[k]=='T2':
+                    data[site_[i]].extend(fc.variables['T2'][:,y,x])
+                if feature[k]=='PREP':
+                    #RAINC is the rain calculation by cumulus scheme and RAINNC is the rain calculation by micrphysics scheme.                  
+                    rain = (fc.variables['RAINC'][:,y,x]+fc.variables['RAINNC'][:,y,x])*1000.0/997.0
+                    data[site_[i]].extend(rain)
+    data  = pd.DataFrame(data)
+    # a efficient way to deal with those spin-up frames.
+    data = data.drop_duplicates(subset='date', keep='first', inplace=False)
+    print len(data)
+    data = data.reset_index()
+    hdf.put(feature[k], data, format='table', encoding="utf-8")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>And after those scripts completed successfully, we have merged all the targetd variables for the spots of interest. In our furture post, the technique dealing with a 2-d griided system (i.e., a city) will be presented.</p>
 </body></html>
@@ -201,7 +320,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -340,7 +459,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -353,10 +472,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

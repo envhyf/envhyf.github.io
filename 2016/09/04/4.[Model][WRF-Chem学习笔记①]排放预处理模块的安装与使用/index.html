@@ -115,7 +115,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -156,7 +156,7 @@
         <span class="column is-narrow">
             
             
-            9 分钟 read (About 1356 words)
+            9 分钟 de lectura (Alrededor de 1356 palabras)
         </span>
         
     </div>
@@ -169,22 +169,40 @@
 
 <p>运行WRF和WRF-Chem的一个重要区别: 排放源清单的输入。<strong>Exercise 1__将会介绍建立WRF-Chem可读取的源清单文件的最基本方法(转置现有全球清单)，其核心工具为__PREP_CHEM_SOURCES</strong>。</p>
 <h2 id="安装过程"><a href="#安装过程" class="headerlink" title=" 安装过程"></a><font color="blue"> 安装过程</font></h2><h3 id="HDF5安装"><a href="#HDF5安装" class="headerlink" title=" HDF5安装"></a><font color="black"> HDF5安装</font></h3><p>该程序的顺利运行需要依赖HDF5, NetCDF, zlib等标准库。之前在安装WRF-Chem时已经安装了NetCDF和zlib，这里只列出HDF5和szip的安装步骤。</p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#1. szip安装</span></span><br><span class="line">wget http://www.hdfgroup.org/ftp/lib-external/szip/2.1/src/szip-2.1.tar.gz</span><br><span class="line">tar -xvzf szip-2.1.tar.gz</span><br><span class="line"><span class="hljs-built_in">cd</span> szip-2.1</span><br><span class="line">./configure --prefix=/The_path/you/want/to/install/</span><br><span class="line">make &amp; make check &amp; make install</span><br><span class="line"><span class="hljs-comment">#2. HDF5安装</span></span><br><span class="line">wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux-centos7-x86_64-gcc485/hdf5-1.8.17-linux-centos7-x86_64-gcc485-shared.tar.gz</span><br><span class="line"><span class="hljs-comment">#解压并进入文件夹</span></span><br><span class="line">./configure --prefix=/disk2/hyf/lib/hdf5 --enable-fortran \</span><br><span class="line"> --with-szlib=/szip/install/path\</span><br><span class="line"> --with-zlib=/zlib/install/path  <span class="hljs-comment">## 此处注意与后文prep_chem_source的编译器应对应上，否则lib中的文件无法编译成功</span></span><br><span class="line">make &amp; make check &amp; make install</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">#1. szip安装
+wget http://www.hdfgroup.org/ftp/lib-external/szip/2.1/src/szip-2.1.tar.gz
+tar -xvzf szip-2.1.tar.gz
+cd szip-2.1
+./configure --prefix=/The_path/you/want/to/install/
+make &amp; make check &amp; make install
+#2. HDF5安装
+wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux-centos7-x86_64-gcc485/hdf5-1.8.17-linux-centos7-x86_64-gcc485-shared.tar.gz
+#解压并进入文件夹
+./configure --prefix=/disk2/hyf/lib/hdf5 --enable-fortran \
+ --with-szlib=/szip/install/path\
+ --with-zlib=/zlib/install/path  ## 此处注意与后文prep_chem_source的编译器应对应上，否则lib中的文件无法编译成功
+make &amp; make check &amp; make install<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="排放预处理程序安装"><a href="#排放预处理程序安装" class="headerlink" title=" 排放预处理程序安装"></a><font color="black"> 排放预处理程序安装</font></h3><p>下载并解压后，进入<code>/bin/build</code>文件夹，修改与编译器对应的配置文件，如我将采用gfortran编译器编译，则<code>vim include.mk.gfortran</code>, 修改其中的NETCDF与HDF5库对应位置，按以下命令进行编译:</p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`make OPT=gfortran CHEM=RADM_WRF_FIM`</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">`make OPT=gfortran CHEM=RADM_WRF_FIM`<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>其中<code>OPT=</code>对应编译器类别(i.e, intel, pgi,gfortran, …)，<code>CHEM=</code>对应特定化学机理，此处选择__RADM__机理。这将决定WRF-Chem读取源清单文件的化学物质分类格式。  </p>
 <p>值得注意的是，按上述操作，将在编译__edgar_emission.f90__过程出错，WRF论坛中也有用户提交了同样的报错，幸有大神回复并解决，解决方法是调整某些行的字符串的长度，可参考<a target="_blank" rel="noopener" href="http://forum.wrfforum.com/viewtopic.php?f=39&amp;t=9199">该网页</a>进行修改。</p>
 <p>修改完成后，再次编译，若出现<code>Finished building === ../prep_chem_sources_RADM_WRF_FIM_.exe</code>，说明编译成功!<br>ヽ(✿ﾟ▽ﾟ)ノ</p>
 <p>PS: 安装完成后，编辑~/.bashrc   </p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 添加以下几行</span></span><br><span class="line"><span class="hljs-built_in">export</span> HDF5=<span class="hljs-string">"<span class="hljs-variable">$DIR</span>/hdf5"</span> <span class="hljs-comment"># $DIR为所有库存放位置</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$LD_LIBRARY_PATH</span>:<span class="hljs-variable">$HDF5</span>/lib</span><br><span class="line"><span class="hljs-built_in">export</span> NETCDF=<span class="hljs-string">"<span class="hljs-variable">$DIR</span>/netcdf"</span></span><br><span class="line"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$LD_LIBRARY_PATH</span>:<span class="hljs-variable">$NETCDF</span>/lib</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 添加以下几行
+export HDF5="$DIR/hdf5" # $DIR为所有库存放位置
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HDF5/lib
+export NETCDF="$DIR/netcdf"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NETCDF/lib<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <h2 id="案例"><a href="#案例" class="headerlink" title=" 案例"></a><font color="blue"> 案例</font></h2><h3 id="排放预处理程序安装-1"><a href="#排放预处理程序安装-1" class="headerlink" title=" 排放预处理程序安装"></a><font color="black"> 排放预处理程序安装</font></h3><p>按照Exercise 1中的input文件，替换<code>prep_chem_src\bin</code>文件夹下原有的input文件，并按照自己的global_emission文件夹修改读取原始排放数据的路径。   </p>
 <p>运行<code>$./prep_chem_sources_RADM_WRF_FIM_.exe</code>           </p>
 <p>运行成功后，会出现五个输出文件，其中有三个后缀名为<code>.bin</code>的文件，分别为:</p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WRF-TUTORIAL-T-2010-07-14-000000-g1-ab.bin <span class="hljs-comment">##  人为源排放清单</span></span><br><span class="line">WRF-TUTORIAL-T-2010-07-14-000000-g1-bb.bin <span class="hljs-comment">##  生物质燃烧清单</span></span><br><span class="line">WRF-TUTORIAL-T-2010-07-14-000000-g1-gocartBG.bin <span class="hljs-comment">## GOCART的全球背景化学场资料</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">WRF-TUTORIAL-T-2010-07-14-000000-g1-ab.bin ##  人为源排放清单
+WRF-TUTORIAL-T-2010-07-14-000000-g1-bb.bin ##  生物质燃烧清单
+WRF-TUTORIAL-T-2010-07-14-000000-g1-gocartBG.bin ## GOCART的全球背景化学场资料<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>将<code>prep_chem_src\bin</code>文件夹中三个<code>.bin</code>后缀的输出文件移动到<code>WRF-Chem</code>文件夹中, 此处我在<code>WRFV3\test\</code>文件夹内新建<code>em_ex1</code>文件夹，内容复制同目录下的<code>em_real</code>。 </p>
 <p>运行<code>./convert_emiss.exe</code></p>
@@ -235,7 +253,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -374,7 +392,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -387,10 +405,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

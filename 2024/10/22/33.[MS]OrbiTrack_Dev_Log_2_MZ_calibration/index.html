@@ -116,7 +116,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -157,7 +157,7 @@
         <span class="column is-narrow">
             
             
-            9 分钟 read (About 1285 words)
+            9 分钟 de lectura (Alrededor de 1285 palabras)
         </span>
         
     </div>
@@ -169,7 +169,106 @@
 
 <hr>
 <h2 id="Dynamic-M-Z-Calibration-Function"><a href="#Dynamic-M-Z-Calibration-Function" class="headerlink" title="Dynamic M/Z Calibration Function"></a>Dynamic M/Z Calibration Function</h2><p>The function below performs dynamic m/z calibration using known calibrant ions. It splits the full dataset by identifying where the calibrant signals are strongest (typically their peak retention times), and fits a linear correction model within each chunk.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## Module 2 MS calibration</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calculate_ppm</span>(<span class="hljs-params">observed_mass, ideal_mass</span>):</span><br><span class="line">    ppm = ((observed_mass - ideal_mass) / ideal_mass) * <span class="hljs-number">1e6</span></span><br><span class="line">    <span class="hljs-keyword">return</span> ppm   </span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_peak_near_mass_after_mzcal</span>(<span class="hljs-params">merged_spectrum, target_mass, tolerance_ppm</span>):</span><br><span class="line">    <span class="hljs-comment"># Calculate the tolerance in m/z</span></span><br><span class="line">    tolerance = target_mass * tolerance_ppm / <span class="hljs-number">1e6</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># Find peaks within the tolerance range</span></span><br><span class="line">    peaks_within_tolerance = merged_spectrum[</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'corrected_m/z'</span>] &gt;= target_mass - tolerance) &amp;</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'corrected_m/z'</span>] &lt;= target_mass + tolerance)</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> peaks_within_tolerance    </span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_peak_near_mass</span>(<span class="hljs-params">merged_spectrum, target_mass, tolerance_ppm</span>):</span><br><span class="line">    <span class="hljs-comment"># Calculate the tolerance in m/z</span></span><br><span class="line">    tolerance = target_mass * tolerance_ppm / <span class="hljs-number">1e6</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># Find peaks within the tolerance range</span></span><br><span class="line">    peaks_within_tolerance = merged_spectrum[</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'m/z'</span>] &gt;= target_mass - tolerance) &amp;</span><br><span class="line">        (merged_spectrum[<span class="hljs-string">'m/z'</span>] &lt;= target_mass + tolerance)</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> peaks_within_tolerance    </span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_calibrant_matches</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm</span>):</span><br><span class="line">    calibrant_matches = []</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> ideal_mass <span class="hljs-keyword">in</span> ideal_calibrants_mass:</span><br><span class="line">        tolerance = ideal_mass * tolerance_ppm / <span class="hljs-number">1e6</span>  <span class="hljs-comment"># Tolerance based on ppm</span></span><br><span class="line">        peaks_within_tolerance = merged_spectrum[</span><br><span class="line">            (merged_spectrum[<span class="hljs-string">'m/z'</span>] &gt;= ideal_mass - tolerance) &amp;</span><br><span class="line">            (merged_spectrum[<span class="hljs-string">'m/z'</span>] &lt;= ideal_mass + tolerance)</span><br><span class="line">        ]</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> peaks_within_tolerance.empty:</span><br><span class="line">            <span class="hljs-comment"># Store the actual masses and their RTs</span></span><br><span class="line">            <span class="hljs-keyword">for</span> _, peak <span class="hljs-keyword">in</span> peaks_within_tolerance.iterrows():</span><br><span class="line">                calibrant_matches.append((ideal_mass, peak[<span class="hljs-string">'m/z'</span>], peak[<span class="hljs-string">'rt'</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> calibrant_matches    </span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">find_rt_for_maximum_mz</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm,overlapped_scan</span>):</span><br><span class="line">    </span><br><span class="line">    calibrant_matches = find_calibrant_matches(merged_spectrum, ideal_calibrants_mass, tolerance_ppm)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> calibrant_matches:</span><br><span class="line">        <span class="hljs-built_in">print</span>(<span class="hljs-string">'No calibrants found in the spectrum.'</span>)</span><br><span class="line">        <span class="hljs-keyword">return</span> []</span><br><span class="line">    </span><br><span class="line">    max_ideal_mass = <span class="hljs-built_in">max</span>(ideal_calibrants_mass)</span><br><span class="line">    max_calibrant_matches = [(ideal_mass, actual_mass, rt) <span class="hljs-keyword">for</span> ideal_mass, actual_mass, rt <span class="hljs-keyword">in</span> calibrant_matches <span class="hljs-keyword">if</span> ideal_mass == max_ideal_mass]    </span><br><span class="line">    max_calibrant_rts = <span class="hljs-built_in">sorted</span>([<span class="hljs-keyword">match</span>[<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> <span class="hljs-keyword">match</span> <span class="hljs-keyword">in</span> max_calibrant_matches]) </span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># For overlapped mz scan, choose the second scan's rts (be careful!)</span></span><br><span class="line">    <span class="hljs-keyword">if</span> overlapped_scan == <span class="hljs-number">1</span>:</span><br><span class="line">        max_calibrant_rts = max_calibrant_rts[<span class="hljs-number">1</span>::<span class="hljs-number">2</span>]</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sorted</span>(max_calibrant_rts)  <span class="hljs-comment"># Sort the RTs</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">correct_mz_dynamically</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan</span>):</span><br><span class="line">    merged_spectrum   = merged_spectrum.reset_index(drop = <span class="hljs-literal">True</span>)</span><br><span class="line">    max_calibrant_rts = find_rt_for_maximum_mz(merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan)</span><br><span class="line">    chunk_boundaries = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">sorted</span>(([merged_spectrum[<span class="hljs-string">'rt'</span>].<span class="hljs-built_in">min</span>()] + max_calibrant_rts + [merged_spectrum[<span class="hljs-string">'rt'</span>].<span class="hljs-built_in">max</span>()])))</span><br><span class="line">    model_params = []</span><br><span class="line">    <span class="hljs-comment"># processing for each chunk split by the rts of the maximum m/z</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(chunk_boundaries) - <span class="hljs-number">1</span>):</span><br><span class="line">        rt_start = chunk_boundaries[i]</span><br><span class="line">        rt_end = chunk_boundaries[i + <span class="hljs-number">1</span>]</span><br><span class="line">        chunk = merged_spectrum[(merged_spectrum[<span class="hljs-string">'rt'</span>] &gt;= rt_start) &amp; (merged_spectrum[<span class="hljs-string">'rt'</span>] &lt; rt_end)]</span><br><span class="line"></span><br><span class="line">        actual_masses = {}</span><br><span class="line">        <span class="hljs-keyword">for</span> ideal_mass <span class="hljs-keyword">in</span> ideal_calibrants_mass:</span><br><span class="line">            tolerance = ideal_mass * tolerance_ppm / <span class="hljs-number">1e6</span></span><br><span class="line">            peaks_within_chunk = chunk[</span><br><span class="line">                (chunk[<span class="hljs-string">'m/z'</span>] &gt;= ideal_mass - tolerance) &amp;</span><br><span class="line">                (chunk[<span class="hljs-string">'m/z'</span>] &lt;= ideal_mass + tolerance)</span><br><span class="line">            ]</span><br><span class="line">            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> peaks_within_chunk.empty:</span><br><span class="line">                actual_masses[ideal_mass] = np.mean(peaks_within_chunk[<span class="hljs-string">'m/z'</span>])</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment"># Step 5: Apply calibration if at least one calibrant is found</span></span><br><span class="line">        <span class="hljs-keyword">if</span> actual_masses:</span><br><span class="line">            ideal_actual_pairs = np.array([(actual_masses[m], m) <span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> actual_masses])</span><br><span class="line">            </span><br><span class="line">            weights = np.<span class="hljs-built_in">abs</span>(<span class="hljs-number">1</span> - (ideal_actual_pairs[:, <span class="hljs-number">0</span>] / ideal_actual_pairs[:, <span class="hljs-number">1</span>]))  <span class="hljs-comment"># Weight by proximity to ideal mass</span></span><br><span class="line">            model = LinearRegression()</span><br><span class="line">            model.fit(ideal_actual_pairs[:, <span class="hljs-number">0</span>].reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>), ideal_actual_pairs[:, <span class="hljs-number">1</span>], sample_weight=weights)</span><br><span class="line"></span><br><span class="line">            <span class="hljs-comment"># Apply the calibration to the current chunk</span></span><br><span class="line">            chunk_rows = (merged_spectrum[<span class="hljs-string">'rt'</span>] &gt;= rt_start) &amp; (merged_spectrum[<span class="hljs-string">'rt'</span>] &lt; rt_end)</span><br><span class="line">            merged_spectrum.loc[chunk_rows, <span class="hljs-string">'corrected_m/z'</span>] = model.predict(merged_spectrum.loc[chunk_rows, <span class="hljs-string">'m/z'</span>].values.reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))</span><br><span class="line">            </span><br><span class="line">            slope = model.coef_[<span class="hljs-number">0</span>]</span><br><span class="line">            intercept = model.intercept_</span><br><span class="line">            model_params.append({<span class="hljs-string">'rt_start'</span>: rt_start, <span class="hljs-string">'rt_end'</span>: rt_end, <span class="hljs-string">'slope'</span>: slope, <span class="hljs-string">'intercept'</span>: intercept})</span><br><span class="line">    <span class="hljs-keyword">return</span> merged_spectrum, model_params</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">## Module 2 MS calibration
+def calculate_ppm(observed_mass, ideal_mass):
+    ppm = ((observed_mass - ideal_mass) / ideal_mass) * 1e6
+    return ppm   
+
+def find_peak_near_mass_after_mzcal(merged_spectrum, target_mass, tolerance_ppm):
+    # Calculate the tolerance in m/z
+    tolerance = target_mass * tolerance_ppm / 1e6
+    
+    # Find peaks within the tolerance range
+    peaks_within_tolerance = merged_spectrum[
+        (merged_spectrum['corrected_m/z'] &gt;= target_mass - tolerance) &amp;
+        (merged_spectrum['corrected_m/z'] &lt;= target_mass + tolerance)
+    ]
+    
+    return peaks_within_tolerance    
+
+def find_peak_near_mass(merged_spectrum, target_mass, tolerance_ppm):
+    # Calculate the tolerance in m/z
+    tolerance = target_mass * tolerance_ppm / 1e6
+    
+    # Find peaks within the tolerance range
+    peaks_within_tolerance = merged_spectrum[
+        (merged_spectrum['m/z'] &gt;= target_mass - tolerance) &amp;
+        (merged_spectrum['m/z'] &lt;= target_mass + tolerance)
+    ]
+    
+    return peaks_within_tolerance    
+
+def find_calibrant_matches(merged_spectrum, ideal_calibrants_mass, tolerance_ppm):
+    calibrant_matches = []
+
+    for ideal_mass in ideal_calibrants_mass:
+        tolerance = ideal_mass * tolerance_ppm / 1e6  # Tolerance based on ppm
+        peaks_within_tolerance = merged_spectrum[
+            (merged_spectrum['m/z'] &gt;= ideal_mass - tolerance) &amp;
+            (merged_spectrum['m/z'] &lt;= ideal_mass + tolerance)
+        ]
+        
+        if not peaks_within_tolerance.empty:
+            # Store the actual masses and their RTs
+            for _, peak in peaks_within_tolerance.iterrows():
+                calibrant_matches.append((ideal_mass, peak['m/z'], peak['rt']))
+
+    return calibrant_matches    
+
+def find_rt_for_maximum_mz(merged_spectrum, ideal_calibrants_mass, tolerance_ppm,overlapped_scan):
+    
+    calibrant_matches = find_calibrant_matches(merged_spectrum, ideal_calibrants_mass, tolerance_ppm)
+    
+    if not calibrant_matches:
+        print('No calibrants found in the spectrum.')
+        return []
+    
+    max_ideal_mass = max(ideal_calibrants_mass)
+    max_calibrant_matches = [(ideal_mass, actual_mass, rt) for ideal_mass, actual_mass, rt in calibrant_matches if ideal_mass == max_ideal_mass]    
+    max_calibrant_rts = sorted([match[2] for match in max_calibrant_matches]) 
+    
+    # For overlapped mz scan, choose the second scan's rts (be careful!)
+    if overlapped_scan == 1:
+        max_calibrant_rts = max_calibrant_rts[1::2]
+    return sorted(max_calibrant_rts)  # Sort the RTs
+
+def correct_mz_dynamically(merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan):
+    merged_spectrum   = merged_spectrum.reset_index(drop = True)
+    max_calibrant_rts = find_rt_for_maximum_mz(merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan)
+    chunk_boundaries = list(sorted(([merged_spectrum['rt'].min()] + max_calibrant_rts + [merged_spectrum['rt'].max()])))
+    model_params = []
+    # processing for each chunk split by the rts of the maximum m/z
+    for i in range(len(chunk_boundaries) - 1):
+        rt_start = chunk_boundaries[i]
+        rt_end = chunk_boundaries[i + 1]
+        chunk = merged_spectrum[(merged_spectrum['rt'] &gt;= rt_start) &amp; (merged_spectrum['rt'] &lt; rt_end)]
+
+        actual_masses = {}
+        for ideal_mass in ideal_calibrants_mass:
+            tolerance = ideal_mass * tolerance_ppm / 1e6
+            peaks_within_chunk = chunk[
+                (chunk['m/z'] &gt;= ideal_mass - tolerance) &amp;
+                (chunk['m/z'] &lt;= ideal_mass + tolerance)
+            ]
+            if not peaks_within_chunk.empty:
+                actual_masses[ideal_mass] = np.mean(peaks_within_chunk['m/z'])
+
+        # Step 5: Apply calibration if at least one calibrant is found
+        if actual_masses:
+            ideal_actual_pairs = np.array([(actual_masses[m], m) for m in actual_masses])
+            
+            weights = np.abs(1 - (ideal_actual_pairs[:, 0] / ideal_actual_pairs[:, 1]))  # Weight by proximity to ideal mass
+            model = LinearRegression()
+            model.fit(ideal_actual_pairs[:, 0].reshape(-1, 1), ideal_actual_pairs[:, 1], sample_weight=weights)
+
+            # Apply the calibration to the current chunk
+            chunk_rows = (merged_spectrum['rt'] &gt;= rt_start) &amp; (merged_spectrum['rt'] &lt; rt_end)
+            merged_spectrum.loc[chunk_rows, 'corrected_m/z'] = model.predict(merged_spectrum.loc[chunk_rows, 'm/z'].values.reshape(-1, 1))
+            
+            slope = model.coef_[0]
+            intercept = model.intercept_
+            model_params.append({'rt_start': rt_start, 'rt_end': rt_end, 'slope': slope, 'intercept': intercept})
+    return merged_spectrum, model_params<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="Execution-and-Output-Parameters"><a href="#Execution-and-Output-Parameters" class="headerlink" title="Execution and Output Parameters"></a>Execution and Output Parameters</h2><p>To address potential m/z drift over long measurement periods, I developed a dynamic calibration procedure that allows for chunk-wise m/z correction using varying fitting parameters. This approach avoids the limitations of applying a single static equation to the entire dataset and ensures more accurate mass alignment throughout the run.</p>
 <p><em>A. Chunking by Retention Time of Maximum Calibrant</em>    </p>
@@ -181,13 +280,64 @@
 <li>A linear regression is performed between the measured m/z values and their corresponding ideal masses.</li>
 </ul>
 <p>This model is then used to recalibrate all ions in that chunk, shifting their m/z values to more accurate positions. Before the calibration </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">merged_spectrum_mzcal, model_params = correct_mz_dynamically(</span><br><span class="line">    merged_spectrum, </span><br><span class="line">    ideal_calibrants_mass,</span><br><span class="line">    calibration_tolerance_ppm,  <span class="hljs-comment"># Predefined tolerance based on the typical mass error between actual and ideal calibrant values, I typically set to 20 ppm</span></span><br><span class="line">    overlapped_scan_option</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">merged_spectrum_mzcal, model_params = correct_mz_dynamically(
+    merged_spectrum, 
+    ideal_calibrants_mass,
+    calibration_tolerance_ppm,  # Predefined tolerance based on the typical mass error between actual and ideal calibrant values, I typically set to 20 ppm
+    overlapped_scan_option
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>We then inspect the variation in calibration parameters (slope and intercept) across segments.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">slope_ = []</span><br><span class="line">intercept_ = []</span><br><span class="line"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> model_params:</span><br><span class="line">    slope_.append(c[<span class="hljs-string">'slope'</span>])</span><br><span class="line">    intercept_.append(c[<span class="hljs-string">'intercept'</span>])</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">2</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(slope_)), y=slope_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Slope"</span>, col=<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(intercept_)), y=intercept_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">2</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Intercept"</span>, col=<span class="hljs-number">2</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="hljs-string">"Chunk"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>)</span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">900</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Dynamic Fitting Parameters Across Retention Time"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">slope_ = []
+intercept_ = []
+for c in model_params:
+    slope_.append(c['slope'])
+    intercept_.append(c['intercept'])
+
+fig = make_subplots(rows=1, cols=2)
+fig.add_trace(go.Scatter(x=np.arange(len(slope_)), y=slope_, mode='lines+markers'), row=1, col=1)
+fig.update_yaxes(title_text="Slope", col=1, row=1)
+fig.add_trace(go.Scatter(x=np.arange(len(intercept_)), y=intercept_, mode='lines+markers'), row=1, col=2)
+fig.update_yaxes(title_text="Intercept", col=2, row=1)
+fig.update_xaxes(title_text="Chunk", showline=True, linecolor='black')
+fig.update_layout(
+    height=400, width=900,
+    title_text="Dynamic Fitting Parameters Across Retention Time",
+    plot_bgcolor='white', showlegend=False
+)
+fig.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="/images/Orbitrack_log/Fig.Calibration_interecept_slope_variations.png"></p>
 <h2 id="Check-Calibration-Accuracy-on-Known-Ions"><a href="#Check-Calibration-Accuracy-on-Known-Ions" class="headerlink" title="Check Calibration Accuracy on Known Ions"></a>Check Calibration Accuracy on Known Ions</h2><p>We visualize the distribution of m/z values for five reference ions before and after correction. This comparison confirms the improvement in accuracy.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">subplot_titles = [<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>,<span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>]</span><br><span class="line">masses = [<span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>, <span class="hljs-number">108.9638</span>, <span class="hljs-number">166.9163</span>]</span><br><span class="line">colors = [<span class="hljs-string">'#447f44'</span>, <span class="hljs-string">'#cd4040'</span>, <span class="hljs-string">'#636efa'</span>, <span class="hljs-string">'#ddc927'</span>, <span class="hljs-string">'#9271dd'</span>]</span><br><span class="line"></span><br><span class="line">subplot_titles = []</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>]), masses[i])</span><br><span class="line">    mean_ppm = np.mean(ppm_differences)</span><br><span class="line">    subplot_titles.append(<span class="hljs-string">f"<span class="hljs-subst">{[<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>, <span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>][i]}</span>: <span class="hljs-subst">{mean_ppm:<span class="hljs-number">.2</span>f}</span> ppm"</span>)</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">5</span>, subplot_titles=subplot_titles)</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'blue'</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'red'</span>, opacity=<span class="hljs-number">0.75</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_vline(x=masses[i], line_width=<span class="hljs-number">2</span>, line_dash=<span class="hljs-string">"dash"</span>, line_color=<span class="hljs-string">"grey"</span>, row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>, <span class="hljs-built_in">range</span>=[masses[i]-<span class="hljs-number">0.0025</span>, masses[i]+<span class="hljs-number">0.0025</span>], col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_yaxes(title_text=<span class="hljs-string">"Count"</span>, col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">1500</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Calibrant Mass Distribution Before and After Calibration"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">subplot_titles = ['Na2I', 'Na3I2', 'Na4I3','Na2[15]NO3', 'Na3[34]SO4']
+masses = [172.88347, 322.77771, 472.67196, 108.9638, 166.9163]
+colors = ['#447f44', '#cd4040', '#636efa', '#ddc927', '#9271dd']
+
+subplot_titles = []
+for i in range(len(masses)):
+    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]]['corrected_m/z']), masses[i])
+    mean_ppm = np.mean(ppm_differences)
+    subplot_titles.append(f"{['Na2I', 'Na3I2', 'Na4I3', 'Na2[15]NO3', 'Na3[34]SO4'][i]}: {mean_ppm:.2f} ppm")
+
+fig = make_subplots(rows=1, cols=5, subplot_titles=subplot_titles)
+for i in range(len(masses)):
+    fig.add_trace(
+        go.Histogram(x=peak_results[masses[i]]['corrected_m/z'], marker=dict(color='blue')),
+        row=1, col=i+1
+    )
+    fig.add_trace(
+        go.Histogram(x=peak_results[masses[i]]['m/z'], marker=dict(color='red', opacity=0.75)),
+        row=1, col=i+1
+    )
+    fig.add_vline(x=masses[i], line_width=2, line_dash="dash", line_color="grey", row=1, col=i+1)
+    fig.update_xaxes(title_text="m/z", range=[masses[i]-0.0025, masses[i]+0.0025], col=i+1, row=1)
+    fig.update_yaxes(title_text="Count", col=i+1, row=1)
+
+fig.update_layout(
+    height=400, width=1500,
+    title_text="Calibrant Mass Distribution Before and After Calibration",
+    plot_bgcolor='white', showlegend=False
+)
+fig.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Here is an example of the post-check on those calibrants as well as those important ions (analytes).<br><img src="/images/Orbitrack_log/Fig.After_calibration_mz_postion_calibrants&amp;important_ions.png"></p>
 </body></html>
@@ -224,7 +374,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -363,7 +513,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -376,10 +526,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

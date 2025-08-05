@@ -114,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -155,7 +155,7 @@
         <span class="column is-narrow">
             
             
-            3 分钟 read (About 515 words)
+            3 分钟 de lectura (Alrededor de 515 palabras)
         </span>
         
     </div>
@@ -165,10 +165,57 @@
 <span id="more"></span>
 
 <h1 id="Selection-of-weather-station"><a href="#Selection-of-weather-station" class="headerlink" title="Selection of weather station"></a>Selection of weather station</h1><p>Based on the location of the city/sampling site, we could seach for the best/most close weather station for getting its ID. Here, Milan, Italy will be treated as the example, and the main procedures are listed as follows. The detailed information of weathe station globally can be downloaded here <a target="_blank" rel="noopener" href="https://www.dropbox.com/s/d46u4h71fm9i4it/isd-history.csv?dl=0">link</a>.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">isd_st = pd.read_csv(<span class="hljs-string">"/mnt/d/Dropbox/data/geo/Meteo/NOAA/global/isd-history.csv"</span>)</span><br><span class="line"><span class="hljs-comment">## filtering based on country name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">'CTRY'</span>] ==<span class="hljs-string">'IT'</span>]</span><br><span class="line"><span class="hljs-comment">## filtering based on city name</span></span><br><span class="line">isd_st[isd_st[<span class="hljs-string">"STATION NAME"</span>].astype(<span class="hljs-built_in">str</span>).<span class="hljs-built_in">str</span>.contains(<span class="hljs-string">"MILAN"</span>)]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## Then, we could choose the perferred monitoring station, and note its "USAF" and  "WBAN"</span></span><br><span class="line"><span class="hljs-comment">## For Milan, USAF == 160800, WBAN == 99999, then the target ID will be "160800-99999"</span></span><br><span class="line">station_ID = <span class="hljs-number">160800</span>-<span class="hljs-number">99999</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">import pandas as pd
+
+isd_st = pd.read_csv("/mnt/d/Dropbox/data/geo/Meteo/NOAA/global/isd-history.csv")
+## filtering based on country name
+isd_st[isd_st['CTRY'] =='IT']
+## filtering based on city name
+isd_st[isd_st["STATION NAME"].astype(str).str.contains("MILAN")]
+
+## Then, we could choose the perferred monitoring station, and note its "USAF" and  "WBAN"
+## For Milan, USAF == 160800, WBAN == 99999, then the target ID will be "160800-99999"
+station_ID = 160800-99999<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>A more visualized way could be achieved through this link <a target="_blank" rel="noopener" href="https://www.ncdc.noaa.gov/cdo-web/datatools/findstation">Find a station</a>.</p>
-<h1 id="FTP-downloading-and-processing"><a href="#FTP-downloading-and-processing" class="headerlink" title="FTP downloading and processing"></a>FTP downloading and processing</h1><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> ftplib <span class="hljs-keyword">import</span> FTP</span><br><span class="line"><span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path</span><br><span class="line"></span><br><span class="line">ftp = FTP(<span class="hljs-string">"ftp.ncdc.noaa.gov"</span>)</span><br><span class="line">ftp.login()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## there are multiple dataset within NOAA ISD. Here we choose NOAA ISD-Lite, which is hourly-recoreded.</span></span><br><span class="line">ftp.cwd(<span class="hljs-string">'/pub/data/noaa/isd-lite/2013/'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Get all files</span></span><br><span class="line">files = ftp.nlst()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Download the file matched with the station ID</span></span><br><span class="line"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files:</span><br><span class="line">    <span class="hljs-keyword">if</span> file == station_ID +<span class="hljs-string">'.gz'</span>:</span><br><span class="line"><span class="hljs-comment">#         print (file)</span></span><br><span class="line">        <span class="hljs-built_in">print</span>(<span class="hljs-string">"Downloading..."</span> + file)</span><br><span class="line">        ftp.retrbinary(<span class="hljs-string">f'RETR <span class="hljs-subst">{file}</span>'</span>, <span class="hljs-built_in">open</span>(<span class="hljs-built_in">str</span>(Path(<span class="hljs-string">r'./isd_data'</span>) / file), <span class="hljs-string">'wb'</span>).write)</span><br><span class="line"><span class="hljs-comment"># # ftp.close()</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">calc_rh</span>(<span class="hljs-params">T,TD</span>):</span><br><span class="line">    RH = <span class="hljs-number">100</span>*(np.exp((<span class="hljs-number">17.625</span>*TD)/(<span class="hljs-number">243.04</span>+TD))/np.exp((<span class="hljs-number">17.625</span>*T)/(<span class="hljs-number">243.04</span>+T)))</span><br><span class="line">    <span class="hljs-keyword">return</span> RH</span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">read_year_meteo</span>(<span class="hljs-params">filepath</span>):</span><br><span class="line">    df= pd.read_csv(filepath,sep=<span class="hljs-string">'\s+'</span>,header = <span class="hljs-literal">None</span>)</span><br><span class="line">    <span class="hljs-comment">#<span class="hljs-doctag">NOTE:</span> Trace precipitation is coded as -1</span></span><br><span class="line">    <span class="hljs-comment"># SCALING FACTOR: 10</span></span><br><span class="line">    df.columns = [<span class="hljs-string">'Year'</span>,<span class="hljs-string">'Month'</span>,<span class="hljs-string">'Day'</span>,<span class="hljs-string">'Hour'</span>,<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'Cloud'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>] </span><br><span class="line">    df[<span class="hljs-string">'Date'</span>] = df[<span class="hljs-string">'Year'</span>].astype(<span class="hljs-built_in">str</span>)+<span class="hljs-string">'-'</span>+df[<span class="hljs-string">"Month"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">'-'</span>+df[<span class="hljs-string">"Day"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">' '</span>+df[<span class="hljs-string">"Hour"</span>].apply(<span class="hljs-string">"{0:0=2d}"</span>.<span class="hljs-built_in">format</span>)+<span class="hljs-string">':00:00'</span></span><br><span class="line">    df         = df[[<span class="hljs-string">'Date'</span>,<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WD'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'Cloud'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>] ]</span><br><span class="line">    df = df.replace(-<span class="hljs-number">9999</span>,np.nan)</span><br><span class="line">    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> [<span class="hljs-string">'Air temp'</span>,<span class="hljs-string">'Dew point'</span>,<span class="hljs-string">'Pressure'</span>,<span class="hljs-string">'WS'</span>,<span class="hljs-string">'1h prep'</span>,<span class="hljs-string">'6h prep'</span>]:</span><br><span class="line">        df[t] = df[t]/<span class="hljs-number">10.0</span>  </span><br><span class="line">    df[<span class="hljs-string">'RH'</span>] = calc_rh(df[<span class="hljs-string">'Air temp'</span>],df[<span class="hljs-string">'Dew point'</span>])        </span><br><span class="line">    <span class="hljs-keyword">return</span> df</span><br><span class="line"></span><br><span class="line">milan_2013 = read_year_meteo(<span class="hljs-string">'./isd_data/160800-99999-2013'</span>) </span><br><span class="line">milan_2013.to_csv(<span class="hljs-string">"./milan_weather_data_hourly.csv"</span>, index = <span class="hljs-literal">False</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="FTP-downloading-and-processing"><a href="#FTP-downloading-and-processing" class="headerlink" title="FTP downloading and processing"></a>FTP downloading and processing</h1><pre class="line-numbers language-python" data-language="python"><code class="language-python">from ftplib import FTP
+from pathlib import Path
+
+ftp = FTP("ftp.ncdc.noaa.gov")
+ftp.login()
+
+## there are multiple dataset within NOAA ISD. Here we choose NOAA ISD-Lite, which is hourly-recoreded.
+ftp.cwd('/pub/data/noaa/isd-lite/2013/')
+
+# Get all files
+files = ftp.nlst()
+
+# Download the file matched with the station ID
+for file in files:
+    if file == station_ID +'.gz':
+#         print (file)
+        print("Downloading..." + file)
+        ftp.retrbinary(f'RETR {file}', open(str(Path(r'./isd_data') / file), 'wb').write)
+# # ftp.close()
+
+def calc_rh(T,TD):
+    RH = 100*(np.exp((17.625*TD)/(243.04+TD))/np.exp((17.625*T)/(243.04+T)))
+    return RH
+def read_year_meteo(filepath):
+    df= pd.read_csv(filepath,sep='\s+',header = None)
+    #NOTE: Trace precipitation is coded as -1
+    # SCALING FACTOR: 10
+    df.columns = ['Year','Month','Day','Hour','Air temp','Dew point','Pressure','WD','WS','Cloud','1h prep','6h prep'] 
+    df['Date'] = df['Year'].astype(str)+'-'+df["Month"].apply("{0:0=2d}".format)+'-'+df["Day"].apply("{0:0=2d}".format)+' '+df["Hour"].apply("{0:0=2d}".format)+':00:00'
+    df         = df[['Date','Air temp','Dew point','Pressure','WD','WS','Cloud','1h prep','6h prep'] ]
+    df = df.replace(-9999,np.nan)
+    for t in ['Air temp','Dew point','Pressure','WS','1h prep','6h prep']:
+        df[t] = df[t]/10.0  
+    df['RH'] = calc_rh(df['Air temp'],df['Dew point'])        
+    return df
+
+milan_2013 = read_year_meteo('./isd_data/160800-99999-2013') 
+milan_2013.to_csv("./milan_weather_data_hourly.csv", index = False)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Done!</p>
 <img src="https://i.stack.imgur.com/o3sOv.jpg" title="" alt="" width="275">
@@ -209,7 +256,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -348,7 +395,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -361,10 +408,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

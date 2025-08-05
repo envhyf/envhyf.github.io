@@ -112,7 +112,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -153,7 +153,7 @@
         <span class="column is-narrow">
             
             
-            3 分钟 read (About 401 words)
+            3 分钟 de lectura (Alrededor de 401 palabras)
         </span>
         
     </div>
@@ -170,10 +170,35 @@
 <span id="more"></span>  
 
 <h1 id="1-Subset-and-Diurnal-profiles"><a href="#1-Subset-and-Diurnal-profiles" class="headerlink" title="1. Subset and Diurnal profiles"></a>1. Subset and Diurnal profiles</h1><p> As an illustration, we firstly extract the original file generated from WRF-Chem by specific time range and spatial coverage. Then, the daily averages for those selected grids are calculated and saved as another netCDF file. </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> xarray <span class="hljs-keyword">as</span> xr</span><br><span class="line">filename = <span class="hljs-string">"./../wrfout_allBVOCs_d01_2018-06-01_00:00:00"</span></span><br><span class="line">df = xr.open_dataset(filename)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 1. add dims</span></span><br><span class="line">df = df.assign_coords(south_north=(<span class="hljs-string">'south_north'</span>,df.XLAT[<span class="hljs-number">0</span>,:,<span class="hljs-number">0</span>].values))</span><br><span class="line">df = df.assign_coords(west_east=(<span class="hljs-string">'west_east'</span>,df.XLONG[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,:].values))</span><br><span class="line">df = df.assign_coords(Time=(<span class="hljs-string">'Time'</span>,df.XTIME.values))</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 2. selcting the grids with lon in the range of 100-120，lat in the range of 40-50 in the bottom vertical level. The simulation period was chosen in the range of 2018-06-01 to 2018-06-05</span></span><br><span class="line">da = df.sel(bottom_top = <span class="hljs-built_in">slice</span>(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>), south_north = <span class="hljs-built_in">slice</span>(<span class="hljs-number">40</span>,<span class="hljs-number">50</span>),west_east = <span class="hljs-built_in">slice</span>(<span class="hljs-number">100</span>,<span class="hljs-number">120</span>), Time = <span class="hljs-built_in">slice</span>(<span class="hljs-string">'2018-06-01T00:00:00.000000000'</span>,\</span><br><span class="line">                                                                                                        <span class="hljs-string">'2018-06-08T00:00:00.000000000'</span>))</span><br><span class="line"><span class="hljs-comment"># 3. selecting one/multi variable(s)</span></span><br><span class="line">var      = <span class="hljs-string">'PM2_5_DRY'</span> </span><br><span class="line">var_list = [<span class="hljs-string">'asoa1j'</span>,<span class="hljs-string">'asoa1i'</span>,<span class="hljs-string">'asoa2j'</span>,<span class="hljs-string">'asoa2i'</span>]</span><br><span class="line"><span class="hljs-comment"># 3.1 Summarizing multiple variables</span></span><br><span class="line">da[<span class="hljs-string">'SUM'</span>]  = <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> var_list:</span><br><span class="line">    da[<span class="hljs-string">'SUM'</span>] = da[<span class="hljs-string">'SUM'</span>]+da[c]</span><br><span class="line">    </span><br><span class="line"><span class="hljs-comment"># 4. Calculating the diurnal averages</span></span><br><span class="line">dm  = da[<span class="hljs-string">"SUM"</span>].groupby(<span class="hljs-string">'Time.hour'</span>).mean()</span><br><span class="line">dm.to_netcdf(<span class="hljs-string">"diurnal.nc"</span>)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">import xarray as xr
+filename = "./../wrfout_allBVOCs_d01_2018-06-01_00:00:00"
+df = xr.open_dataset(filename)
+
+# 1. add dims
+df = df.assign_coords(south_north=('south_north',df.XLAT[0,:,0].values))
+df = df.assign_coords(west_east=('west_east',df.XLONG[0,0,:].values))
+df = df.assign_coords(Time=('Time',df.XTIME.values))
+
+# 2. selcting the grids with lon in the range of 100-120，lat in the range of 40-50 in the bottom vertical level. The simulation period was chosen in the range of 2018-06-01 to 2018-06-05
+da = df.sel(bottom_top = slice(0,1), south_north = slice(40,50),west_east = slice(100,120), Time = slice('2018-06-01T00:00:00.000000000',\
+                                                                                                        '2018-06-08T00:00:00.000000000'))
+# 3. selecting one/multi variable(s)
+var      = 'PM2_5_DRY' 
+var_list = ['asoa1j','asoa1i','asoa2j','asoa2i']
+# 3.1 Summarizing multiple variables
+da['SUM']  = 0
+for c in var_list:
+    da['SUM'] = da['SUM']+da[c]
+    
+# 4. Calculating the diurnal averages
+dm  = da["SUM"].groupby('Time.hour').mean()
+dm.to_netcdf("diurnal.nc")
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h1 id="2-Rolling-window"><a href="#2-Rolling-window" class="headerlink" title="2. Rolling window"></a>2. Rolling window</h1><p>In the second example, we use resample trick to group the original data, and use rolling trick to calculate the daily maximum of 8-hour ozone concentrations.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">da[<span class="hljs-string">'8h_o3_averege'</span>] = da[<span class="hljs-string">'o3'</span>].rolling(Time=<span class="hljs-number">8</span>, center=<span class="hljs-literal">False</span>).mean() <span class="hljs-comment"># center = False-&gt;time=end point of the rolling window.</span></span><br><span class="line">dt = da[<span class="hljs-string">'8h_o3_averege'</span>].resample(Time =<span class="hljs-string">'1D'</span>).<span class="hljs-built_in">max</span>()</span><br><span class="line">dt.to_netcdf(<span class="hljs-string">"./8h_o3_max.nc"</span>)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">da['8h_o3_averege'] = da['o3'].rolling(Time=8, center=False).mean() # center = False-&gt;time=end point of the rolling window.
+dt = da['8h_o3_averege'].resample(Time ='1D').max()
+dt.to_netcdf("./8h_o3_max.nc")<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 </body></html>
     
@@ -207,7 +232,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -346,7 +371,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -359,10 +384,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

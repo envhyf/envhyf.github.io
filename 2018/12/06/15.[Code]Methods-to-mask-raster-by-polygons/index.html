@@ -118,7 +118,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -159,7 +159,7 @@
         <span class="column is-narrow">
             
             
-            5 分钟 read (About 758 words)
+            5 分钟 de lectura (Alrededor de 758 palabras)
         </span>
         
     </div>
@@ -172,30 +172,126 @@
 </ul>
 <span id="more"></span>
 
-<h2 id="1-Geopandas"><a href="#1-Geopandas" class="headerlink" title="1. Geopandas"></a>1. Geopandas</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># referencing https://stackoverflow.com/questions/47781496/python-using-polygons-to-create-a-mask-on-a-given-2d-grid</span></span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> iris</span><br><span class="line"><span class="hljs-keyword">import</span> geopandas <span class="hljs-keyword">as</span> gpd</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># reading the mask shapefile</span></span><br><span class="line">fname = <span class="hljs-string">r'xxx/china.shp'</span></span><br><span class="line">cn =gpd.read_file(fname)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># four corners</span></span><br><span class="line">x0,x1 = cn.bounds[<span class="hljs-string">'minx'</span>].values,cn.bounds[<span class="hljs-string">'maxx'</span>].values</span><br><span class="line">y0,y1 = cn.bounds[<span class="hljs-string">'miny'</span>].values,cn.bounds[<span class="hljs-string">'maxy'</span>].values</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># the map background function</span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">back_main_clean</span>(<span class="hljs-params">fig,extent</span>):</span><br><span class="line">    ax = fig.add_subplot(<span class="hljs-number">111</span>, projection=ccrs.PlateCarree())</span><br><span class="line">    ax.set_extent(extents=extent, crs=ccrs.Geodetic())</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> ax.spines.itervalues():</span><br><span class="line">        i.set_linewidth(<span class="hljs-number">0.01</span>)</span><br><span class="line">    fname = <span class="hljs-string">r'xxx/china_provinces.shp'</span></span><br><span class="line">    shape_feature = ShapelyFeature(Reader(fname).geometries(), ccrs.PlateCarree(),facecolor=<span class="hljs-string">'#FFFFFF'</span>, linestyle=<span class="hljs-string">'--'</span>,edgecolor =<span class="hljs-string">'k'</span>, linewidth = <span class="hljs-number">0.25</span>, alpha =<span class="hljs-number">1</span>)</span><br><span class="line">    ax.add_feature(shape_feature, zorder =<span class="hljs-number">3</span>)   </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># initializing the raster data</span></span><br><span class="line">x  = np.linspace(x0,x1,<span class="hljs-number">30</span>)</span><br><span class="line">y  = np.linspace(y0,y1,<span class="hljs-number">20</span>)</span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">5</span>))</span><br><span class="line">ax = back_main_clean(fig, extent)</span><br><span class="line">xx,yy = np.meshgrid(x,y)</span><br><span class="line">zz = np.random.random((<span class="hljs-built_in">len</span>(x),<span class="hljs-built_in">len</span>(y)))</span><br><span class="line">plt.scatter(xx.reshape(-<span class="hljs-number">1</span>),yy.reshape(-<span class="hljs-number">1</span>),zorder =<span class="hljs-number">4</span>,transform=ccrs.PlateCarree(), c=zz.reshape(-<span class="hljs-number">1</span>),s=<span class="hljs-number">8</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-Geopandas"><a href="#1-Geopandas" class="headerlink" title="1. Geopandas"></a>1. Geopandas</h2><pre class="line-numbers language-python" data-language="python"><code class="language-python"># referencing https://stackoverflow.com/questions/47781496/python-using-polygons-to-create-a-mask-on-a-given-2d-grid
+import numpy as np
+import iris
+import geopandas as gpd
+
+# reading the mask shapefile
+fname = r'xxx/china.shp'
+cn =gpd.read_file(fname)
+
+# four corners
+x0,x1 = cn.bounds['minx'].values,cn.bounds['maxx'].values
+y0,y1 = cn.bounds['miny'].values,cn.bounds['maxy'].values
+
+# the map background function
+def back_main_clean(fig,extent):
+    ax = fig.add_subplot(111, projection=ccrs.PlateCarree())
+    ax.set_extent(extents=extent, crs=ccrs.Geodetic())
+    for i in ax.spines.itervalues():
+        i.set_linewidth(0.01)
+    fname = r'xxx/china_provinces.shp'
+    shape_feature = ShapelyFeature(Reader(fname).geometries(), ccrs.PlateCarree(),facecolor='#FFFFFF', linestyle='--',edgecolor ='k', linewidth = 0.25, alpha =1)
+    ax.add_feature(shape_feature, zorder =3)   
+
+# initializing the raster data
+x  = np.linspace(x0,x1,30)
+y  = np.linspace(y0,y1,20)
+fig = plt.figure(figsize=(8, 5))
+ax = back_main_clean(fig, extent)
+xx,yy = np.meshgrid(x,y)
+zz = np.random.random((len(x),len(y)))
+plt.scatter(xx.reshape(-1),yy.reshape(-1),zorder =4,transform=ccrs.PlateCarree(), c=zz.reshape(-1),s=8)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="https://s1.ax1x.com/2018/12/06/F1SOK0.png" alt="F1SOK0.png"></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># creating the mask array and counting the processing time</span></span><br><span class="line"><span class="hljs-keyword">import</span> time</span><br><span class="line">start = time.time()</span><br><span class="line">lon2 = xx.reshape(-<span class="hljs-number">1</span>)</span><br><span class="line">lat2 = yy.reshape(-<span class="hljs-number">1</span>)</span><br><span class="line">mask = []</span><br><span class="line"><span class="hljs-keyword">for</span> lat, lon <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(lat2, lon2):</span><br><span class="line">    this_point = gpd.geoseries.Point(lon,lat)</span><br><span class="line">    res = cn.contains(this_point)</span><br><span class="line">    mask.append(res.values[<span class="hljs-number">0</span>])</span><br><span class="line">mask = np.array(mask)</span><br><span class="line">mask= mask.reshape(<span class="hljs-built_in">len</span>(y),<span class="hljs-built_in">len</span>(x))</span><br><span class="line"><span class="hljs-built_in">print</span> <span class="hljs-string">"Process time: "</span> + <span class="hljs-built_in">str</span>(time.time() - start)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"># creating the mask array and counting the processing time
+import time
+start = time.time()
+lon2 = xx.reshape(-1)
+lat2 = yy.reshape(-1)
+mask = []
+for lat, lon in zip(lat2, lon2):
+    this_point = gpd.geoseries.Point(lon,lat)
+    res = cn.contains(this_point)
+    mask.append(res.values[0])
+mask = np.array(mask)
+mask= mask.reshape(len(y),len(x))
+print "Process time: " + str(time.time() - start)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><strong>Process time: 5.11 Seconds</strong></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># plotting the raster data extracted by China</span></span><br><span class="line">zz_mask = np.ma.masked_array(zz,mask) <span class="hljs-comment"># noted that ~mask can simply transform to clip function.</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">5</span>))</span><br><span class="line">ax = back_main_clean(fig, extent)</span><br><span class="line">xx,yy = np.meshgrid(x,y)</span><br><span class="line">zz = np.random.random((<span class="hljs-built_in">len</span>(x),<span class="hljs-built_in">len</span>(y)))</span><br><span class="line">plt.scatter(xx.reshape(-<span class="hljs-number">1</span>),yy.reshape(-<span class="hljs-number">1</span>),zorder =<span class="hljs-number">4</span>,transform=ccrs.PlateCarree(), c=zz_mask.reshape(-<span class="hljs-number">1</span>),s=<span class="hljs-number">8</span>)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"># plotting the raster data extracted by China
+zz_mask = np.ma.masked_array(zz,mask) # noted that ~mask can simply transform to clip function.
+fig = plt.figure(figsize=(8, 5))
+ax = back_main_clean(fig, extent)
+xx,yy = np.meshgrid(x,y)
+zz = np.random.random((len(x),len(y)))
+plt.scatter(xx.reshape(-1),yy.reshape(-1),zorder =4,transform=ccrs.PlateCarree(), c=zz_mask.reshape(-1),s=8)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="https://s1.ax1x.com/2018/12/06/F1p9PJ.png" alt="F1p9PJ.png"></p>
-<h2 id="2-shapely-vectorized"><a href="#2-shapely-vectorized" class="headerlink" title="2. shapely.vectorized"></a>2. shapely.vectorized</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># referencing https://gist.github.com/pelson/9785576</span></span><br><span class="line"><span class="hljs-keyword">import</span> fiona</span><br><span class="line"><span class="hljs-keyword">import</span> shapely.vectorized</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> shape</span><br><span class="line">fname = <span class="hljs-string">r'xxx/china.shp'</span></span><br><span class="line">cn_area = fiona.<span class="hljs-built_in">open</span>(fname)</span><br><span class="line">pol = cn_area.<span class="hljs-built_in">next</span>()</span><br><span class="line">geom = shape(pol[<span class="hljs-string">'geometry'</span>])</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## four corner </span></span><br><span class="line">x0,x1 = geom.bounds[<span class="hljs-number">0</span>],geom.bounds[<span class="hljs-number">2</span>]</span><br><span class="line">y0,y1 = geom.bounds[<span class="hljs-number">1</span>],geom.bounds[<span class="hljs-number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">## creating the mask array</span></span><br><span class="line"></span><br><span class="line">x  = np.linspace(x0,x1,<span class="hljs-number">30</span>)</span><br><span class="line">y  = np.linspace(y0,y1,<span class="hljs-number">20</span>)</span><br><span class="line">xx,yy = np.meshgrid(x,y)</span><br><span class="line"><span class="hljs-keyword">import</span> time</span><br><span class="line">start = time.time()</span><br><span class="line">mask_ = shapely.vectorized.contains(geom,  xx,yy)</span><br><span class="line"><span class="hljs-built_in">print</span> <span class="hljs-string">"Process time: "</span> + <span class="hljs-built_in">str</span>(time.time() - start)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="2-shapely-vectorized"><a href="#2-shapely-vectorized" class="headerlink" title="2. shapely.vectorized"></a>2. shapely.vectorized</h2><pre class="line-numbers language-python" data-language="python"><code class="language-python"># referencing https://gist.github.com/pelson/9785576
+import fiona
+import shapely.vectorized
+from shapely.geometry import shape
+fname = r'xxx/china.shp'
+cn_area = fiona.open(fname)
+pol = cn_area.next()
+geom = shape(pol['geometry'])
+
+## four corner 
+x0,x1 = geom.bounds[0],geom.bounds[2]
+y0,y1 = geom.bounds[1],geom.bounds[3]
+
+## creating the mask array
+
+x  = np.linspace(x0,x1,30)
+y  = np.linspace(y0,y1,20)
+xx,yy = np.meshgrid(x,y)
+import time
+start = time.time()
+mask_ = shapely.vectorized.contains(geom,  xx,yy)
+print "Process time: " + str(time.time() - start)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><strong>Process time: 0.01 Seconds</strong>  (huge advantage here)</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zz = np.random.random((<span class="hljs-built_in">len</span>(x),<span class="hljs-built_in">len</span>(y)))</span><br><span class="line">zz_mask = np.ma.masked_array(zz,~mask_)</span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">5</span>))</span><br><span class="line">ax = back_main_clean(fig, extent)</span><br><span class="line">xx,yy = np.meshgrid(x,y)</span><br><span class="line"><span class="hljs-comment"># zz = np.random.random((len(x),len(y)))</span></span><br><span class="line"><span class="hljs-comment"># plt.scatter(xx.reshape(-1),yy.reshape(-1),zorder =4,transform=ccrs.PlateCarree(),)</span></span><br><span class="line">plt.scatter(xx.reshape(-<span class="hljs-number">1</span>),yy.reshape(-<span class="hljs-number">1</span>),zorder =<span class="hljs-number">4</span>,transform=ccrs.PlateCarree(), c=zz_mask.reshape(-<span class="hljs-number">1</span>),s=<span class="hljs-number">5</span>)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">zz = np.random.random((len(x),len(y)))
+zz_mask = np.ma.masked_array(zz,~mask_)
+fig = plt.figure(figsize=(8, 5))
+ax = back_main_clean(fig, extent)
+xx,yy = np.meshgrid(x,y)
+# zz = np.random.random((len(x),len(y)))
+# plt.scatter(xx.reshape(-1),yy.reshape(-1),zorder =4,transform=ccrs.PlateCarree(),)
+plt.scatter(xx.reshape(-1),yy.reshape(-1),zorder =4,transform=ccrs.PlateCarree(), c=zz_mask.reshape(-1),s=5)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="https://s1.ax1x.com/2018/12/06/F1pyZT.png" alt="F1pyZT.png"></p>
-<h2 id="Some-additional-tips"><a href="#Some-additional-tips" class="headerlink" title="Some additional tips"></a>Some additional tips</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 1. the error during shapefile reading</span></span><br><span class="line"><span class="hljs-keyword">import</span> fiona</span><br><span class="line">cn_area = fiona.<span class="hljs-built_in">open</span>(<span class="hljs-string">'xxx.shp'</span>)</span><br><span class="line">&gt; Recode <span class="hljs-keyword">from</span> CP936 to UTF-<span class="hljs-number">8</span> <span class="hljs-keyword">not</span> supported, treated <span class="hljs-keyword">as</span> ISO8859-<span class="hljs-number">1</span> to UTF-<span class="hljs-number">8.</span></span><br><span class="line">cn_area = fiona.<span class="hljs-built_in">open</span>(<span class="hljs-string">'xxx.shp'</span>, encoding  =<span class="hljs-string">'utf-8'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Some-additional-tips"><a href="#Some-additional-tips" class="headerlink" title="Some additional tips"></a>Some additional tips</h2><pre class="line-numbers language-python" data-language="python"><code class="language-python"># 1. the error during shapefile reading
+import fiona
+cn_area = fiona.open('xxx.shp')
+&gt; Recode from CP936 to UTF-8 not supported, treated as ISO8859-1 to UTF-8.
+cn_area = fiona.open('xxx.shp', encoding  ='utf-8')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 2. select the polygon by attributes within geopandas module</span></span><br><span class="line">fname = <span class="hljs-string">r'xxx/china_provinces.shp'</span></span><br><span class="line">cn =gpd.read_file(fname, encoding =<span class="hljs-string">'utf-8'</span>)</span><br><span class="line">test_p = cn[cn[<span class="hljs-string">'NAME'</span>]==<span class="hljs-string">u'黑龙江'</span>]</span><br><span class="line">test_p.plot()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"># 2. select the polygon by attributes within geopandas module
+fname = r'xxx/china_provinces.shp'
+cn =gpd.read_file(fname, encoding ='utf-8')
+test_p = cn[cn['NAME']==u'黑龙江']
+test_p.plot()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="/images/15.Polygon_mask/Heilongjiang-0.png"></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 3. select the polygon by attributes within shapely module</span></span><br><span class="line"><span class="hljs-keyword">with</span> fiona.<span class="hljs-built_in">open</span>(fname, encoding=<span class="hljs-string">'utf-8'</span>) <span class="hljs-keyword">as</span> src:</span><br><span class="line">    filtered = <span class="hljs-built_in">filter</span>(<span class="hljs-keyword">lambda</span> f: f[<span class="hljs-string">'properties'</span>][<span class="hljs-string">'NAME'</span>]==<span class="hljs-string">u'黑龙江'</span>, src)</span><br><span class="line">pol = filtered[<span class="hljs-number">0</span>]<span class="hljs-comment">#.next()</span></span><br><span class="line">geom = shape(pol[<span class="hljs-string">'geometry'</span>])</span><br><span class="line">geom</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"># 3. select the polygon by attributes within shapely module
+with fiona.open(fname, encoding='utf-8') as src:
+    filtered = filter(lambda f: f['properties']['NAME']==u'黑龙江', src)
+pol = filtered[0]#.next()
+geom = shape(pol['geometry'])
+geom<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="/images/15.Polygon_mask/Heilongjiang.png"></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 4. select and output one polygon from multiple polygons by attributes</span></span><br><span class="line"><span class="hljs-keyword">import</span> fiona</span><br><span class="line"><span class="hljs-keyword">with</span> fiona.<span class="hljs-built_in">open</span>(fname, encoding=<span class="hljs-string">'utf-8'</span>) <span class="hljs-keyword">as</span> <span class="hljs-built_in">input</span>:</span><br><span class="line">    meta = <span class="hljs-built_in">input</span>.meta</span><br><span class="line">    <span class="hljs-keyword">with</span> fiona.<span class="hljs-built_in">open</span>(<span class="hljs-string">'test_heilongjiang.shp'</span>,<span class="hljs-string">'w'</span>,**meta) <span class="hljs-keyword">as</span> output:</span><br><span class="line">        <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> <span class="hljs-built_in">input</span>:</span><br><span class="line">            <span class="hljs-keyword">if</span> feature[<span class="hljs-string">'properties'</span>][<span class="hljs-string">'NAME'</span>]==<span class="hljs-string">u'黑龙江'</span>:</span><br><span class="line">                output.write(feature)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"># 4. select and output one polygon from multiple polygons by attributes
+import fiona
+with fiona.open(fname, encoding='utf-8') as input:
+    meta = input.meta
+    with fiona.open('test_heilongjiang.shp','w',**meta) as output:
+        for feature in input:
+            if feature['properties']['NAME']==u'黑龙江':
+                output.write(feature)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </body></html>
     
@@ -229,7 +325,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -368,7 +464,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -381,10 +477,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

@@ -114,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -155,7 +155,7 @@
         <span class="column is-narrow">
             
             
-            3 分钟 read (About 389 words)
+            3 分钟 de lectura (Alrededor de 389 palabras)
         </span>
         
     </div>
@@ -165,16 +165,52 @@
 <span id="more"></span>
 
 <p>First, let’s import the required packages.  </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> osgeo <span class="hljs-keyword">import</span> gdal </span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np </span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt </span><br><span class="line"><span class="hljs-keyword">import</span> elevation</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">from osgeo import gdal 
+import numpy as np 
+import matplotlib.pyplot as plt 
+import elevation
+%matplotlib inline<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Second, we download and read a sample data </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">!eio --product SRTM3 clip -o DEM.tif --bounds -<span class="hljs-number">122.4</span> <span class="hljs-number">41.2</span> -<span class="hljs-number">122.1</span> <span class="hljs-number">41.3</span></span><br><span class="line"><span class="hljs-keyword">from</span> osgeo <span class="hljs-keyword">import</span> gdal</span><br><span class="line">raster = gdal.Open(<span class="hljs-string">"./DEM.tif"</span>,  gdal.GA_ReadOnly)</span><br><span class="line">dem = raster.GetRasterBand(<span class="hljs-number">1</span>).ReadAsArray()</span><br><span class="line">dem = dem[::-<span class="hljs-number">1</span>]</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">!eio --product SRTM3 clip -o DEM.tif --bounds -122.4 41.2 -122.1 41.3
+from osgeo import gdal
+raster = gdal.Open("./DEM.tif",  gdal.GA_ReadOnly)
+dem = raster.GetRasterBand(1).ReadAsArray()
+dem = dem[::-1]
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Then we calculated the hillshade using the function I referenced from <a target="_blank" rel="noopener" href="http://geologyandpython.com/dem-processing.html">Download and Process DEMs in Python</a></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">hillshade</span>(<span class="hljs-params">array, azimuth, angle_altitude</span>):</span><br><span class="line">    <span class="hljs-comment"># Source: http://geoexamples.blogspot.com.br/2014/03/shaded-relief-images-using-gdal-python.html</span></span><br><span class="line">    x, y = np.gradient(array)</span><br><span class="line">    slope = np.pi/<span class="hljs-number">2.</span> - np.arctan(np.sqrt(x*x + y*y))</span><br><span class="line">    aspect = np.arctan2(-x, y)</span><br><span class="line">    azimuthrad = azimuth*np.pi / <span class="hljs-number">180.</span></span><br><span class="line">    altituderad = angle_altitude*np.pi / <span class="hljs-number">180.</span></span><br><span class="line">    shaded = np.sin(altituderad) * np.sin(slope) \</span><br><span class="line">     + np.cos(altituderad) * np.cos(slope) \</span><br><span class="line">     * np.cos(azimuthrad - aspect)</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">255</span>*(shaded + <span class="hljs-number">1</span>)/<span class="hljs-number">2</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">def hillshade(array, azimuth, angle_altitude):
+    # Source: http://geoexamples.blogspot.com.br/2014/03/shaded-relief-images-using-gdal-python.html
+    x, y = np.gradient(array)
+    slope = np.pi/2. - np.arctan(np.sqrt(x*x + y*y))
+    aspect = np.arctan2(-x, y)
+    azimuthrad = azimuth*np.pi / 180.
+    altituderad = angle_altitude*np.pi / 180.
+    shaded = np.sin(altituderad) * np.sin(slope) \
+     + np.cos(altituderad) * np.cos(slope) \
+     * np.cos(azimuthrad - aspect)
+    return 255*(shaded + 1)/2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Finally, we plotted three figures, one is the simple dem plot, the other two  are the topography overlayed by hillshade using different alpha. </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">12</span>, <span class="hljs-number">4</span>))</span><br><span class="line">extent =[-<span class="hljs-number">122.4</span> ,<span class="hljs-number">41.2</span>, -<span class="hljs-number">122.1</span>, <span class="hljs-number">41.3</span>]</span><br><span class="line">ax = fig.add_subplot(<span class="hljs-number">131</span>,projection=ccrs.Mercator())</span><br><span class="line">cax = ax.contourf(dem, np.arange(vmin, vmax, <span class="hljs-number">10</span>),extent=extent, </span><br><span class="line">                  cmap=terrain_cmap, vmin=vmin, vmax=vmax, origin=<span class="hljs-string">'image'</span>)</span><br><span class="line">plt.title(<span class="hljs-string">r'$Original$'</span>,fontsize =<span class="hljs-number">12</span>)</span><br><span class="line">ax = fig.add_subplot(<span class="hljs-number">132</span>,projection=ccrs.Mercator())</span><br><span class="line">ax.matshow(hillshade(dem, <span class="hljs-number">30</span>, <span class="hljs-number">30</span>), extent=extent, cmap=<span class="hljs-string">'Greys'</span>, alpha=<span class="hljs-number">.3</span>, zorder=<span class="hljs-number">10</span>)</span><br><span class="line"></span><br><span class="line">cax = ax.contourf(dem, np.arange(vmin, vmax, <span class="hljs-number">10</span>),extent=extent, </span><br><span class="line">                  cmap=terrain_cmap, vmin=vmin, vmax=vmax, origin=<span class="hljs-string">'image'</span>)</span><br><span class="line">plt.title(<span class="hljs-string">r'$\alpha=0.3$'</span>,fontsize =<span class="hljs-number">12</span>)</span><br><span class="line">ax = fig.add_subplot(<span class="hljs-number">133</span>,projection=ccrs.Mercator())</span><br><span class="line">ax.matshow(hillshade(dem, <span class="hljs-number">30</span>, <span class="hljs-number">30</span>), extent=extent, cmap=<span class="hljs-string">'Greys'</span>, alpha=<span class="hljs-number">.8</span>, zorder=<span class="hljs-number">10</span>)</span><br><span class="line">cax = ax.contourf(dem, np.arange(vmin, vmax, <span class="hljs-number">10</span>),extent=extent, </span><br><span class="line">                  cmap=terrain_cmap, vmin=vmin, vmax=vmax, origin=<span class="hljs-string">'image'</span>)</span><br><span class="line">plt.title(<span class="hljs-string">r'$\alpha=0.8$'</span>,fontsize =<span class="hljs-number">12</span>)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fig = plt.figure(figsize=(12, 4))
+extent =[-122.4 ,41.2, -122.1, 41.3]
+ax = fig.add_subplot(131,projection=ccrs.Mercator())
+cax = ax.contourf(dem, np.arange(vmin, vmax, 10),extent=extent, 
+                  cmap=terrain_cmap, vmin=vmin, vmax=vmax, origin='image')
+plt.title(r'$Original$',fontsize =12)
+ax = fig.add_subplot(132,projection=ccrs.Mercator())
+ax.matshow(hillshade(dem, 30, 30), extent=extent, cmap='Greys', alpha=.3, zorder=10)
+
+cax = ax.contourf(dem, np.arange(vmin, vmax, 10),extent=extent, 
+                  cmap=terrain_cmap, vmin=vmin, vmax=vmax, origin='image')
+plt.title(r'$\alpha=0.3$',fontsize =12)
+ax = fig.add_subplot(133,projection=ccrs.Mercator())
+ax.matshow(hillshade(dem, 30, 30), extent=extent, cmap='Greys', alpha=.8, zorder=10)
+cax = ax.contourf(dem, np.arange(vmin, vmax, 10),extent=extent, 
+                  cmap=terrain_cmap, vmin=vmin, vmax=vmax, origin='image')
+plt.title(r'$\alpha=0.8$',fontsize =12)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="/images/13.Hillshade/Fig.1.png"></p>
 <p><strong>References</strong></p>
@@ -213,7 +249,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -352,7 +388,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -365,10 +401,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

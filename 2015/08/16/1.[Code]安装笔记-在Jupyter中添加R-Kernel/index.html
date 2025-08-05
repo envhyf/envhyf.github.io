@@ -115,7 +115,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -156,7 +156,7 @@
         <span class="column is-narrow">
             
             
-            5 分钟 read (About 795 words)
+            5 分钟 de lectura (Alrededor de 795 palabras)
         </span>
         
     </div>
@@ -170,32 +170,48 @@
 <h3 id="STEP2-有关库的安装"><a href="#STEP2-有关库的安装" class="headerlink" title="STEP2 有关库的安装"></a>STEP2 有关库的安装</h3><p>主要工作是为R语言添加<a target="_blank" rel="noopener" href="https://github.com/IRkernel/IRkernel">IRkernal</a>这一新的Package, 以实现Jupyter对R语言的支持。主要的步骤如下(依照IRkernal的README文档)：</p>
 <span id="more"></span>
 
-<h4 id="R-console"><a href="#R-console" class="headerlink" title="R console"></a>R console</h4><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## 安装开发工具库</span></span><br><span class="line">install.packages<span class="hljs-punctuation">(</span><span class="hljs-string">"devtools"</span><span class="hljs-punctuation">)</span>  </span><br><span class="line"><span class="hljs-comment">## 调用RCurl，可通过github下载有关文件</span></span><br><span class="line">install.packages<span class="hljs-punctuation">(</span><span class="hljs-string">'RCurl'</span><span class="hljs-punctuation">)</span></span><br><span class="line">library<span class="hljs-punctuation">(</span>devtools<span class="hljs-punctuation">)</span></span><br><span class="line">install_github<span class="hljs-punctuation">(</span><span class="hljs-string">'armstrtw/rzmq'</span><span class="hljs-punctuation">)</span></span><br><span class="line">install_github<span class="hljs-punctuation">(</span><span class="hljs-string">"takluyver/IRdisplay"</span><span class="hljs-punctuation">)</span></span><br><span class="line">install_github<span class="hljs-punctuation">(</span><span class="hljs-string">"takluyver/IRkernel"</span><span class="hljs-punctuation">)</span></span><br><span class="line">IRkernel<span class="hljs-operator">::</span>installspec<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+<h4 id="R-console"><a href="#R-console" class="headerlink" title="R console"></a>R console</h4><pre class="line-numbers language-R" data-language="R"><code class="language-R">## 安装开发工具库
+install.packages("devtools")  
+## 调用RCurl，可通过github下载有关文件
+install.packages('RCurl')
+library(devtools)
+install_github('armstrtw/rzmq')
+install_github("takluyver/IRdisplay")
+install_github("takluyver/IRkernel")
+IRkernel::installspec()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <p>在安装rzmq时出现问题，导致后续步骤无法进行。<br>参考网络资源，改用brew工具进行安装   </p>
-<h4 id="Terminal"><a href="#Terminal" class="headerlink" title="Terminal"></a>Terminal</h4><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install zmq </span><br></pre></td></tr></tbody></table></figure>
+<h4 id="Terminal"><a href="#Terminal" class="headerlink" title="Terminal"></a>Terminal</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ brew install zmq <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>下载成功但未能安装，利用<code>brew doctor</code>进行诊断         </p>
 <p>结果显示，显示<br><code>/usr/local/lib/pkgconfig is not writable.</code>     </p>
 <p>首先考虑的是MacPort可能存在干扰，将其暂时移除     </p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mv</span> /opt/local /macports</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ sudo mv /opt/local /macports<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>pkgconfig进行重新安装关联</p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R `<span class="hljs-built_in">whoami</span>` /usr/local/lib/pkgconfig</span><br><span class="line">$ brew uninstall pkgconfig  </span><br><span class="line">$ brew install pkgconfig    </span><br><span class="line">$ brew <span class="hljs-built_in">unlink</span> pkg-config &amp;&amp; brew <span class="hljs-built_in">link</span> pkg-config </span><br><span class="line">$ brew <span class="hljs-built_in">link</span> zmq </span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ sudo chown -R `whoami` /usr/local/lib/pkgconfig
+$ brew uninstall pkgconfig  
+$ brew install pkgconfig    
+$ brew unlink pkg-config &amp;&amp; brew link pkg-config 
+$ brew link zmq <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="回到R-Console"><a href="#回到R-Console" class="headerlink" title="回到R Console"></a>回到R Console</h4><figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">install_github<span class="hljs-punctuation">(</span><span class="hljs-string">"takluyver/IRdisplay"</span><span class="hljs-punctuation">)</span></span><br><span class="line">install_github<span class="hljs-punctuation">(</span><span class="hljs-string">"takluyver/IRkernel"</span><span class="hljs-punctuation">)</span></span><br><span class="line">IRkernel<span class="hljs-operator">::</span>installspec<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+<h4 id="回到R-Console"><a href="#回到R-Console" class="headerlink" title="回到R Console"></a>回到R Console</h4><pre class="line-numbers language-R" data-language="R"><code class="language-R">install_github("takluyver/IRdisplay")
+install_github("takluyver/IRkernel")
+IRkernel::installspec()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 <p>最后一个步骤再次出现问题：  </p>
-<figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error <span class="hljs-keyword">in</span> IRkernel<span class="hljs-operator">::</span>installspec<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-operator">:</span> </span><br><span class="line">Jupyter or IPython <span class="hljs-number">3.0</span> has to be installed but could neither run “jupyter” nor “ipython”<span class="hljs-punctuation">,</span> “ipython2” or “ipython3”.</span><br><span class="line"><span class="hljs-punctuation">(</span>Note that “ipython2” is just IPython <span class="hljs-keyword">for</span> Python <span class="hljs-number">2</span><span class="hljs-punctuation">,</span> but still may be IPython <span class="hljs-number">3.0</span><span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-R" data-language="R"><code class="language-R">Error in IRkernel::installspec(): 
+Jupyter or IPython 3.0 has to be installed but could neither run “jupyter” nor “ipython”, “ipython2” or “ipython3”.
+(Note that “ipython2” is just IPython for Python 2, but still may be IPython 3.0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>安装包的位置出现问题，解决方法如下：</p>
-<figure class="highlight r hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print<span class="hljs-punctuation">(</span>system.file<span class="hljs-punctuation">(</span><span class="hljs-string">"kernelspec"</span><span class="hljs-punctuation">,</span> package <span class="hljs-operator">=</span> <span class="hljs-string">"IRkernel"</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-R" data-language="R"><code class="language-R">print(system.file("kernelspec", package = "IRkernel"))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 <p>复制该命令的输出结果，我的结果是：<br><code>/Library/Frameworks/R.framework/Versions/3.2/Resources/library/IRkernel/kernelspec</code>)</p>
-<h4 id="再回到Terminal-够折腾的"><a href="#再回到Terminal-够折腾的" class="headerlink" title="再回到Terminal(够折腾的)"></a>再回到Terminal(够折腾的)</h4><figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipython kernelspec install --replace --name ir --user /Library/Frameworks/R.framework/Versions/3.2/Resources/library/IRkernel/kernelspec   </span><br></pre></td></tr></tbody></table></figure>
+<h4 id="再回到Terminal-够折腾的"><a href="#再回到Terminal-够折腾的" class="headerlink" title="再回到Terminal(够折腾的)"></a>再回到Terminal(够折腾的)</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ipython kernelspec install --replace --name ir --user /Library/Frameworks/R.framework/Versions/3.2/Resources/library/IRkernel/kernelspec   <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p><strong>指令中的路径改为个人的输出结果即可</strong>。</p>
 <h3 id="STEP3-检验"><a href="#STEP3-检验" class="headerlink" title="STEP3 检验"></a>STEP3 检验</h3><p>Terminal中键入<code>ipython notebook</code>或<code>jupyter notebook</code>或在Anaconda图形界面下就可以打开Jupyter的网页，如果出现下图的选项，就说明顺利完成了!</p>
@@ -204,7 +220,8 @@
 <p>jupyter-client has to be installed but “jupyter kernelspec –version” exited with code 127.</p>
 <p>此种情况，执行下述命令，可修复
 	</p>
-<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## 换成自己的用户名路径	</span></span><br><span class="line"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s /Users/HYF/anaconda/bin/jupyter /usr/bin/jupyter</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">## 换成自己的用户名路径	
+sudo ln -s /Users/HYF/anaconda/bin/jupyter /usr/bin/jupyter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
@@ -243,7 +260,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -382,7 +399,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -395,10 +412,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

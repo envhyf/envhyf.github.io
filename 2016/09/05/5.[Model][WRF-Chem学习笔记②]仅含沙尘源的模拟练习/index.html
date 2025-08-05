@@ -114,7 +114,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -155,7 +155,7 @@
         <span class="column is-narrow">
             
             
-            3 分钟 read (About 378 words)
+            3 分钟 de lectura (Alrededor de 378 palabras)
         </span>
         
     </div>
@@ -174,7 +174,22 @@
 <p>下文记录Exercise 1的流程和注意事项</p>
 <span id="more"></span>
 
-<h3 id="WPS运行"><a href="#WPS运行" class="headerlink" title=" WPS运行"></a><font color="grey"> WPS运行</font></h3><figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">-------</span><br><span class="line">cd /wrf/WPS/</span><br><span class="line">rm geogrid.log ungrib.log metgrid.log</span><br><span class="line">1. 地面静态资料数据生成</span><br><span class="line">cd geogrid</span><br><span class="line">ln -sf GEOGRID.TBL.ARW_CHEM GEOGRID.TBL</span><br><span class="line">cd ..</span><br><span class="line">./geoerid.exe</span><br><span class="line">-------</span><br><span class="line">2. 气象资料读取</span><br><span class="line">./link_grib.csh /disk2/data/ncep/fnl_2015071*</span><br><span class="line">./ungrib.exe &gt;&amp; ungrib.log</span><br><span class="line">-------</span><br><span class="line">3. 数据整合</span><br><span class="line">mpirun -np 8  metgrid.exe</span><br><span class="line">-------</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="WPS运行"><a href="#WPS运行" class="headerlink" title=" WPS运行"></a><font color="grey"> WPS运行</font></h3><pre class="line-numbers language-none"><code class="language-none">-------
+cd /wrf/WPS/
+rm geogrid.log ungrib.log metgrid.log
+1. 地面静态资料数据生成
+cd geogrid
+ln -sf GEOGRID.TBL.ARW_CHEM GEOGRID.TBL
+cd ..
+./geoerid.exe
+-------
+2. 气象资料读取
+./link_grib.csh /disk2/data/ncep/fnl_2015071*
+./ungrib.exe &gt;&amp; ungrib.log
+-------
+3. 数据整合
+mpirun -np 8  metgrid.exe
+-------<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>注意此处geogrid.exe输出结果会包含沙尘信息:</p>
 <pre><code>  Processing EROD  
@@ -182,7 +197,10 @@
   Processing SANDFRAC  
 </code></pre>
 <h3 id="WRF运行"><a href="#WRF运行" class="headerlink" title=" WRF运行"></a><font color="green"> WRF运行</font></h3><p>在<code>WRFV3/test</code>文件夹下复制<code>em_real</code>文件夹，新建<code>tutor</code>文件夹。此处主要进行WRF运行过程中边界场和初始场文件的生成，<strong>chem_opt</strong>(化学选项) = 401， 表示仅考虑沙尘。</p>
-<figure class="highlight plaintext hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">链接WPS的输出结果</span><br><span class="line">ln -svf /disk2/hyf</span><br><span class="line">mpirun -np 16 ./real.exe</span><br><span class="line">mpirun -np 16 ./wrf.exe  </span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">链接WPS的输出结果
+ln -svf /disk2/hyf
+mpirun -np 16 ./real.exe
+mpirun -np 16 ./wrf.exe  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>成功运行，会在<code>rsl.out.xxxx</code>出现 __wrf: SUCCESS COMPLETE WRF__字段。</p>
 <h3 id="绘制输出结果"><a href="#绘制输出结果" class="headerlink" title=" 绘制输出结果"></a><font color="orange"> 绘制输出结果</font></h3><p>利用Python对输出文件进行读取和绘制图像，如下图中的温度:  </p>
 <p><a target="_blank" rel="noopener" href="http://i.stack.imgur.com/8ozjq.png"><img src="http://i.stack.imgur.com/8ozjq.png" alt="enter image description here"></a></p>
@@ -220,7 +238,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -359,7 +377,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -372,10 +390,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

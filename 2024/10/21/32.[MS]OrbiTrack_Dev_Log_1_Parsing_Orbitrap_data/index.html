@@ -116,7 +116,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -157,7 +157,7 @@
         <span class="column is-narrow">
             
             
-            9 分钟 read (About 1420 words)
+            9 分钟 de lectura (Alrededor de 1420 palabras)
         </span>
         
     </div>
@@ -179,19 +179,190 @@
 </ol>
 <p>Feedback and suggestions are highly welcome. Feel free to leave a comment below or contact me via email.</p>
 <p>In this first post, I will introduce Part 1: loading Orbitrap raw MS1 data by user-defined time period.</p>
-<h2 id="Raw-data-reading"><a href="#Raw-data-reading" class="headerlink" title="Raw data reading"></a>Raw data reading</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">## Module 1. MS reading  </span></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">get_last_retention_time</span>(<span class="hljs-params">file_path</span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Function to read a file and extract the last retention time.</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    Args:</span></span><br><span class="line"><span class="hljs-string">    - file_path (str): Path to the file.</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    Returns:</span></span><br><span class="line"><span class="hljs-string">    - last_retention_time (float): The last retention time found in the file.</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    last_retention_time = <span class="hljs-literal">None</span>  <span class="hljs-comment"># Initialize as None</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">'r'</span>) <span class="hljs-keyword">as</span> f:</span><br><span class="line">        <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> f:</span><br><span class="line">            <span class="hljs-keyword">if</span> line.startswith(<span class="hljs-string">"I"</span>):  <span class="hljs-comment"># Look for the lines with retention time info</span></span><br><span class="line">                parts = line.strip().split(<span class="hljs-string">'\t'</span>)[<span class="hljs-number">1</span>:]</span><br><span class="line">                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(parts) == <span class="hljs-number">2</span>:</span><br><span class="line">                    key, value = parts</span><br><span class="line">                    <span class="hljs-keyword">if</span> key == <span class="hljs-string">"RetTime"</span>:</span><br><span class="line">                        last_retention_time = <span class="hljs-built_in">float</span>(value)  <span class="hljs-comment"># Update with the latest retention time</span></span><br><span class="line">    <span class="hljs-keyword">return</span> last_retention_time</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">get_retention_time_indices</span>(<span class="hljs-params">file_path, start_retention_time, end_retention_time</span>):</span><br><span class="line">    retention_time_indices = []</span><br><span class="line">    current_segment_index = -<span class="hljs-number">1</span>  <span class="hljs-comment"># Initialize segment index</span></span><br><span class="line">    retention_time_value = []</span><br><span class="line">    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">'r'</span>) <span class="hljs-keyword">as</span> f:</span><br><span class="line">        <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> f:</span><br><span class="line">            <span class="hljs-keyword">if</span> line.startswith(<span class="hljs-string">"S"</span>):  <span class="hljs-comment"># Check for segment start</span></span><br><span class="line">                current_segment_index += <span class="hljs-number">1</span>  <span class="hljs-comment"># Increment segment index</span></span><br><span class="line">            <span class="hljs-keyword">elif</span> line.startswith(<span class="hljs-string">"I"</span>):</span><br><span class="line">                parts = line.strip().split(<span class="hljs-string">'\t'</span>)[<span class="hljs-number">1</span>:]</span><br><span class="line">                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(parts) == <span class="hljs-number">2</span>:</span><br><span class="line">                    key, value = parts</span><br><span class="line">                    </span><br><span class="line">                    <span class="hljs-keyword">if</span> key == <span class="hljs-string">"RetTime"</span>:</span><br><span class="line">                        retention_time = <span class="hljs-built_in">float</span>(value)</span><br><span class="line">                        <span class="hljs-keyword">if</span> start_retention_time &lt;= retention_time &lt;= end_retention_time:</span><br><span class="line">                            retention_time_indices.append(current_segment_index)</span><br><span class="line">                            retention_time_value.append(retention_time)</span><br><span class="line">    <span class="hljs-keyword">return</span> retention_time_indices,retention_time_value</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">read_ms1_segments_between_retention_times</span>(<span class="hljs-params">file_path, retention_time_indices</span>):</span><br><span class="line">    segments = []</span><br><span class="line">    current_segment = []</span><br><span class="line">    current_segment_index = -<span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">'r'</span>) <span class="hljs-keyword">as</span> f:</span><br><span class="line">        <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> f:</span><br><span class="line">            <span class="hljs-keyword">if</span> line.startswith(<span class="hljs-string">"S"</span>):</span><br><span class="line">                current_segment_index += <span class="hljs-number">1</span></span><br><span class="line">                <span class="hljs-keyword">if</span> current_segment_index <span class="hljs-keyword">in</span> retention_time_indices:</span><br><span class="line">                    <span class="hljs-keyword">if</span> current_segment:</span><br><span class="line">                        segments.append(current_segment)</span><br><span class="line">                        current_segment = []</span><br><span class="line">            <span class="hljs-keyword">elif</span> line.strip() <span class="hljs-keyword">and</span> current_segment_index <span class="hljs-keyword">in</span> retention_time_indices:</span><br><span class="line">                current_segment.append(line.strip().split())</span><br><span class="line">    <span class="hljs-keyword">if</span> current_segment:</span><br><span class="line">        segments.append(current_segment)</span><br><span class="line">    <span class="hljs-keyword">return</span> segments</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">save_segments_as_dataframes</span>(<span class="hljs-params">segments,thres</span>):</span><br><span class="line">    dataframes = []</span><br><span class="line">    <span class="hljs-keyword">for</span> idx, segment <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(segments):</span><br><span class="line">        retention_time = <span class="hljs-built_in">float</span>(segment[<span class="hljs-number">0</span>][<span class="hljs-number">2</span>])</span><br><span class="line">        df = pd.DataFrame(segment[<span class="hljs-number">3</span>:], columns=[<span class="hljs-string">"m/z"</span>, <span class="hljs-string">"intensity"</span>, <span class="hljs-string">"unknown1"</span>, <span class="hljs-string">"unknown2"</span>])</span><br><span class="line">        <span class="hljs-comment"># Convert columns to numeric (excluding the first two columns)</span></span><br><span class="line">        df.iloc[:, <span class="hljs-number">2</span>:] = df.iloc[:, <span class="hljs-number">2</span>:].apply(pd.to_numeric)</span><br><span class="line">        <span class="hljs-comment"># Keep only the first two columns</span></span><br><span class="line">        df = df.iloc[:, :<span class="hljs-number">2</span>]</span><br><span class="line">        df[<span class="hljs-string">'m/z'</span>] = df[<span class="hljs-string">'m/z'</span>].astype(<span class="hljs-built_in">float</span>)</span><br><span class="line">        df[<span class="hljs-string">'intensity'</span>] = df[<span class="hljs-string">'intensity'</span>].astype(<span class="hljs-built_in">float</span>)</span><br><span class="line">        df = df[df[<span class="hljs-string">'intensity'</span>]&gt;thres]</span><br><span class="line">        df = df.reset_index(drop = <span class="hljs-literal">True</span>)</span><br><span class="line">        df[<span class="hljs-string">'rt'</span>] = retention_time</span><br><span class="line">        <span class="hljs-comment"># Save the DataFrame</span></span><br><span class="line">        dataframes.append(df)</span><br><span class="line">    <span class="hljs-keyword">return</span> dataframes</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">merge_segments</span>(<span class="hljs-params">dataframes</span>):</span><br><span class="line">    merged_df = pd.concat(dataframes, ignore_index=<span class="hljs-literal">True</span>)</span><br><span class="line">    <span class="hljs-keyword">return</span> merged_df</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Raw-data-reading"><a href="#Raw-data-reading" class="headerlink" title="Raw data reading"></a>Raw data reading</h2><pre class="line-numbers language-python" data-language="python"><code class="language-python">## Module 1. MS reading  
+def get_last_retention_time(file_path):
+    """
+    Function to read a file and extract the last retention time.
+
+    Args:
+    - file_path (str): Path to the file.
+
+    Returns:
+    - last_retention_time (float): The last retention time found in the file.
+    """
+    last_retention_time = None  # Initialize as None
+    
+    with open(file_path, 'r') as f:
+        for line in f:
+            if line.startswith("I"):  # Look for the lines with retention time info
+                parts = line.strip().split('\t')[1:]
+                if len(parts) == 2:
+                    key, value = parts
+                    if key == "RetTime":
+                        last_retention_time = float(value)  # Update with the latest retention time
+    return last_retention_time
+
+def get_retention_time_indices(file_path, start_retention_time, end_retention_time):
+    retention_time_indices = []
+    current_segment_index = -1  # Initialize segment index
+    retention_time_value = []
+    with open(file_path, 'r') as f:
+        for line in f:
+            if line.startswith("S"):  # Check for segment start
+                current_segment_index += 1  # Increment segment index
+            elif line.startswith("I"):
+                parts = line.strip().split('\t')[1:]
+                if len(parts) == 2:
+                    key, value = parts
+                    
+                    if key == "RetTime":
+                        retention_time = float(value)
+                        if start_retention_time &lt;= retention_time &lt;= end_retention_time:
+                            retention_time_indices.append(current_segment_index)
+                            retention_time_value.append(retention_time)
+    return retention_time_indices,retention_time_value
+
+def read_ms1_segments_between_retention_times(file_path, retention_time_indices):
+    segments = []
+    current_segment = []
+    current_segment_index = -1
+    with open(file_path, 'r') as f:
+        for line in f:
+            if line.startswith("S"):
+                current_segment_index += 1
+                if current_segment_index in retention_time_indices:
+                    if current_segment:
+                        segments.append(current_segment)
+                        current_segment = []
+            elif line.strip() and current_segment_index in retention_time_indices:
+                current_segment.append(line.strip().split())
+    if current_segment:
+        segments.append(current_segment)
+    return segments
+
+def save_segments_as_dataframes(segments,thres):
+    dataframes = []
+    for idx, segment in enumerate(segments):
+        retention_time = float(segment[0][2])
+        df = pd.DataFrame(segment[3:], columns=["m/z", "intensity", "unknown1", "unknown2"])
+        # Convert columns to numeric (excluding the first two columns)
+        df.iloc[:, 2:] = df.iloc[:, 2:].apply(pd.to_numeric)
+        # Keep only the first two columns
+        df = df.iloc[:, :2]
+        df['m/z'] = df['m/z'].astype(float)
+        df['intensity'] = df['intensity'].astype(float)
+        df = df[df['intensity']&gt;thres]
+        df = df.reset_index(drop = True)
+        df['rt'] = retention_time
+        # Save the DataFrame
+        dataframes.append(df)
+    return dataframes
+
+def merge_segments(dataframes):
+    merged_df = pd.concat(dataframes, ignore_index=True)
+    return merged_df<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="2-Data-input"><a href="#2-Data-input" class="headerlink" title="2. Data input"></a>2. Data input</h2><p>For TOF peak list fitting, we incorporate the raw TOF spectrum output from Tofware. This dataset is used to:</p>
 <ul>
 <li>Evaluate the fitting accuracy of Orbitrap-assigned ions, and  </li>
 <li>Supplement ions that may be missing or undetectable in Orbitrap.</li>
 </ul>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># ========== 1. INPUT FILE ==========</span></span><br><span class="line">file_path = <span class="hljs-string">"./../../../../../Africa/Angola/Data/Raw/Orbitrap/Angola_mixed_samples_20250620020218.ms1"</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 2. Orbitrap Real Time Series ==========</span></span><br><span class="line">end_time = <span class="hljs-string">'2025-06-20 16:40:00'</span>  <span class="hljs-comment"># Define end time for the time series</span></span><br><span class="line">start_time = pd.to_datetime(end_time) - pd.Timedelta(minutes=get_last_retention_time(file_path))  <span class="hljs-comment"># Calculate start time based on the file retention time</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 3. Pre-filtering Threshold for Noisy Ions ==========</span></span><br><span class="line">pre_filtering_threshold = <span class="hljs-number">1000</span>  <span class="hljs-comment"># Default threshold set to 1000 to filter out noisy ions</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 4. Processing Mode Selection ==========</span></span><br><span class="line"><span class="hljs-comment"># Options: "full_ts" for full time series or "subset" for a specific peak list subset</span></span><br><span class="line"><span class="hljs-comment"># mode = 'full_ts'  # Use full time series mode</span></span><br><span class="line"><span class="hljs-comment"># start_retention_time, end_retention_time = 0, get_last_retention_time(file_path)  # Set for full time series</span></span><br><span class="line">mode = <span class="hljs-string">'sub_set'</span></span><br><span class="line">start_retention_time, end_retention_time = <span class="hljs-number">3.51</span>, <span class="hljs-number">13</span><span class="hljs-comment">#get_last_retention_time(file_path) # Define subset range (retention times of the place we are interested)</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 5. Parameters for M/Z Calibration ==========</span></span><br><span class="line">ideal_calibrants_mass = [</span><br><span class="line">    <span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>, <span class="hljs-number">108.9638</span>, <span class="hljs-number">166.9163</span></span><br><span class="line">]  <span class="hljs-comment"># 5 calibrants for m/z calibration</span></span><br><span class="line"></span><br><span class="line">calibration_tolerance_ppm = <span class="hljs-number">20</span>  <span class="hljs-comment"># Set calibration tolerance to 20 ppm</span></span><br><span class="line">overlapped_scan_option = <span class="hljs-number">1</span>  <span class="hljs-comment"># Handle overlapping regions in neighboring segment scans (1 to enable handling)</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 6. Parameters for Filtering and Clustering ==========</span></span><br><span class="line"><span class="hljs-comment"># Pre-filtering based on "Air-beam" (Na2I range)</span></span><br><span class="line">Na2I_lower_bound, Na2I_upper_bound = <span class="hljs-number">0</span>, <span class="hljs-number">50</span> * <span class="hljs-number">1E6</span>  <span class="hljs-comment"># Filter to remove bad air-beam ions</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Data size threshold for KDE clustering chunk</span></span><br><span class="line">data_size_threshold = <span class="hljs-number">500</span>  <span class="hljs-comment"># Minimum data size for performing KDE clustering</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># KDE Parameters (for clustering noisy ions)</span></span><br><span class="line">kde_bandwidth = <span class="hljs-number">0.0005</span>  <span class="hljs-comment"># KDE bandwidth for peak density estimation</span></span><br><span class="line">kde_percentile = <span class="hljs-number">5</span>  <span class="hljs-comment"># Remove ions below the 5th percentile of density score (to filter out rare/noisy ions)</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># DBSCAN Clustering Parameters</span></span><br><span class="line">eps_value = <span class="hljs-number">0.5</span>  <span class="hljs-comment"># Epsilon value for DBSCAN (maximum clustering distance in ppm)</span></span><br><span class="line">clustering_thre = <span class="hljs-number">0.025</span>  <span class="hljs-comment"># Retain clusters appearing more than 2.5% of Na2I showing frequency</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 7. EESI-TOF reference ==========</span></span><br><span class="line"><span class="hljs-comment"># tof_spectrum            = pd.read_excel("./../Input/EESI-TOF_reference/EESI_LTOF_raw_curve_Punjab.xlsx")</span></span><br><span class="line"><span class="hljs-comment"># tof_add_ion_threshold   = 50 # 50 ppm means there is no Orbitrap ions within 50 ppm window of a EESI-TOF identifed peak apex</span></span><br><span class="line"><span class="hljs-comment"># inorganic_ion_file      = './../Input/EESI-TOF_reference/EESI_TOF_common_inorganic_ions.csv'</span></span><br><span class="line"><span class="hljs-comment"># tof_peak_list_template  = './../Input/EESI-TOF_reference/ToFware_peak_list_template.txt'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># ========== 8. Peak List Output and refining parameters ==========</span></span><br><span class="line">peak_list_prefix = <span class="hljs-string">'./output/ToF_peak_list/20250720_Angola_Orbitrap+TOF_peak_list'</span></span><br><span class="line">refining_distance,refining_ratio = <span class="hljs-number">25</span>, <span class="hljs-number">4</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"># ========== 1. INPUT FILE ==========
+file_path = "./../../../../../Africa/Angola/Data/Raw/Orbitrap/Angola_mixed_samples_20250620020218.ms1"
+
+# ========== 2. Orbitrap Real Time Series ==========
+end_time = '2025-06-20 16:40:00'  # Define end time for the time series
+start_time = pd.to_datetime(end_time) - pd.Timedelta(minutes=get_last_retention_time(file_path))  # Calculate start time based on the file retention time
+
+# ========== 3. Pre-filtering Threshold for Noisy Ions ==========
+pre_filtering_threshold = 1000  # Default threshold set to 1000 to filter out noisy ions
+
+# ========== 4. Processing Mode Selection ==========
+# Options: "full_ts" for full time series or "subset" for a specific peak list subset
+# mode = 'full_ts'  # Use full time series mode
+# start_retention_time, end_retention_time = 0, get_last_retention_time(file_path)  # Set for full time series
+mode = 'sub_set'
+start_retention_time, end_retention_time = 3.51, 13#get_last_retention_time(file_path) # Define subset range (retention times of the place we are interested)
+
+# ========== 5. Parameters for M/Z Calibration ==========
+ideal_calibrants_mass = [
+    172.88347, 322.77771, 472.67196, 108.9638, 166.9163
+]  # 5 calibrants for m/z calibration
+
+calibration_tolerance_ppm = 20  # Set calibration tolerance to 20 ppm
+overlapped_scan_option = 1  # Handle overlapping regions in neighboring segment scans (1 to enable handling)
+
+# ========== 6. Parameters for Filtering and Clustering ==========
+# Pre-filtering based on "Air-beam" (Na2I range)
+Na2I_lower_bound, Na2I_upper_bound = 0, 50 * 1E6  # Filter to remove bad air-beam ions
+
+# Data size threshold for KDE clustering chunk
+data_size_threshold = 500  # Minimum data size for performing KDE clustering
+
+# KDE Parameters (for clustering noisy ions)
+kde_bandwidth = 0.0005  # KDE bandwidth for peak density estimation
+kde_percentile = 5  # Remove ions below the 5th percentile of density score (to filter out rare/noisy ions)
+
+# DBSCAN Clustering Parameters
+eps_value = 0.5  # Epsilon value for DBSCAN (maximum clustering distance in ppm)
+clustering_thre = 0.025  # Retain clusters appearing more than 2.5% of Na2I showing frequency
+
+# ========== 7. EESI-TOF reference ==========
+# tof_spectrum            = pd.read_excel("./../Input/EESI-TOF_reference/EESI_LTOF_raw_curve_Punjab.xlsx")
+# tof_add_ion_threshold   = 50 # 50 ppm means there is no Orbitrap ions within 50 ppm window of a EESI-TOF identifed peak apex
+# inorganic_ion_file      = './../Input/EESI-TOF_reference/EESI_TOF_common_inorganic_ions.csv'
+# tof_peak_list_template  = './../Input/EESI-TOF_reference/ToFware_peak_list_template.txt'
+
+# ========== 8. Peak List Output and refining parameters ==========
+peak_list_prefix = './output/ToF_peak_list/20250720_Angola_Orbitrap+TOF_peak_list'
+refining_distance,refining_ratio = 25, 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="3-Reading-data-within-user-defined-time-period"><a href="#3-Reading-data-within-user-defined-time-period" class="headerlink" title="3. Reading data within user-defined time period"></a>3. Reading data within user-defined time period</h2><p>The <code>segments</code> refer to raw data extracted from the Orbitrap <code>.ms1</code> text files, based on user-defined start and end retention times. Users can specify the desired time window for processing and optionally read multiple time segments to be merged in later steps.    </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">retention_time_indices,rt_values = get_retention_time_indices(file_path, start_retention_time, end_retention_time)</span><br><span class="line">segments = read_ms1_segments_between_retention_times(file_path, retention_time_indices)</span><br><span class="line">df_segments = save_segments_as_dataframes(segments, pre_filtering_threshold)</span><br><span class="line">merged_spectrum =  merge_segments(df_segments)</span><br><span class="line">merged_spectrum =  merged_spectrum.sort_values(by = <span class="hljs-string">'m/z'</span>, ascending=<span class="hljs-literal">True</span>)</span><br><span class="line">merged_spectrum  = merged_spectrum.reset_index(drop=<span class="hljs-literal">True</span>)</span><br><span class="line">```    </span><br><span class="line">The `showing_freq`, representing the recurrence frequency of a primary ion within the defined time window, <span class="hljs-keyword">is</span> crucial <span class="hljs-keyword">for</span> subsequent analysis. It reflects how consistently an ion appears <span class="hljs-keyword">and</span> can serve <span class="hljs-keyword">as</span> a basis <span class="hljs-keyword">for</span> filtering other less stable <span class="hljs-keyword">or</span> noise-like signals.</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">tolerance_ppm = <span class="hljs-number">20</span> <span class="hljs-comment">## need to re-adjust based on the actual data</span></span><br><span class="line">peak_results = {}</span><br><span class="line">masses = [<span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>,<span class="hljs-number">622.566700</span>,<span class="hljs-number">108.9638</span>,<span class="hljs-number">166.9163</span>]<span class="hljs-comment">#</span></span><br><span class="line"><span class="hljs-keyword">for</span> mass <span class="hljs-keyword">in</span> masses:</span><br><span class="line">    peaks = find_peak_near_mass(merged_spectrum, mass, tolerance_ppm)</span><br><span class="line">    peak_results[mass] = peaks</span><br><span class="line">showing_freq = <span class="hljs-built_in">len</span>(peak_results[masses[<span class="hljs-number">0</span>]])    </span><br><span class="line"><span class="hljs-built_in">print</span> (showing_freq)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">retention_time_indices,rt_values = get_retention_time_indices(file_path, start_retention_time, end_retention_time)
+segments = read_ms1_segments_between_retention_times(file_path, retention_time_indices)
+df_segments = save_segments_as_dataframes(segments, pre_filtering_threshold)
+merged_spectrum =  merge_segments(df_segments)
+merged_spectrum =  merged_spectrum.sort_values(by = 'm/z', ascending=True)
+merged_spectrum  = merged_spectrum.reset_index(drop=True)
+```    
+The `showing_freq`, representing the recurrence frequency of a primary ion within the defined time window, is crucial for subsequent analysis. It reflects how consistently an ion appears and can serve as a basis for filtering other less stable or noise-like signals.
+
+```python
+tolerance_ppm = 20 ## need to re-adjust based on the actual data
+peak_results = {}
+masses = [172.88347, 322.77771, 472.67196,622.566700,108.9638,166.9163]#
+for mass in masses:
+    peaks = find_peak_near_mass(merged_spectrum, mass, tolerance_ppm)
+    peak_results[mass] = peaks
+showing_freq = len(peak_results[masses[0]])    
+print (showing_freq)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>We can also evaluate how closely the measured m/z values of calibrants match their theoretical values before applying calibration. This step is useful for pre-defining the tolerance_ppm parameter.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">subplot_titles = [<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>,<span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>]</span><br><span class="line">masses = [<span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>,<span class="hljs-number">108.9638</span>,<span class="hljs-number">166.9163</span>][<span class="hljs-number">0</span>:] </span><br><span class="line">colors = [<span class="hljs-string">'#447f44'</span>, <span class="hljs-string">'#cd4040'</span>, <span class="hljs-string">'#636efa'</span>, <span class="hljs-string">'#ddc927'</span>, <span class="hljs-string">'#9271dd'</span>,<span class="hljs-string">'#2d85cc'</span>]  </span><br><span class="line">subplot_titles = []</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]][<span class="hljs-string">'m/z'</span>]), masses[i])</span><br><span class="line">    mean_ppm = np.mean(ppm_differences)</span><br><span class="line">    subplot_titles.append(<span class="hljs-string">f"<span class="hljs-subst">{[<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>, <span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>][i]}</span>: <span class="hljs-subst">{mean_ppm:<span class="hljs-number">.2</span>f}</span> ppm"</span>)</span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">5</span>, subplot_titles=subplot_titles)</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=colors[i % <span class="hljs-built_in">len</span>(colors)])),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_vline(x=masses[i], line_width=<span class="hljs-number">2</span>, line_dash=<span class="hljs-string">"dash"</span>, line_color=<span class="hljs-string">"grey"</span>, row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span>)</span><br><span class="line">    </span><br><span class="line">    fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>, <span class="hljs-built_in">range</span>=[masses[i]-<span class="hljs-number">0.0025</span>, masses[i]+<span class="hljs-number">0.0025</span>], col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_yaxes(title_text=<span class="hljs-string">"Count"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>, col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, </span><br><span class="line">    width=<span class="hljs-number">1500</span>,  </span><br><span class="line">    title_text=<span class="hljs-string">"Calibrant Raw M/Z Distribution"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>,</span><br><span class="line">    showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">subplot_titles = ['Na2I', 'Na3I2', 'Na4I3','Na2[15]NO3', 'Na3[34]SO4']
+masses = [172.88347, 322.77771, 472.67196,108.9638,166.9163][0:] 
+colors = ['#447f44', '#cd4040', '#636efa', '#ddc927', '#9271dd','#2d85cc']  
+subplot_titles = []
+for i in range(len(masses)):
+    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]]['m/z']), masses[i])
+    mean_ppm = np.mean(ppm_differences)
+    subplot_titles.append(f"{['Na2I', 'Na3I2', 'Na4I3', 'Na2[15]NO3', 'Na3[34]SO4'][i]}: {mean_ppm:.2f} ppm")
+fig = make_subplots(rows=1, cols=5, subplot_titles=subplot_titles)
+for i in range(len(masses)):
+    fig.add_trace(
+        go.Histogram(x=peak_results[masses[i]]['m/z'], marker=dict(color=colors[i % len(colors)])),
+        row=1, col=i+1
+    )
+    fig.add_vline(x=masses[i], line_width=2, line_dash="dash", line_color="grey", row=1, col=i+1)
+    
+    fig.update_xaxes(title_text="m/z", showline=True, linecolor='black', range=[masses[i]-0.0025, masses[i]+0.0025], col=i+1, row=1)
+    fig.update_yaxes(title_text="Count", showline=True, linecolor='black', col=i+1, row=1)
+fig.update_layout(
+    height=400, 
+    width=1500,  
+    title_text="Calibrant Raw M/Z Distribution",
+    plot_bgcolor='white',
+    showlegend=False
+)
+fig.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="/images/Orbitrack_log/Fig.Before_Calibration_raw_pos_of_calibrants.png"></p>
 </body></html>
@@ -228,7 +399,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -367,7 +538,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -380,10 +551,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

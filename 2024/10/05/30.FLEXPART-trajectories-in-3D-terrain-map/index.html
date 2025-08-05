@@ -27,9 +27,9 @@
 <meta property="article:published_time" content="2024-10-05T18:15:26.000Z">
 <meta property="article:modified_time" content="2025-08-04T06:39:19.138Z">
 <meta property="article:author" content="Hao Yufang">
+<meta property="article:tag" content="Air quality">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Model">
-<meta property="article:tag" content="Air quality">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://envhyf.github.io/images/30.FLEXPART_3D_Terrain/Fig.1.png">
 
@@ -117,7 +117,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -158,7 +158,7 @@
         <span class="column is-narrow">
             
             
-            10 分钟 read (About 1460 words)
+            10 分钟 de lectura (Alrededor de 1460 palabras)
         </span>
         
     </div>
@@ -172,7 +172,75 @@
 </ul>
 <span id="more"></span>
 
-<h2 id="1-Load-and-Visualize-Terrain-Data"><a href="#1-Load-and-Visualize-Terrain-Data" class="headerlink" title="1. Load and Visualize Terrain Data"></a>1. Load and Visualize Terrain Data</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.mplot3d <span class="hljs-keyword">import</span> Axes3D</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy.crs <span class="hljs-keyword">as</span> ccrs</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy.feature <span class="hljs-keyword">as</span> cfeature</span><br><span class="line"><span class="hljs-keyword">from</span> cartopy.io <span class="hljs-keyword">import</span> shapereader</span><br><span class="line"><span class="hljs-keyword">from</span> netCDF4 <span class="hljs-keyword">import</span> Dataset</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># load the terrain file</span></span><br><span class="line">etopo_file = <span class="hljs-string">"./../../../../../4.Punjab_fire/Analysis_notebook/ETOPO_2022_v1_60s_N90W180_bed.nc"</span>  <span class="hljs-comment"># Replace with your local ETOPO1 file</span></span><br><span class="line">nc = Dataset(etopo_file)</span><br><span class="line"><span class="hljs-comment"># Extract data from ETOPO1</span></span><br><span class="line">lon = nc.variables[<span class="hljs-string">'lon'</span>][:]</span><br><span class="line">lat = nc.variables[<span class="hljs-string">'lat'</span>][:]</span><br><span class="line">elevation = nc.variables[<span class="hljs-string">'z'</span>][:]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Mask the ocean by setting all elevation &lt;= 0 (sea level or below) to NaN</span></span><br><span class="line">elevation_masked = np.where(elevation &lt;= <span class="hljs-number">0</span>, np.nan, elevation)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Extract the topo data to the area of interest</span></span><br><span class="line">lon_min, lon_max = <span class="hljs-number">60</span>, <span class="hljs-number">89</span></span><br><span class="line">lat_min, lat_max = <span class="hljs-number">22</span>, <span class="hljs-number">36</span></span><br><span class="line">lon_indices = np.where((lon &gt;= lon_min) &amp; (lon &lt;= lon_max))[<span class="hljs-number">0</span>]</span><br><span class="line">lat_indices = np.where((lat &gt;= lat_min) &amp; (lat &lt;= lat_max))[<span class="hljs-number">0</span>]</span><br><span class="line"></span><br><span class="line">subset_lon = lon[lon_indices]</span><br><span class="line">subset_lat = lat[lat_indices]</span><br><span class="line">subset_elevation = elevation_masked[np.ix_(lat_indices, lon_indices)]</span><br><span class="line"></span><br><span class="line">lon_grid, lat_grid = np.meshgrid(subset_lon,subset_lat)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Normalize elevation data for better 3D visualization</span></span><br><span class="line">elevation_normalized = np.clip(subset_elevation/ <span class="hljs-number">1000</span>, <span class="hljs-number">0</span>, subset_elevation.<span class="hljs-built_in">max</span>()/<span class="hljs-number">1000.0</span>)  <span class="hljs-comment"># Convert to km</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib.colors <span class="hljs-keyword">import</span> LinearSegmentedColormap</span><br><span class="line"><span class="hljs-keyword">import</span> shapefile</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> Polygon</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> mapping</span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.mplot3d.art3d <span class="hljs-keyword">import</span> Line3DCollection</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.interpolate <span class="hljs-keyword">import</span> RegularGridInterpolator</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">truncate_colormap</span>(<span class="hljs-params">cmap, minval=<span class="hljs-number">0.2</span>, maxval=<span class="hljs-number">1.0</span>, n=<span class="hljs-number">100</span></span>):</span><br><span class="line">    new_cmap = LinearSegmentedColormap.from_list(</span><br><span class="line">        <span class="hljs-string">f"trunc(<span class="hljs-subst">{cmap.name}</span>,<span class="hljs-subst">{minval:<span class="hljs-number">.2</span>f}</span>,<span class="hljs-subst">{maxval:<span class="hljs-number">.2</span>f}</span>)"</span>,</span><br><span class="line">        cmap(np.linspace(minval, maxval, n)),</span><br><span class="line">    )</span><br><span class="line">    <span class="hljs-keyword">return</span> new_cmap</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Create a truncated terrain colormap starting from green</span></span><br><span class="line">terrain_truncated = truncate_colormap(plt.cm.terrain, minval=<span class="hljs-number">0.3</span>, maxval=<span class="hljs-number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib.colors <span class="hljs-keyword">import</span> LinearSegmentedColormap</span><br><span class="line"><span class="hljs-keyword">import</span> shapefile</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> Polygon</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> mapping</span><br><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits.mplot3d.art3d <span class="hljs-keyword">import</span> Line3DCollection</span><br><span class="line"><span class="hljs-keyword">from</span> scipy.interpolate <span class="hljs-keyword">import</span> RegularGridInterpolator</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">truncate_colormap</span>(<span class="hljs-params">cmap, minval=<span class="hljs-number">0.2</span>, maxval=<span class="hljs-number">1.0</span>, n=<span class="hljs-number">100</span></span>):</span><br><span class="line">    new_cmap = LinearSegmentedColormap.from_list(</span><br><span class="line">        <span class="hljs-string">f"trunc(<span class="hljs-subst">{cmap.name}</span>,<span class="hljs-subst">{minval:<span class="hljs-number">.2</span>f}</span>,<span class="hljs-subst">{maxval:<span class="hljs-number">.2</span>f}</span>)"</span>,</span><br><span class="line">        cmap(np.linspace(minval, maxval, n)),</span><br><span class="line">    )</span><br><span class="line">    <span class="hljs-keyword">return</span> new_cmap</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Create a truncated terrain colormap starting from green</span></span><br><span class="line">terrain_truncated = truncate_colormap(plt.cm.terrain, minval=<span class="hljs-number">0.3</span>, maxval=<span class="hljs-number">1.0</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="1-Load-and-Visualize-Terrain-Data"><a href="#1-Load-and-Visualize-Terrain-Data" class="headerlink" title="1. Load and Visualize Terrain Data"></a>1. Load and Visualize Terrain Data</h2><pre class="line-numbers language-python" data-language="python"><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from cartopy.io import shapereader
+from netCDF4 import Dataset
+
+# load the terrain file
+etopo_file = "./../../../../../4.Punjab_fire/Analysis_notebook/ETOPO_2022_v1_60s_N90W180_bed.nc"  # Replace with your local ETOPO1 file
+nc = Dataset(etopo_file)
+# Extract data from ETOPO1
+lon = nc.variables['lon'][:]
+lat = nc.variables['lat'][:]
+elevation = nc.variables['z'][:]
+
+# Mask the ocean by setting all elevation &lt;= 0 (sea level or below) to NaN
+elevation_masked = np.where(elevation &lt;= 0, np.nan, elevation)
+
+
+# Extract the topo data to the area of interest
+lon_min, lon_max = 60, 89
+lat_min, lat_max = 22, 36
+lon_indices = np.where((lon &gt;= lon_min) &amp; (lon &lt;= lon_max))[0]
+lat_indices = np.where((lat &gt;= lat_min) &amp; (lat &lt;= lat_max))[0]
+
+subset_lon = lon[lon_indices]
+subset_lat = lat[lat_indices]
+subset_elevation = elevation_masked[np.ix_(lat_indices, lon_indices)]
+
+lon_grid, lat_grid = np.meshgrid(subset_lon,subset_lat)
+
+# Normalize elevation data for better 3D visualization
+elevation_normalized = np.clip(subset_elevation/ 1000, 0, subset_elevation.max()/1000.0)  # Convert to km
+
+
+from matplotlib.colors import LinearSegmentedColormap
+import shapefile
+from shapely.geometry import Polygon
+from shapely.geometry import mapping
+from mpl_toolkits.mplot3d.art3d import Line3DCollection
+from scipy.interpolate import RegularGridInterpolator
+
+def truncate_colormap(cmap, minval=0.2, maxval=1.0, n=100):
+    new_cmap = LinearSegmentedColormap.from_list(
+        f"trunc({cmap.name},{minval:.2f},{maxval:.2f})",
+        cmap(np.linspace(minval, maxval, n)),
+    )
+    return new_cmap
+
+# Create a truncated terrain colormap starting from green
+terrain_truncated = truncate_colormap(plt.cm.terrain, minval=0.3, maxval=1.0)
+
+from matplotlib.colors import LinearSegmentedColormap
+import shapefile
+from shapely.geometry import Polygon
+from shapely.geometry import mapping
+from mpl_toolkits.mplot3d.art3d import Line3DCollection
+from scipy.interpolate import RegularGridInterpolator
+
+def truncate_colormap(cmap, minval=0.2, maxval=1.0, n=100):
+    new_cmap = LinearSegmentedColormap.from_list(
+        f"trunc({cmap.name},{minval:.2f},{maxval:.2f})",
+        cmap(np.linspace(minval, maxval, n)),
+    )
+    return new_cmap
+
+# Create a truncated terrain colormap starting from green
+terrain_truncated = truncate_colormap(plt.cm.terrain, minval=0.3, maxval=1.0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><a href="/images/30.FLEXPART_3D_Terrain/Fig.1.png"><img src="/images/30.FLEXPART_3D_Terrain/Fig.1.png" alt="enter image description here"></a>    </p>
 <h2 id="2-Load-and-Plot-FLEXPART-Trajectories"><a href="#2-Load-and-Plot-FLEXPART-Trajectories" class="headerlink" title="2. Load and Plot FLEXPART Trajectories"></a>2. Load and Plot FLEXPART Trajectories</h2><p>In trajectory mode, the output txt format information can be seen here<br><a target="_blank" rel="noopener" href="https://confluence.ecmwf.int/display/METV/FLEXPART+output">https://confluence.ecmwf.int/display/METV/FLEXPART+output</a></p>
 <table>
@@ -305,10 +373,192 @@
 <td>Total horizontal RMS distance in cluster N</td>
 </tr>
 </tbody></table>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">input_file = <span class="hljs-string">"./data/retroplume_raw/traj/clustered_ind/2018-03-30-example.txt"</span></span><br><span class="line"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(input_file, <span class="hljs-string">"r"</span>) <span class="hljs-keyword">as</span> file:</span><br><span class="line">    lines = file.readlines()[<span class="hljs-number">7</span>:]</span><br><span class="line">data = [<span class="hljs-built_in">list</span>(<span class="hljs-built_in">map</span>(<span class="hljs-built_in">float</span>, line.split())) <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines]</span><br><span class="line">df_traj = pd.DataFrame(data, columns=columns[:<span class="hljs-built_in">len</span>(data[<span class="hljs-number">0</span>])])  <span class="hljs-comment"># Adjust column count based on the actual data length</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 36 hr in total</span></span><br><span class="line">kp_traj = df_traj[df_traj[<span class="hljs-string">'receptor'</span>] == <span class="hljs-number">1.0</span>].reset_index(drop = <span class="hljs-literal">True</span>)</span><br><span class="line">dl_traj = df_traj[df_traj[<span class="hljs-string">'receptor'</span>] == <span class="hljs-number">2.0</span>].reset_index(drop = <span class="hljs-literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">trajectories = {</span><br><span class="line">    <span class="hljs-string">"KP"</span>: {</span><br><span class="line">        <span class="hljs-string">"lon"</span>: kp_traj[<span class="hljs-string">'meanLon'</span>],</span><br><span class="line">        <span class="hljs-string">"lat"</span>: kp_traj[<span class="hljs-string">'meanLat'</span>],</span><br><span class="line">        <span class="hljs-string">"alt"</span>: kp_traj[<span class="hljs-string">'meanZ'</span>]/<span class="hljs-number">1000.0</span> + kp_traj[<span class="hljs-string">'meanTopo'</span>]/<span class="hljs-number">1000.0</span>,</span><br><span class="line">        <span class="hljs-string">"time_delta"</span>: -<span class="hljs-number">1</span>*(kp_traj[<span class="hljs-string">'time'</span>] - kp_traj[<span class="hljs-string">'time'</span>].iloc[<span class="hljs-number">0</span>])/<span class="hljs-number">60</span>/<span class="hljs-number">60.0</span>,</span><br><span class="line">    },</span><br><span class="line">    <span class="hljs-string">"DL"</span>: {</span><br><span class="line">        <span class="hljs-string">"lon"</span>: dl_traj[<span class="hljs-string">'meanLon'</span>],</span><br><span class="line">        <span class="hljs-string">"lat"</span>: dl_traj[<span class="hljs-string">'meanLat'</span>],</span><br><span class="line">        <span class="hljs-string">"alt"</span>: dl_traj[<span class="hljs-string">'meanZ'</span>]/<span class="hljs-number">1000.0</span> + dl_traj[<span class="hljs-string">'meanTopo'</span>]/<span class="hljs-number">1000.0</span>,</span><br><span class="line">        <span class="hljs-string">'time_delta'</span>:-<span class="hljs-number">1</span>*(kp_traj[<span class="hljs-string">'time'</span>] - kp_traj[<span class="hljs-string">'time'</span>].iloc[<span class="hljs-number">0</span>])/<span class="hljs-number">60</span>/<span class="hljs-number">60.0</span></span><br><span class="line">    },</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">elevation_interpolator = RegularGridInterpolator(</span><br><span class="line">    (lat, lon), elevation / <span class="hljs-number">1000.0</span>  <span class="hljs-comment"># Convert elevation to km</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">set_3d_background</span>(<span class="hljs-params">ax,sel_df_bio</span>):</span><br><span class="line">    ax.scatter(</span><br><span class="line">    <span class="hljs-number">80.331871</span>, <span class="hljs-number">26.449923</span>, <span class="hljs-number">0.35</span>,  <span class="hljs-comment"># Kanpur at ground level</span></span><br><span class="line">    zdir=<span class="hljs-string">"z"</span>,</span><br><span class="line">    marker=<span class="hljs-string">"s"</span>,</span><br><span class="line">    facecolor=<span class="hljs-string">'none'</span>,</span><br><span class="line">    edgecolor=<span class="hljs-string">"b"</span>,</span><br><span class="line">    s=<span class="hljs-number">40</span>,</span><br><span class="line">    alpha=<span class="hljs-number">1</span>,lw = <span class="hljs-number">2</span>,</span><br><span class="line">    label=<span class="hljs-string">"Kanpur"</span>,zorder = <span class="hljs-number">3</span></span><br><span class="line">    )</span><br><span class="line">    ax.scatter(</span><br><span class="line">        <span class="hljs-number">77.069710</span>, <span class="hljs-number">28.679079</span>, <span class="hljs-number">0.53</span>,  <span class="hljs-comment"># New Delhi at ground level</span></span><br><span class="line">        zdir=<span class="hljs-string">"z"</span>,</span><br><span class="line">        marker=<span class="hljs-string">"s"</span>,</span><br><span class="line">        facecolor=<span class="hljs-string">'none'</span>,</span><br><span class="line">        edgecolor=<span class="hljs-string">"r"</span>,</span><br><span class="line">        s=<span class="hljs-number">40</span>,</span><br><span class="line">        alpha=<span class="hljs-number">1</span>,lw = <span class="hljs-number">2</span>,</span><br><span class="line">        label=<span class="hljs-string">"New Delhi"</span>,zorder = <span class="hljs-number">3</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Plot the real-world elevation data as the base map</span></span><br><span class="line">    ax.plot_surface(</span><br><span class="line">        lon_grid,</span><br><span class="line">        lat_grid,</span><br><span class="line">        subset_elevation/<span class="hljs-number">1000.0</span>,</span><br><span class="line">        cmap=plt.cm.gray,<span class="hljs-comment">#terrain_truncated,</span></span><br><span class="line">        rstride=<span class="hljs-number">10</span>,</span><br><span class="line">        cstride=<span class="hljs-number">10</span>,</span><br><span class="line">        edgecolor=<span class="hljs-string">'none'</span>,</span><br><span class="line">        alpha=<span class="hljs-number">0.15</span>,</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># Customize grid appearance</span></span><br><span class="line">    ax.xaxis._axinfo[<span class="hljs-string">"grid"</span>][<span class="hljs-string">"color"</span>] = (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)  <span class="hljs-comment"># Transparent X grid</span></span><br><span class="line">    ax.yaxis._axinfo[<span class="hljs-string">"grid"</span>][<span class="hljs-string">"color"</span>] = (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)  <span class="hljs-comment"># Transparent Y grid</span></span><br><span class="line">    ax.zaxis._axinfo[<span class="hljs-string">"grid"</span>][<span class="hljs-string">"color"</span>] = (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)  <span class="hljs-comment"># Transparent Z grid</span></span><br><span class="line">    ax.set_xlim([lon_min,lon_max])</span><br><span class="line">    ax.set_ylim([lat_min, lat_max])</span><br><span class="line">    ax.set_xlabel(<span class="hljs-string">"Longitude"</span>)</span><br><span class="line">    ax.set_ylabel(<span class="hljs-string">"Latitude"</span>)</span><br><span class="line">    ax.set_zlabel(<span class="hljs-string">"Altitude (km)"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">plot_individual_day_traj</span>(<span class="hljs-params">ax,traj</span>):</span><br><span class="line"><span class="hljs-comment">#     colors = ['#97ff80','#679b4e','#ffe64c','#cd4040','purple','k']</span></span><br><span class="line"><span class="hljs-comment">#     time_categories = [0, 12,24, 48, 72, 96, 120]  # 5 days (0-24, 24-48, etc.)</span></span><br><span class="line"><span class="hljs-comment">#     for i in range(len(time_categories) - 1):</span></span><br><span class="line"><span class="hljs-comment">#         mask = (traj["time_delta"] &gt;= time_categories[i]) &amp; (traj["time_delta"] &lt; time_categories[i + 1])</span></span><br><span class="line"><span class="hljs-comment">#         ax.plot(</span></span><br><span class="line"><span class="hljs-comment">#             np.array(traj["lon"])[mask],</span></span><br><span class="line"><span class="hljs-comment">#             np.array(traj["lat"])[mask],</span></span><br><span class="line"><span class="hljs-comment">#             np.array(traj["alt"])[mask],</span></span><br><span class="line"><span class="hljs-comment">#             color=colors[i],</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">#             linewidth=3.5,</span></span><br><span class="line"><span class="hljs-comment">#             label=f"&lt;{time_categories[i+1]} hr",</span></span><br><span class="line"><span class="hljs-comment">#         )</span></span><br><span class="line">    norm = mcolors.Normalize(vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">72</span>)  <span class="hljs-comment"># Assuming time_delta ranges from 0 to 48 hours</span></span><br><span class="line">    cmap = cm.get_cmap(<span class="hljs-string">'Spectral_r'</span>)  <span class="hljs-comment"># Choose a continuous colormap</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># Plot trajectories with continuous color representation</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(traj[<span class="hljs-string">"time_delta"</span>]) - <span class="hljs-number">1</span>):</span><br><span class="line">        ax.plot(</span><br><span class="line">            traj[<span class="hljs-string">"lon"</span>][i:i+<span class="hljs-number">2</span>],</span><br><span class="line">            traj[<span class="hljs-string">"lat"</span>][i:i+<span class="hljs-number">2</span>],</span><br><span class="line">            traj[<span class="hljs-string">"alt"</span>][i:i+<span class="hljs-number">2</span>],</span><br><span class="line">            color=cmap(norm(traj[<span class="hljs-string">"time_delta"</span>][i])),  <span class="hljs-comment"># Map time_delta to color</span></span><br><span class="line">            linewidth=<span class="hljs-number">2.5</span>,zorder =<span class="hljs-number">15</span>,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Create a 3D plot</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">6</span>, <span class="hljs-number">5</span>))</span><br><span class="line"></span><br><span class="line">norm = mcolors.Normalize(vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">72</span>)  <span class="hljs-comment"># Assuming time_delta ranges from 0 to 48 hours</span></span><br><span class="line">cmap = cm.get_cmap(<span class="hljs-string">'Spectral_r'</span>)  <span class="hljs-comment"># Choose a continuous colormap</span></span><br><span class="line"></span><br><span class="line">ax = fig.add_subplot(<span class="hljs-number">111</span>, projection=<span class="hljs-string">'3d'</span>)</span><br><span class="line">plot_individual_day_traj(ax, trajectories[<span class="hljs-string">'DL'</span>])</span><br><span class="line">set_3d_background_dl(ax,sel_df_bio)</span><br><span class="line">ax.set_zlim([<span class="hljs-number">0</span>, <span class="hljs-number">7</span>])</span><br><span class="line">ax.set_title(<span class="hljs-string">'Delhi'</span>, loc = <span class="hljs-string">'left'</span>, fontweight = <span class="hljs-string">'bold'</span>,y=<span class="hljs-number">0.85</span>)</span><br><span class="line">ax.legend(ncol = <span class="hljs-number">3</span>, loc = (<span class="hljs-number">0.55</span>, <span class="hljs-number">0.45</span>), fontsize = <span class="hljs-number">8</span>, frameon=<span class="hljs-literal">True</span>)</span><br><span class="line">ax.view_init(elev=<span class="hljs-number">21</span>, azim=-<span class="hljs-number">110</span>)  <span class="hljs-comment"># </span></span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">input_file = "./data/retroplume_raw/traj/clustered_ind/2018-03-30-example.txt"
+with open(input_file, "r") as file:
+    lines = file.readlines()[7:]
+data = [list(map(float, line.split())) for line in lines]
+df_traj = pd.DataFrame(data, columns=columns[:len(data[0])])  # Adjust column count based on the actual data length
+
+# 36 hr in total
+kp_traj = df_traj[df_traj['receptor'] == 1.0].reset_index(drop = True)
+dl_traj = df_traj[df_traj['receptor'] == 2.0].reset_index(drop = True)
+
+
+trajectories = {
+    "KP": {
+        "lon": kp_traj['meanLon'],
+        "lat": kp_traj['meanLat'],
+        "alt": kp_traj['meanZ']/1000.0 + kp_traj['meanTopo']/1000.0,
+        "time_delta": -1*(kp_traj['time'] - kp_traj['time'].iloc[0])/60/60.0,
+    },
+    "DL": {
+        "lon": dl_traj['meanLon'],
+        "lat": dl_traj['meanLat'],
+        "alt": dl_traj['meanZ']/1000.0 + dl_traj['meanTopo']/1000.0,
+        'time_delta':-1*(kp_traj['time'] - kp_traj['time'].iloc[0])/60/60.0
+    },
+}
+
+
+elevation_interpolator = RegularGridInterpolator(
+    (lat, lon), elevation / 1000.0  # Convert elevation to km
+)
+
+def set_3d_background(ax,sel_df_bio):
+    ax.scatter(
+    80.331871, 26.449923, 0.35,  # Kanpur at ground level
+    zdir="z",
+    marker="s",
+    facecolor='none',
+    edgecolor="b",
+    s=40,
+    alpha=1,lw = 2,
+    label="Kanpur",zorder = 3
+    )
+    ax.scatter(
+        77.069710, 28.679079, 0.53,  # New Delhi at ground level
+        zdir="z",
+        marker="s",
+        facecolor='none',
+        edgecolor="r",
+        s=40,
+        alpha=1,lw = 2,
+        label="New Delhi",zorder = 3
+    )
+
+    # Plot the real-world elevation data as the base map
+    ax.plot_surface(
+        lon_grid,
+        lat_grid,
+        subset_elevation/1000.0,
+        cmap=plt.cm.gray,#terrain_truncated,
+        rstride=10,
+        cstride=10,
+        edgecolor='none',
+        alpha=0.15,
+    )
+    
+    
+    
+    # Customize grid appearance
+    ax.xaxis._axinfo["grid"]["color"] = (1, 1, 1, 0)  # Transparent X grid
+    ax.yaxis._axinfo["grid"]["color"] = (1, 1, 1, 0)  # Transparent Y grid
+    ax.zaxis._axinfo["grid"]["color"] = (1, 1, 1, 0)  # Transparent Z grid
+    ax.set_xlim([lon_min,lon_max])
+    ax.set_ylim([lat_min, lat_max])
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    ax.set_zlabel("Altitude (km)")
+
+
+
+def plot_individual_day_traj(ax,traj):
+#     colors = ['#97ff80','#679b4e','#ffe64c','#cd4040','purple','k']
+#     time_categories = [0, 12,24, 48, 72, 96, 120]  # 5 days (0-24, 24-48, etc.)
+#     for i in range(len(time_categories) - 1):
+#         mask = (traj["time_delta"] &gt;= time_categories[i]) &amp; (traj["time_delta"] &lt; time_categories[i + 1])
+#         ax.plot(
+#             np.array(traj["lon"])[mask],
+#             np.array(traj["lat"])[mask],
+#             np.array(traj["alt"])[mask],
+#             color=colors[i],
+
+#             linewidth=3.5,
+#             label=f"&lt;{time_categories[i+1]} hr",
+#         )
+    norm = mcolors.Normalize(vmin=0, vmax=72)  # Assuming time_delta ranges from 0 to 48 hours
+    cmap = cm.get_cmap('Spectral_r')  # Choose a continuous colormap
+
+    # Plot trajectories with continuous color representation
+
+    for i in range(len(traj["time_delta"]) - 1):
+        ax.plot(
+            traj["lon"][i:i+2],
+            traj["lat"][i:i+2],
+            traj["alt"][i:i+2],
+            color=cmap(norm(traj["time_delta"][i])),  # Map time_delta to color
+            linewidth=2.5,zorder =15,
+        )
+
+# Create a 3D plot
+fig = plt.figure(figsize=(6, 5))
+
+norm = mcolors.Normalize(vmin=0, vmax=72)  # Assuming time_delta ranges from 0 to 48 hours
+cmap = cm.get_cmap('Spectral_r')  # Choose a continuous colormap
+
+ax = fig.add_subplot(111, projection='3d')
+plot_individual_day_traj(ax, trajectories['DL'])
+set_3d_background_dl(ax,sel_df_bio)
+ax.set_zlim([0, 7])
+ax.set_title('Delhi', loc = 'left', fontweight = 'bold',y=0.85)
+ax.legend(ncol = 3, loc = (0.55, 0.45), fontsize = 8, frameon=True)
+ax.view_init(elev=21, azim=-110)  # 
+
+plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><a href="/images/30.FLEXPART_3D_Terrain/Fig.2.png"><img src="/images/30.FLEXPART_3D_Terrain/Fig.2.png" alt="enter image description here"></a>    </p>
-<h2 id="3-Particle-Dispersion-Illustration"><a href="#3-Particle-Dispersion-Illustration" class="headerlink" title="3.Particle Dispersion Illustration"></a>3.Particle Dispersion Illustration</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">plot_individual_day_traj_particles</span>(<span class="hljs-params">ax, traj, n_particles=<span class="hljs-number">10</span>, spread=<span class="hljs-number">0.05</span>,initial_spread=<span class="hljs-number">0.05</span>, final_spread=<span class="hljs-number">1</span></span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Plot trajectory as particles instead of lines by generating points around the trajectory.</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    Parameters:</span></span><br><span class="line"><span class="hljs-string">    - ax: Matplotlib 3D axis.</span></span><br><span class="line"><span class="hljs-string">    - traj: Dictionary with trajectory data (lon, lat, alt, time_delta).</span></span><br><span class="line"><span class="hljs-string">    - n_particles: Number of particles to simulate per trajectory step.</span></span><br><span class="line"><span class="hljs-string">    - spread: Standard deviation for particle dispersion around each step.</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    norm = mcolors.Normalize(vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">72</span>)  <span class="hljs-comment"># Normalize time_delta</span></span><br><span class="line">    cmap = cm.get_cmap(<span class="hljs-string">'Spectral_r'</span>)  <span class="hljs-comment"># Colormap for time</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># Loop through each trajectory point</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(traj[<span class="hljs-string">"time_delta"</span>])):</span><br><span class="line">        </span><br><span class="line">        current_spread = np.interp(</span><br><span class="line">            traj[<span class="hljs-string">"time_delta"</span>][i], [<span class="hljs-number">0</span>, <span class="hljs-built_in">max</span>(traj[<span class="hljs-string">"time_delta"</span>])], [initial_spread, final_spread]</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-comment"># Generate random offsets for particles</span></span><br><span class="line">        lon_offsets = np.random.normal(traj[<span class="hljs-string">"lon"</span>][i], current_spread, n_particles)</span><br><span class="line">        lat_offsets = np.random.normal(traj[<span class="hljs-string">"lat"</span>][i], current_spread, n_particles)</span><br><span class="line">        alt_offsets = np.random.normal(traj[<span class="hljs-string">"alt"</span>][i], current_spread / <span class="hljs-number">2</span>, n_particles)  <span class="hljs-comment"># Less spread for altitude</span></span><br><span class="line">        </span><br><span class="line">        <span class="hljs-comment"># Get color for the current time_delta</span></span><br><span class="line">        color = cmap(norm(traj[<span class="hljs-string">"time_delta"</span>][i]))</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-comment"># Plot the particles</span></span><br><span class="line">        ax.scatter(</span><br><span class="line">            lon_offsets,</span><br><span class="line">            lat_offsets,</span><br><span class="line">            alt_offsets,</span><br><span class="line">            color=color,</span><br><span class="line">            alpha=<span class="hljs-number">0.45</span>,</span><br><span class="line">            s=<span class="hljs-number">2</span>,  <span class="hljs-comment"># Small points for particles</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Create a 3D plot</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">6</span>, <span class="hljs-number">5</span>))</span><br><span class="line"></span><br><span class="line">norm = mcolors.Normalize(vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">72</span>)  <span class="hljs-comment"># Assuming time_delta ranges from 0 to 48 hours</span></span><br><span class="line">cmap = cm.get_cmap(<span class="hljs-string">'Spectral_r'</span>)  <span class="hljs-comment"># Choose a continuous colormap</span></span><br><span class="line"></span><br><span class="line">ax = fig.add_subplot(<span class="hljs-number">111</span>, projection=<span class="hljs-string">'3d'</span>)</span><br><span class="line">plot_individual_day_traj_particles(ax, trajectories[<span class="hljs-string">"DL"</span>], n_particles=<span class="hljs-number">200</span>, spread=<span class="hljs-number">0.25</span>)</span><br><span class="line">set_3d_background_dl(ax,df_pun)</span><br><span class="line">ax.set_zlim([<span class="hljs-number">0</span>, <span class="hljs-number">7</span>])</span><br><span class="line">ax.set_title(<span class="hljs-string">'Delhi'</span>, loc = <span class="hljs-string">'left'</span>, fontweight = <span class="hljs-string">'bold'</span>,y=<span class="hljs-number">0.85</span>)</span><br><span class="line"><span class="hljs-comment"># ax.legend(ncol = 3, loc = (0.3, 0.7), fontsize = 8, frameon=True)</span></span><br><span class="line">ax.view_init(elev=<span class="hljs-number">17</span>, azim=-<span class="hljs-number">110</span>)  <span class="hljs-comment"># </span></span><br><span class="line"></span><br><span class="line">sm = cm.ScalarMappable(cmap=cmap, norm=norm)</span><br><span class="line">axcolor = fig.add_axes([<span class="hljs-number">0.275</span>, <span class="hljs-number">0.6</span>, <span class="hljs-number">0.15</span>, <span class="hljs-number">0.015</span>])  <span class="hljs-comment"># Custom position and size for the colorbar axis</span></span><br><span class="line">cbar = plt.colorbar(sm, cax=axcolor, orientation=<span class="hljs-string">'horizontal'</span>)  <span class="hljs-comment"># Create horizontal colorbar</span></span><br><span class="line">cbar.set_label(<span class="hljs-string">'Air Mass Transport Time (hr)'</span>, labelpad=-<span class="hljs-number">40</span>, fontsize=<span class="hljs-number">9</span>)     </span><br><span class="line"></span><br><span class="line">plt.savefig(<span class="hljs-string">"./Backward_trajectories_example_20181125_pollution_cases_particle_simulation_version.png"</span>, dpi =<span class="hljs-number">400</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="3-Particle-Dispersion-Illustration"><a href="#3-Particle-Dispersion-Illustration" class="headerlink" title="3.Particle Dispersion Illustration"></a>3.Particle Dispersion Illustration</h2><pre class="line-numbers language-Python" data-language="Python"><code class="language-Python">import numpy as np
+
+def plot_individual_day_traj_particles(ax, traj, n_particles=10, spread=0.05,initial_spread=0.05, final_spread=1):
+    """
+    Plot trajectory as particles instead of lines by generating points around the trajectory.
+    
+    Parameters:
+    - ax: Matplotlib 3D axis.
+    - traj: Dictionary with trajectory data (lon, lat, alt, time_delta).
+    - n_particles: Number of particles to simulate per trajectory step.
+    - spread: Standard deviation for particle dispersion around each step.
+    """
+    norm = mcolors.Normalize(vmin=0, vmax=72)  # Normalize time_delta
+    cmap = cm.get_cmap('Spectral_r')  # Colormap for time
+    
+    # Loop through each trajectory point
+    for i in range(len(traj["time_delta"])):
+        
+        current_spread = np.interp(
+            traj["time_delta"][i], [0, max(traj["time_delta"])], [initial_spread, final_spread]
+        )
+        
+        # Generate random offsets for particles
+        lon_offsets = np.random.normal(traj["lon"][i], current_spread, n_particles)
+        lat_offsets = np.random.normal(traj["lat"][i], current_spread, n_particles)
+        alt_offsets = np.random.normal(traj["alt"][i], current_spread / 2, n_particles)  # Less spread for altitude
+        
+        # Get color for the current time_delta
+        color = cmap(norm(traj["time_delta"][i]))
+        
+        # Plot the particles
+        ax.scatter(
+            lon_offsets,
+            lat_offsets,
+            alt_offsets,
+            color=color,
+            alpha=0.45,
+            s=2,  # Small points for particles
+        )
+
+
+# Create a 3D plot
+fig = plt.figure(figsize=(6, 5))
+
+norm = mcolors.Normalize(vmin=0, vmax=72)  # Assuming time_delta ranges from 0 to 48 hours
+cmap = cm.get_cmap('Spectral_r')  # Choose a continuous colormap
+
+ax = fig.add_subplot(111, projection='3d')
+plot_individual_day_traj_particles(ax, trajectories["DL"], n_particles=200, spread=0.25)
+set_3d_background_dl(ax,df_pun)
+ax.set_zlim([0, 7])
+ax.set_title('Delhi', loc = 'left', fontweight = 'bold',y=0.85)
+# ax.legend(ncol = 3, loc = (0.3, 0.7), fontsize = 8, frameon=True)
+ax.view_init(elev=17, azim=-110)  # 
+
+sm = cm.ScalarMappable(cmap=cmap, norm=norm)
+axcolor = fig.add_axes([0.275, 0.6, 0.15, 0.015])  # Custom position and size for the colorbar axis
+cbar = plt.colorbar(sm, cax=axcolor, orientation='horizontal')  # Create horizontal colorbar
+cbar.set_label('Air Mass Transport Time (hr)', labelpad=-40, fontsize=9)     
+
+plt.savefig("./Backward_trajectories_example_20181125_pollution_cases_particle_simulation_version.png", dpi =400)
+plt.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><a href="/images/30.FLEXPART_3D_Terrain/Fig.3.png"><img src="/images/30.FLEXPART_3D_Terrain/Fig.3.png" alt="enter image description here"></a>     </p>
 </body></html>
@@ -317,11 +567,11 @@
     
     <div class="columns is-variable is-1 is-multiline is-mobile">
     
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
+    
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Linux/">#Linux</a></span>
     
         <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Model/">#Model</a></span>
-    
-        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Air-quality/">#Air quality</a></span>
     
     </div>
     
@@ -345,7 +595,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -484,7 +734,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -497,10 +747,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

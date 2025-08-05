@@ -113,7 +113,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -154,7 +154,7 @@
         <span class="column is-narrow">
             
             
-            4 分钟 read (About 536 words)
+            4 分钟 de lectura (Alrededor de 536 palabras)
         </span>
         
     </div>
@@ -173,18 +173,70 @@
 
 <hr>
 <h2 id="Dynamic-M-Z-Calibration-Function"><a href="#Dynamic-M-Z-Calibration-Function" class="headerlink" title="Dynamic M/Z Calibration Function"></a>Dynamic M/Z Calibration Function</h2><p>The function below performs dynamic m/z calibration using known calibrant ions. It splits the full dataset by identifying where the calibrant signals are strongest (typically their peak retention times), and fits a linear correction model within each chunk.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">correct_mz_dynamically</span>(<span class="hljs-params">merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan</span>):</span><br><span class="line">    ...</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">def correct_mz_dynamically(merged_spectrum, ideal_calibrants_mass, tolerance_ppm, overlapped_scan):
+    ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <hr>
 <h2 id="Execution-and-Output-Parameters"><a href="#Execution-and-Output-Parameters" class="headerlink" title="Execution and Output Parameters"></a>Execution and Output Parameters</h2><p>Run the calibration and extract linear model parameters from each retention time segment.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">merged_spectrum_mzcal, model_params = correct_mz_dynamically(</span><br><span class="line">    merged_spectrum, </span><br><span class="line">    ideal_calibrants_mass,</span><br><span class="line">    calibration_tolerance_ppm, </span><br><span class="line">    overlapped_scan_option</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">merged_spectrum_mzcal, model_params = correct_mz_dynamically(
+    merged_spectrum, 
+    ideal_calibrants_mass,
+    calibration_tolerance_ppm, 
+    overlapped_scan_option
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>We then inspect the variation in calibration parameters (slope and intercept) across segments.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">slope_ = []</span><br><span class="line">intercept_ = []</span><br><span class="line"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> model_params:</span><br><span class="line">    slope_.append(c[<span class="hljs-string">'slope'</span>])</span><br><span class="line">    intercept_.append(c[<span class="hljs-string">'intercept'</span>])</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">2</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(slope_)), y=slope_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Slope"</span>, col=<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=np.arange(<span class="hljs-built_in">len</span>(intercept_)), y=intercept_, mode=<span class="hljs-string">'lines+markers'</span>), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">2</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Intercept"</span>, col=<span class="hljs-number">2</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="hljs-string">"Chunk"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>)</span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">900</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Dynamic Fitting Parameters Across Retention Time"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">slope_ = []
+intercept_ = []
+for c in model_params:
+    slope_.append(c['slope'])
+    intercept_.append(c['intercept'])
+
+fig = make_subplots(rows=1, cols=2)
+fig.add_trace(go.Scatter(x=np.arange(len(slope_)), y=slope_, mode='lines+markers'), row=1, col=1)
+fig.update_yaxes(title_text="Slope", col=1, row=1)
+fig.add_trace(go.Scatter(x=np.arange(len(intercept_)), y=intercept_, mode='lines+markers'), row=1, col=2)
+fig.update_yaxes(title_text="Intercept", col=2, row=1)
+fig.update_xaxes(title_text="Chunk", showline=True, linecolor='black')
+fig.update_layout(
+    height=400, width=900,
+    title_text="Dynamic Fitting Parameters Across Retention Time",
+    plot_bgcolor='white', showlegend=False
+)
+fig.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
 <h2 id="Check-Calibration-Accuracy-on-Known-Ions"><a href="#Check-Calibration-Accuracy-on-Known-Ions" class="headerlink" title="Check Calibration Accuracy on Known Ions"></a>Check Calibration Accuracy on Known Ions</h2><p>We visualize the distribution of m/z values for five reference ions before and after correction. This comparison confirms the improvement in accuracy.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">subplot_titles = [<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>,<span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>]</span><br><span class="line">masses = [<span class="hljs-number">172.88347</span>, <span class="hljs-number">322.77771</span>, <span class="hljs-number">472.67196</span>, <span class="hljs-number">108.9638</span>, <span class="hljs-number">166.9163</span>]</span><br><span class="line">colors = [<span class="hljs-string">'#447f44'</span>, <span class="hljs-string">'#cd4040'</span>, <span class="hljs-string">'#636efa'</span>, <span class="hljs-string">'#ddc927'</span>, <span class="hljs-string">'#9271dd'</span>]</span><br><span class="line"></span><br><span class="line">subplot_titles = []</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>]), masses[i])</span><br><span class="line">    mean_ppm = np.mean(ppm_differences)</span><br><span class="line">    subplot_titles.append(<span class="hljs-string">f"<span class="hljs-subst">{[<span class="hljs-string">'Na2I'</span>, <span class="hljs-string">'Na3I2'</span>, <span class="hljs-string">'Na4I3'</span>, <span class="hljs-string">'Na2[15]NO3'</span>, <span class="hljs-string">'Na3[34]SO4'</span>][i]}</span>: <span class="hljs-subst">{mean_ppm:<span class="hljs-number">.2</span>f}</span> ppm"</span>)</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">5</span>, subplot_titles=subplot_titles)</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(masses)):</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'corrected_m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'blue'</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_trace(</span><br><span class="line">        go.Histogram(x=peak_results[masses[i]][<span class="hljs-string">'m/z'</span>], marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'red'</span>, opacity=<span class="hljs-number">0.75</span>)),</span><br><span class="line">        row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span></span><br><span class="line">    )</span><br><span class="line">    fig.add_vline(x=masses[i], line_width=<span class="hljs-number">2</span>, line_dash=<span class="hljs-string">"dash"</span>, line_color=<span class="hljs-string">"grey"</span>, row=<span class="hljs-number">1</span>, col=i+<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>, <span class="hljs-built_in">range</span>=[masses[i]-<span class="hljs-number">0.0025</span>, masses[i]+<span class="hljs-number">0.0025</span>], col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line">    fig.update_yaxes(title_text=<span class="hljs-string">"Count"</span>, col=i+<span class="hljs-number">1</span>, row=<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(</span><br><span class="line">    height=<span class="hljs-number">400</span>, width=<span class="hljs-number">1500</span>,</span><br><span class="line">    title_text=<span class="hljs-string">"Calibrant Mass Distribution Before and After Calibration"</span>,</span><br><span class="line">    plot_bgcolor=<span class="hljs-string">'white'</span>, showlegend=<span class="hljs-literal">False</span></span><br><span class="line">)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">subplot_titles = ['Na2I', 'Na3I2', 'Na4I3','Na2[15]NO3', 'Na3[34]SO4']
+masses = [172.88347, 322.77771, 472.67196, 108.9638, 166.9163]
+colors = ['#447f44', '#cd4040', '#636efa', '#ddc927', '#9271dd']
+
+subplot_titles = []
+for i in range(len(masses)):
+    ppm_differences = calculate_ppm(np.array(peak_results[masses[i]]['corrected_m/z']), masses[i])
+    mean_ppm = np.mean(ppm_differences)
+    subplot_titles.append(f"{['Na2I', 'Na3I2', 'Na4I3', 'Na2[15]NO3', 'Na3[34]SO4'][i]}: {mean_ppm:.2f} ppm")
+
+fig = make_subplots(rows=1, cols=5, subplot_titles=subplot_titles)
+for i in range(len(masses)):
+    fig.add_trace(
+        go.Histogram(x=peak_results[masses[i]]['corrected_m/z'], marker=dict(color='blue')),
+        row=1, col=i+1
+    )
+    fig.add_trace(
+        go.Histogram(x=peak_results[masses[i]]['m/z'], marker=dict(color='red', opacity=0.75)),
+        row=1, col=i+1
+    )
+    fig.add_vline(x=masses[i], line_width=2, line_dash="dash", line_color="grey", row=1, col=i+1)
+    fig.update_xaxes(title_text="m/z", range=[masses[i]-0.0025, masses[i]+0.0025], col=i+1, row=1)
+    fig.update_yaxes(title_text="Count", col=i+1, row=1)
+
+fig.update_layout(
+    height=400, width=1500,
+    title_text="Calibrant Mass Distribution Before and After Calibration",
+    plot_bgcolor='white', showlegend=False
+)
+fig.show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </body></html>
     
     </div>
@@ -219,7 +271,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -358,7 +410,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -371,10 +423,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

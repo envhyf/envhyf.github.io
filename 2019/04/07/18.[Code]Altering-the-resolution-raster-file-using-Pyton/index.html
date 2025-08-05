@@ -115,7 +115,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Search" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -156,7 +156,7 @@
         <span class="column is-narrow">
             
             
-            4 分钟 read (About 621 words)
+            4 分钟 de lectura (Alrededor de 621 palabras)
         </span>
         
     </div>
@@ -164,14 +164,70 @@
     
         <html><head></head><body><p>Sometimes, we need to transform the original raster dataset to a different resolution (usually coarser). In this post, I will introduce the simple workflow for cell resampling using Python. <span id="more"></span></p>
 <h1 id="1-Data-import-preprocessing"><a href="#1-Data-import-preprocessing" class="headerlink" title="1. Data import / preprocessing"></a>1. Data import / preprocessing</h1><p>To get started, first load the required library and then import the original raster data. In this case, we downloaded the Gross Domestic Product (GDP) distribution of China in 2010 with the resolution of 1 km x 1 km as the input. What’s more, a subset of China outlined by a shapefile was also used for clipping that raster.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="hljs-string">'ignore'</span>)</span><br><span class="line"><span class="hljs-keyword">import</span> cartopy</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"><span class="hljs-keyword">from</span> osgeo <span class="hljs-keyword">import</span> gdal</span><br><span class="line"><span class="hljs-keyword">import</span> rasterio</span><br><span class="line"><span class="hljs-keyword">from</span> rasterio.mask <span class="hljs-keyword">import</span> mask</span><br><span class="line"><span class="hljs-keyword">import</span> geopandas <span class="hljs-keyword">as</span> gpd</span><br><span class="line"><span class="hljs-keyword">from</span> shapely.geometry <span class="hljs-keyword">import</span> mapping</span><br><span class="line"><span class="hljs-keyword">import</span> skimage.transform <span class="hljs-keyword">as</span> st</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># original data import</span></span><br><span class="line"><span class="hljs-keyword">from</span> osgeo <span class="hljs-keyword">import</span> gdal</span><br><span class="line">pathToRaster = <span class="hljs-string">r"./cngdp2010.tif"</span></span><br><span class="line">input_raster = gdal.Open(pathToRaster)</span><br><span class="line">prj=input_raster.GetProjection()</span><br><span class="line">srs=osr.SpatialReference(wkt=prj)</span><br><span class="line"><span class="hljs-keyword">if</span> srs.IsProjected:</span><br><span class="line">    <span class="hljs-built_in">print</span> srs.GetAttrValue(<span class="hljs-string">'projcs'</span>)</span><br><span class="line"><span class="hljs-built_in">print</span> srs.GetAttrValue(<span class="hljs-string">'geogcs'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># Albers_Conic_Equal_Area</span></span><br><span class="line"><span class="hljs-comment"># GCS_Unknown_datum_based_upon_the_Krassowsky_1940_ellipsoid</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># transforming the projection of the input_raster</span></span><br><span class="line">output_raster = <span class="hljs-string">r'./cngdp2010_adjust.tif'</span></span><br><span class="line">gdal.Warp(output_raster,input_raster,dstSRS=<span class="hljs-string">'EPSG:4326'</span>,dstNodata = -<span class="hljs-number">9999</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># clipping the raster by polygon</span></span><br><span class="line">input_shape = <span class="hljs-string">r'./boundary.shp'</span></span><br><span class="line">shapefile = gpd.read_file(input_shape)</span><br><span class="line">shapefile = shapefile.to_crs(epsg=<span class="hljs-number">4326</span>)</span><br><span class="line">input_raster = <span class="hljs-string">r'./cngdp2010_adjust.tif'</span> <span class="hljs-comment"># input raster</span></span><br><span class="line">geoms = shapefile.geometry.values <span class="hljs-comment"># list of shapely geometries</span></span><br><span class="line">output_raster = <span class="hljs-string">r'./2+26city_gdp.tif'</span> <span class="hljs-comment"># output raster</span></span><br><span class="line">geometry = geoms[<span class="hljs-number">0</span>] <span class="hljs-comment"># shapely geometry</span></span><br><span class="line">geoms = [mapping(geoms[<span class="hljs-number">0</span>])]</span><br><span class="line"><span class="hljs-keyword">with</span> rasterio.<span class="hljs-built_in">open</span>(input_raster) <span class="hljs-keyword">as</span> src:</span><br><span class="line">    out_image, out_transform = mask(src, geoms, crop=<span class="hljs-literal">True</span>) <span class="hljs-comment">## 出现了不配套的情况，怎么办</span></span><br><span class="line">    out_meta = src.meta.copy()        </span><br><span class="line">out_meta.update({<span class="hljs-string">"driver"</span>: <span class="hljs-string">"GTiff"</span>,</span><br><span class="line">                 <span class="hljs-string">"height"</span>: out_image.shape[<span class="hljs-number">1</span>],</span><br><span class="line">                 <span class="hljs-string">"width"</span>: out_image.shape[<span class="hljs-number">2</span>],</span><br><span class="line">                 <span class="hljs-string">"transform"</span>: out_transform})</span><br><span class="line"><span class="hljs-keyword">with</span> rasterio.<span class="hljs-built_in">open</span>(output_raster, <span class="hljs-string">"w"</span>, **out_meta) <span class="hljs-keyword">as</span> dest:</span><br><span class="line">    dest.write(out_image)  </span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-Python" data-language="Python"><code class="language-Python">import warnings
+warnings.filterwarnings('ignore')
+import cartopy
+import matplotlib.pyplot as plt
+from osgeo import gdal
+import rasterio
+from rasterio.mask import mask
+import geopandas as gpd
+from shapely.geometry import mapping
+import skimage.transform as st
+
+# original data import
+from osgeo import gdal
+pathToRaster = r"./cngdp2010.tif"
+input_raster = gdal.Open(pathToRaster)
+prj=input_raster.GetProjection()
+srs=osr.SpatialReference(wkt=prj)
+if srs.IsProjected:
+    print srs.GetAttrValue('projcs')
+print srs.GetAttrValue('geogcs')
+
+# Albers_Conic_Equal_Area
+# GCS_Unknown_datum_based_upon_the_Krassowsky_1940_ellipsoid
+
+# transforming the projection of the input_raster
+output_raster = r'./cngdp2010_adjust.tif'
+gdal.Warp(output_raster,input_raster,dstSRS='EPSG:4326',dstNodata = -9999)
+
+# clipping the raster by polygon
+input_shape = r'./boundary.shp'
+shapefile = gpd.read_file(input_shape)
+shapefile = shapefile.to_crs(epsg=4326)
+input_raster = r'./cngdp2010_adjust.tif' # input raster
+geoms = shapefile.geometry.values # list of shapely geometries
+output_raster = r'./2+26city_gdp.tif' # output raster
+geometry = geoms[0] # shapely geometry
+geoms = [mapping(geoms[0])]
+with rasterio.open(input_raster) as src:
+    out_image, out_transform = mask(src, geoms, crop=True) ## 出现了不配套的情况，怎么办
+    out_meta = src.meta.copy()        
+out_meta.update({"driver": "GTiff",
+                 "height": out_image.shape[1],
+                 "width": out_image.shape[2],
+                 "transform": out_transform})
+with rasterio.open(output_raster, "w", **out_meta) as dest:
+    dest.write(out_image)  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img src="/images/18.Altering_raster_resolution/Fig.1.png"></p>
 <h1 id="2-Resampling-the-data"><a href="#2-Resampling-the-data" class="headerlink" title="2. Resampling the data"></a>2. Resampling the data</h1><p>There are many different approaches to adjust the resolution of the raster file. Here, I use one simple method suppoerted by <a target="_blank" rel="noopener" href="https://scikit-image.org/">skikit-image package</a>. With the resize function, you are simply create a new 2-d array with a predefined mesh grid.  </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pathToRaster  = <span class="hljs-string">r'./2+26city_gdp.tif'</span></span><br><span class="line"><span class="hljs-keyword">with</span> rasterio.<span class="hljs-built_in">open</span>(pathToRaster) <span class="hljs-keyword">as</span> src:</span><br><span class="line">    arr = src.read()</span><br><span class="line">    arr[arr ==-<span class="hljs-number">9999</span>] = np.nan</span><br><span class="line">    arr  = arr[<span class="hljs-number">0</span>,:,:]</span><br><span class="line">    <span class="hljs-comment"># In this case, the orignial resolution was adjusted to 3 km x 3 km.</span></span><br><span class="line">    new_shape = (<span class="hljs-built_in">round</span>(arr.shape[<span class="hljs-number">0</span>]/<span class="hljs-number">3.0</span>),<span class="hljs-built_in">round</span>(arr.shape[<span class="hljs-number">1</span>]/<span class="hljs-number">3.0</span>))</span><br><span class="line">    newarr= st.resize(array, new_shape, mode=<span class="hljs-string">'constant'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-Python" data-language="Python"><code class="language-Python">pathToRaster  = r'./2+26city_gdp.tif'
+with rasterio.open(pathToRaster) as src:
+    arr = src.read()
+    arr[arr ==-9999] = np.nan
+    arr  = arr[0,:,:]
+    # In this case, the orignial resolution was adjusted to 3 km x 3 km.
+    new_shape = (round(arr.shape[0]/3.0),round(arr.shape[1]/3.0))
+    newarr= st.resize(array, new_shape, mode='constant')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="/images/18.Altering_raster_resolution/Fig.2.png"></p>
 <h1 id="3-Exporting-Data"><a href="#3-Exporting-Data" class="headerlink" title="3. Exporting Data"></a>3. Exporting Data</h1><p>When the resampling works are done, the generated numpy array can be exported to geotiff format file for further uses. Luckily, some sufficient information for geotiff file can be easily assesed from the original one.</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> cartopy.crs <span class="hljs-keyword">as</span> ccrs</span><br><span class="line"><span class="hljs-keyword">import</span> rasterio</span><br><span class="line">pathToRaster  = <span class="hljs-string">r'./2+26city_gdp.tif'</span></span><br><span class="line">raster = gdal.Open(pathToRaster,  gdal.GA_ReadOnly)</span><br><span class="line">gt     = raster.GetGeoTransform()</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-Python" data-language="Python"><code class="language-Python">import cartopy.crs as ccrs
+import rasterio
+pathToRaster  = r'./2+26city_gdp.tif'
+raster = gdal.Open(pathToRaster,  gdal.GA_ReadOnly)
+gt     = raster.GetGeoTransform()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Since the mesh grid has been altered, the GeoTransform information should be editted. The values in <strong>gt</strong> includes:</p>
 <ul>
@@ -183,7 +239,16 @@
 <li>gt[5] = n-s pixel resolution (negative value)</li>
 </ul>
 <p>In this case, gt<a href="/images/18.Altering_raster_resolution/Fig.1.png">1</a> and gt[5] should be revised (i.e., multiplied by 3)</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">output =  <span class="hljs-string">r'./2+26city_3km.tif'</span></span><br><span class="line">cols, rows =newarr.shape[<span class="hljs-number">1</span>],newarr.shape[<span class="hljs-number">0</span>]</span><br><span class="line">driver = gdal.GetDriverByName(<span class="hljs-string">"GTiff"</span>)</span><br><span class="line">outDs = driver.Create(output, cols, rows, <span class="hljs-number">1</span>, gdal.GDT_Float32)</span><br><span class="line">r, <span class="hljs-built_in">float</span>, etc).</span><br><span class="line">outDs.SetGeoTransform((gt[<span class="hljs-number">0</span>],gt[<span class="hljs-number">1</span>]*<span class="hljs-number">3.0</span>,gt[<span class="hljs-number">2</span>],gt[<span class="hljs-number">3</span>],gt[<span class="hljs-number">4</span>],gt[<span class="hljs-number">5</span>]*<span class="hljs-number">3.0</span>))</span><br><span class="line">outDs.SetProjection(raster.GetProjection())</span><br><span class="line">outDs.GetRasterBand(<span class="hljs-number">1</span>).WriteArray(newarr[::-<span class="hljs-number">1</span>])</span><br><span class="line">outDs.GetRasterBand(<span class="hljs-number">1</span>).SetNoDataValue(-<span class="hljs-number">9999</span>)</span><br><span class="line"><span class="hljs-keyword">del</span> outDs</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-Python" data-language="Python"><code class="language-Python">output =  r'./2+26city_3km.tif'
+cols, rows =newarr.shape[1],newarr.shape[0]
+driver = gdal.GetDriverByName("GTiff")
+outDs = driver.Create(output, cols, rows, 1, gdal.GDT_Float32)
+r, float, etc).
+outDs.SetGeoTransform((gt[0],gt[1]*3.0,gt[2],gt[3],gt[4],gt[5]*3.0))
+outDs.SetProjection(raster.GetProjection())
+outDs.GetRasterBand(1).WriteArray(newarr[::-1])
+outDs.GetRasterBand(1).SetNoDataValue(-9999)
+del outDs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Done!</p>
 <h1 id="PS"><a href="#PS" class="headerlink" title="PS:"></a>PS:</h1><p><em>参考资料</em></p>
@@ -221,7 +286,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Comments</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -360,7 +425,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -373,10 +438,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                UNTITLED: '(Sin título)',
             },
             CONTENT_URL: '/content.json',
         };

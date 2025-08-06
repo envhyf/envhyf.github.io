@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="http://envhyf.github.io/images/Orbitrack_log/Fig.Ion_flow_Orbi+TOF+.png">
 <meta property="article:published_time" content="2024-11-01T15:40:00.000Z">
-<meta property="article:modified_time" content="2025-08-05T22:59:10.982Z">
+<meta property="article:modified_time" content="2025-08-06T18:58:33.892Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Orbitrap">
@@ -115,7 +115,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="Buscar" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -149,21 +149,20 @@
         <span class="column is-narrow">
             
             
-            4 分钟 lesen (Über 657 Wörter)
+            4 分钟 de lectura (Alrededor de 648 palabras)
         </span>
         
     </div>
     <div class="article-entry is-size-6-mobile" itemprop="articleBody">
     
-        <html><head></head><body><h2 id="1-Motivation"><a href="#1-Motivation" class="headerlink" title="1. Motivation"></a>1. Motivation</h2><p>Continuing from the previous post on molecular formula assignment, I encountered a common issue: <strong>overfitting</strong> during TOF peak assignment. In some cases, a narrow TOF m/z window was being assigned with <strong>too many candidate formulas</strong>, resulting in <strong>high uncertainty</strong> for each individual ion. In other words, we might obtain a wrong intensity for a correct formula, which affecting the dat reliability.</p>
+        <html><head></head><body><h2 id="1-Motivation"><a href="#1-Motivation" class="headerlink" title="1. Motivation"></a>1. Motivation</h2><p>Continuing from the previous post on molecular formula assignment, I encountered a common issue: <strong>overfitting</strong> during TOF peak assignment. In some cases, a narrow TOF m/z window was being assigned with too many candidate formulas, resulting in high uncertainty for each individual ion. In other words, we might obtain a wrong intensity for a correct formula, which affecting the dat reliability.</p>
 <p>To address this, I implemented a refinement step after formula assignment:<br><strong>Only the local maxima within a given ppm range are retained</strong>, along with known TOF apex peaks.</p>
 <span id="more"></span>
 
 <h2 id="2-Concept"><a href="#2-Concept" class="headerlink" title="2. Concept"></a>2. Concept</h2><p>The idea is simple:</p>
 <ul>
 <li>If multiple peaks are detected within a small ppm window, <strong>keep only the most intense one</strong>.</li>
-<li>If a lower-intensity peak is near a known <strong>TOF apex position</strong> (from missing peaks), it is <strong>also retained</strong> to preserve chemically real signals that Orbitrap may have only partially captured. (this is because sometimes there are multiple peaks in an unit m/z window, and there are some ion on the shoulder of the main peak, and it is close to the small peak apex, if they somehow matched with the previous criteria, the ion on the peak apex were removed,which was not we expced.)</li>
-<li>All other weaker peaks in that region are discarded.</li>
+<li>If a lower-intensity peak is near a known <strong>TOF apex position</strong> (from missing peaks), it is also retained to preserve chemically real signals that Orbitrap may have only partially captured. (this is because sometimes there are multiple peaks in an unit m/z window, and there are some ion on the shoulder of the main peak, and it is close to the small peak apex, if they somehow matched with the previous criteria, the ion on the peak apex were removed,which was not we expced.)</li>
 </ul>
 <h2 id="3-Function-of-Intensity-Based-Refiner"><a href="#3-Function-of-Intensity-Based-Refiner" class="headerlink" title="3. Function of Intensity-Based Refiner"></a>3. Function of Intensity-Based Refiner</h2><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="title function_">refiner_by_orbitrap_intensity_ratio</span>(<span class="hljs-params">mf_result, ppm_range=<span class="hljs-number">50</span>, missing_peak_list=<span class="hljs-literal">None</span></span>):</span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    Refine Orbitrap peak list by comparing intensities with neighbors in ±ppm_range.</span></span><br><span class="line"><span class="hljs-string">    Keeps local maxima or known TOF apex ions (from missing_peak_list).</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    Parameters:</span></span><br><span class="line"><span class="hljs-string">        mf_result (pd.DataFrame): DataFrame with 'exp_mass' and 'abundance'</span></span><br><span class="line"><span class="hljs-string">        ppm_range (float): PPM range for neighborhood comparison</span></span><br><span class="line"><span class="hljs-string">        missing_peak_list (pd.DataFrame): Known TOF apex m/z values (optional)</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    Returns:</span></span><br><span class="line"><span class="hljs-string">        pd.DataFrame: Filtered mf_result containing only retained peaks</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    <span class="hljs-keyword">if</span> missing_peak_list <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:</span><br><span class="line">        missing_peak_list = []</span><br><span class="line"></span><br><span class="line">    mf_result = mf_result.sort_values(by=<span class="hljs-string">'exp_mass'</span>).reset_index(drop=<span class="hljs-literal">True</span>)</span><br><span class="line">    exp_mass = mf_result[<span class="hljs-string">'exp_mass'</span>].values</span><br><span class="line">    abundance = mf_result[<span class="hljs-string">'abundance'</span>].values</span><br><span class="line">    keep_indices = np.ones(<span class="hljs-built_in">len</span>(exp_mass), dtype=<span class="hljs-built_in">bool</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(exp_mass)):</span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> keep_indices[i]:</span><br><span class="line">            <span class="hljs-keyword">continue</span></span><br><span class="line"></span><br><span class="line">        mz_i = exp_mass[i]</span><br><span class="line">        intensity_i = abundance[i]</span><br><span class="line">        ppm_tolerance = mz_i * ppm_range / <span class="hljs-number">1e6</span></span><br><span class="line"></span><br><span class="line">        lower = mz_i - ppm_tolerance</span><br><span class="line">        upper = mz_i + ppm_tolerance</span><br><span class="line"></span><br><span class="line">        mask = (exp_mass &gt;= lower) &amp; (exp_mass &lt;= upper) &amp; (np.arange(<span class="hljs-built_in">len</span>(exp_mass)) != i) &amp; keep_indices</span><br><span class="line">        neighbor_indices = np.where(mask)[<span class="hljs-number">0</span>]</span><br><span class="line"></span><br><span class="line">        is_max = <span class="hljs-built_in">all</span>(intensity_i &gt;= abundance[j] <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> neighbor_indices)</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> is_max:</span><br><span class="line">            <span class="hljs-comment"># Keep only if close to a known TOF apex</span></span><br><span class="line">            close_to_tof_apex = <span class="hljs-built_in">any</span>(<span class="hljs-built_in">abs</span>(mz_i - tof_mz) &lt;= <span class="hljs-number">0.001</span> <span class="hljs-keyword">for</span> tof_mz <span class="hljs-keyword">in</span> missing_peak_list[<span class="hljs-string">'m.z'</span>].values)</span><br><span class="line">            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> close_to_tof_apex:</span><br><span class="line">                keep_indices[i] = <span class="hljs-literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> mf_result[keep_indices].reset_index(drop=<span class="hljs-literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
 
@@ -213,7 +212,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Kommentare</h3>
+    <h3 class="title is-4">Comentarios</h3>
     
 <script>
     var disqus_config = function () {
@@ -339,7 +338,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Escribe algo..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -352,8 +351,8 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
+                PAGES: 'Páginas',
+                CATEGORIES: 'Categorías',
                 TAGS: 'Tags',
                 UNTITLED: '(Sin título)',
             },

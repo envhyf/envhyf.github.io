@@ -21,17 +21,17 @@
 <meta property="og:site_name" content="太平塔">
 <meta property="og:description" content="With ultra-high resolution Orbitrap MS1 scan, I already obtain highly accurate chemical formulae. However, chemical information are still not enough.       First, each formula may correspond to multip">
 <meta property="og:locale">
-<meta property="og:image" content="http://envhyf.github.io/images_rele/Fig.bad_example_of_no_meaningful_MS2.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Fig.bad_example_of_no_meaningful_MS2.png">
 <meta property="og:image" content="http://envhyf.github.io/images_rele/Fig.MSBuddy.png">
-<meta property="og:image" content="http://envhyf.github.io/images_rele/Fig.SIRIUS_paper.png">
-<meta property="og:image" content="http://envhyf.github.io/images_rele/Fig.Results_from_SIRIUS.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Fig.SIRIUS_paper.png">
+<meta property="og:image" content="http://envhyf.github.io/images/Fig.Results_from_SIRIUS.png">
 <meta property="article:published_time" content="2025-04-01T13:40:00.000Z">
-<meta property="article:modified_time" content="2025-08-07T21:40:05.306Z">
+<meta property="article:modified_time" content="2025-08-07T21:42:16.862Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Orbitrap">
 <meta property="article:tag" content="Mass Spectrometry">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://envhyf.github.io/images_rele/Fig.bad_example_of_no_meaningful_MS2.png">
+<meta name="twitter:image" content="http://envhyf.github.io/images/Fig.bad_example_of_no_meaningful_MS2.png">
 
 
 
@@ -117,7 +117,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Suche" href="javascript:;">
+            <a class="navbar-item search" title="Search" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -151,7 +151,7 @@
         <span class="column is-narrow">
             
             
-            15 分钟 lesen (Über 2317 Wörter)
+            15 分钟 read (About 2314 words)
         </span>
         
     </div>
@@ -274,7 +274,7 @@
 
 <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">tar_mz   = <span class="hljs-number">197.04248</span></span><br><span class="line">sample_start,sample_end  = <span class="hljs-number">37.00</span>,<span class="hljs-number">45.00</span></span><br><span class="line">ms1_scan = <span class="hljs-number">2242</span></span><br><span class="line"></span><br><span class="line">fig = make_subplots(</span><br><span class="line">    rows=<span class="hljs-number">1</span>, cols=<span class="hljs-number">2</span>,</span><br><span class="line">    subplot_titles=(<span class="hljs-string">"MS1 Profile around m/z  197.04248 (C7H12NaO5+)"</span>,<span class="hljs-string">'MS2 fragmentation spectra'</span>),</span><br><span class="line">    vertical_spacing=<span class="hljs-number">0.1</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">sel_ms1_df = df_ms1[(df_ms1[<span class="hljs-string">'m/z'</span>]&gt;tar_mz-<span class="hljs-number">1</span>)&amp;(df_ms1[<span class="hljs-string">'m/z'</span>]&lt;tar_mz+<span class="hljs-number">1</span>)]</span><br><span class="line">fig.add_trace(go.Bar(</span><br><span class="line">    x=sel_ms1_df[sel_ms1_df[<span class="hljs-string">'Scan'</span>] == ms1_scan][<span class="hljs-string">'m/z'</span>],  <span class="hljs-comment"># x-axis: m/z values</span></span><br><span class="line">    y=sel_ms1_df[sel_ms1_df[<span class="hljs-string">'Scan'</span>] == ms1_scan][<span class="hljs-string">'Intensity'</span>],  <span class="hljs-comment"># y-axis: Intensity values</span></span><br><span class="line">    name=<span class="hljs-string">"MS1"</span>,  <span class="hljs-comment"># Name for the legend</span></span><br><span class="line">    marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'blue'</span>)  <span class="hljs-comment"># Customize bar color</span></span><br><span class="line">), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">tolerance = <span class="hljs-number">0.02</span></span><br><span class="line"></span><br><span class="line">precursor_mz_array = df_ms2[<span class="hljs-string">'PrecursorMz'</span>].unique()</span><br><span class="line">precursor_mz_numeric = precursor_mz_array.astype(<span class="hljs-built_in">float</span>)</span><br><span class="line">selected_mz = precursor_mz_array[</span><br><span class="line">    (precursor_mz_numeric &gt;= tar_mz - tolerance) &amp; </span><br><span class="line">    (precursor_mz_numeric &lt;= tar_mz + tolerance)</span><br><span class="line">]</span><br><span class="line">      </span><br><span class="line"></span><br><span class="line">sel_ms2_df = df_ms2[(df_ms2[<span class="hljs-string">'PrecursorMz'</span>].isin(selected_mz))&amp; (df_ms2[<span class="hljs-string">'RetTime'</span>]&gt;sample_start)&amp;(df_ms2[<span class="hljs-string">'RetTime'</span>]&lt;sample_end)]</span><br><span class="line">sel_ms2_df = sel_ms2_df.sort_values(by =<span class="hljs-string">'m/z'</span>)</span><br><span class="line">fig.add_trace(go.Bar(</span><br><span class="line">    x=sel_ms2_df[<span class="hljs-string">'m/z'</span>],  <span class="hljs-comment"># x-axis: m/z values</span></span><br><span class="line">    y=sel_ms2_df[<span class="hljs-string">'Intensity'</span>],  <span class="hljs-comment"># y-axis: Intensity values</span></span><br><span class="line">    name=<span class="hljs-string">"MS2"</span>, hovertext=sel_ms2_df[<span class="hljs-string">'RetTime'</span>],<span class="hljs-comment"># Name for the legend</span></span><br><span class="line">    marker=<span class="hljs-built_in">dict</span>(color=<span class="hljs-string">'red'</span>)  <span class="hljs-comment"># Customize bar color</span></span><br><span class="line">), row=<span class="hljs-number">1</span>, col=<span class="hljs-number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>,<span class="hljs-built_in">range</span> = [tar_mz - <span class="hljs-number">0.2</span>, tar_mz+<span class="hljs-number">0.2</span>], showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>, title_font=<span class="hljs-built_in">dict</span>(size=<span class="hljs-number">14</span>, color=<span class="hljs-string">'black'</span>),col = <span class="hljs-number">1</span>,row = <span class="hljs-number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Intensity"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>,<span class="hljs-built_in">range</span> = [<span class="hljs-number">0</span>, <span class="hljs-literal">None</span>], title_font=<span class="hljs-built_in">dict</span>(size=<span class="hljs-number">14</span>, color=<span class="hljs-string">'black'</span>),col = <span class="hljs-number">1</span>,row = <span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.update_xaxes(title_text=<span class="hljs-string">"m/z"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>, title_font=<span class="hljs-built_in">dict</span>(size=<span class="hljs-number">14</span>, color=<span class="hljs-string">'black'</span>),col = <span class="hljs-number">2</span>,row = <span class="hljs-number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="hljs-string">"Intensity"</span>, showline=<span class="hljs-literal">True</span>, linecolor=<span class="hljs-string">'black'</span>,<span class="hljs-built_in">range</span> = [<span class="hljs-number">0</span>, <span class="hljs-literal">None</span>], title_font=<span class="hljs-built_in">dict</span>(size=<span class="hljs-number">14</span>, color=<span class="hljs-string">'black'</span>),col = <span class="hljs-number">2</span>,row = <span class="hljs-number">1</span>)</span><br><span class="line">fig.update_layout(title_text=<span class="hljs-string">''</span>, width=<span class="hljs-number">1200</span>, height=<span class="hljs-number">450</span>, showlegend=<span class="hljs-literal">False</span>, plot_bgcolor=<span class="hljs-string">'white'</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></tbody></table></figure>
 <p>Below is an example where the MS1 signal was strong, but the corresponding MS2 spectrum failed to produce meaningful fragments, likely due to poor fragmentation settings or low ion injection efficiency. </p>
-<p><img src="/images_rele/Fig.bad_example_of_no_meaningful_MS2.png"></p>
+<p><img src="/images/Fig.bad_example_of_no_meaningful_MS2.png"></p>
 <h2 id="4-Tool-recommendation-for-MS2-data-processing"><a href="#4-Tool-recommendation-for-MS2-data-processing" class="headerlink" title="4. Tool recommendation for MS2 data processing"></a>4. Tool recommendation for MS2 data processing</h2><h3 id="4-1-MetFrag"><a href="#4-1-MetFrag" class="headerlink" title="4.1 MetFrag"></a>4.1 <a target="_blank" rel="noopener" href="https://msbi.ipb-halle.de/MetFrag/">MetFrag</a></h3><p>A web-based tool for in-silico fragmentation and metabolite annotation. It is commonly used for identifying small molecules based on MS2 spectra.</p>
 <h3 id="4-2-CFM-ID"><a href="#4-2-CFM-ID" class="headerlink" title="4.2 CFM-ID"></a>4.2 <a target="_blank" rel="noopener" href="https://cfmid.wishartlab.com/">CFM-ID</a></h3><p>Another tool for predicting MS2 fragmentation patterns, supporting different collision energies.<br>Note: The website is often unstable and may be temporarily inaccessible.</p>
 <h3 id="4-3-MassBank"><a href="#4-3-MassBank" class="headerlink" title="4.3 MassBank"></a>4.3 <a target="_blank" rel="noopener" href="https://massbank.eu/MassBank/">MassBank</a></h3><p>Unlike MetFrag and CFM-ID, MassBank provides a searchable database of experimentally acquired MS2 spectra. Users can compare their spectra to community-uploaded reference data under similar experimental conditions.</p>
@@ -286,10 +286,10 @@
 <p>The output shows a successful identification of a likely molecular formula using MS2-assisted annotation:</p>
 <figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">adduct [M+H]+</span><br><span class="line">formula_rank_1 C9H10N2</span><br><span class="line">estimated_fdr 0.00536238379855114</span><br><span class="line">formula_rank_2 C6H11FN2O</span><br><span class="line">formula_rank_3 None</span><br><span class="line">formula_rank_4 None</span><br><span class="line">formula_rank_5 None</span><br></pre></td></tr></tbody></table></figure>
 <p>In this case, MS2 fragments supported <em>C9H10N2</em> is the most probable formula. </p>
-<h3 id="4-5-SIRIUS"><a href="#4-5-SIRIUS" class="headerlink" title="4.5 SIRIUS"></a>4.5 <a target="_blank" rel="noopener" href="https://boecker-lab.github.io/docs.sirius.github.io/">SIRIUS</a></h3><p><img src="/images_rele/Fig.SIRIUS_paper.png">  </p>
+<h3 id="4-5-SIRIUS"><a href="#4-5-SIRIUS" class="headerlink" title="4.5 SIRIUS"></a>4.5 <a target="_blank" rel="noopener" href="https://boecker-lab.github.io/docs.sirius.github.io/">SIRIUS</a></h3><p><img src="/images/Fig.SIRIUS_paper.png">  </p>
 <p>SIRIUS platform is a GUI-based software for analyzing MS2 datasets (It also has command line version which I have not tried yet). SIRIUS combines library matching, in-silico fragmentation, and de novo molecular formula prediction to rank candidate molecular structures based on how well they match observed MS2 fragments.    </p>
 <p>Below is an example output from my dataset, showcasing the top-ranked structure based on fragment scoring</p>
-<p><img src="/images_rele/Fig.Results_from_SIRIUS.png"> </p>
+<p><img src="/images/Fig.Results_from_SIRIUS.png"> </p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
 <li><p>Assress, H. A.; Ferruzzi, M. G.; Lan, R. S.<br>Optimization of Mass Spectrometric Parameters in Data Dependent Acquisition for Untargeted Metabolomics on the Basis of Putative Assignments.<br>J. Am. Soc. Mass Spectrom. 2023, 34(8), 1621–1631. <a target="_blank" rel="noopener" href="https://doi.org/10.1021/jasms.3c00084">https://doi.org/10.1021/jasms.3c00084</a></p>
 </li>
@@ -334,7 +334,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Kommentare</h3>
+    <h3 class="title is-4">Comments</h3>
     
 <script>
     var disqus_config = function () {
@@ -365,7 +365,7 @@
         <div class="columns content">
             <div class="column is-narrow has-text-centered">
                 &copy; 2025 Hao Yufang&nbsp;
-                Разработано на базе <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
                         target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
             </div>
             <div class="column is-hidden-mobile"></div>
@@ -460,7 +460,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Suche etwas..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -473,10 +473,10 @@
         var INSIGHT_CONFIG = {
             TRANSLATION: {
                 POSTS: 'Posts',
-                PAGES: 'Seiten',
-                CATEGORIES: 'Kategorien',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
                 TAGS: 'Tags',
-                UNTITLED: '(Sin título)',
+                UNTITLED: '(Untitled)',
             },
             CONTENT_URL: '/content.json',
         };

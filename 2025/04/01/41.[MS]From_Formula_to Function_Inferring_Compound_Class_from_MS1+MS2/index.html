@@ -26,7 +26,7 @@
 <meta property="og:image" content="http://envhyf.github.io/images/MS2/Fig.SIRIUS_paper.png">
 <meta property="og:image" content="http://envhyf.github.io/images/MS2/Fig.Results_from_SIRIUS.png">
 <meta property="article:published_time" content="2025-04-01T13:40:00.000Z">
-<meta property="article:modified_time" content="2025-08-07T21:47:46.911Z">
+<meta property="article:modified_time" content="2025-08-07T21:57:09.213Z">
 <meta property="article:author" content="Hao Yufang">
 <meta property="article:tag" content="Orbitrap">
 <meta property="article:tag" content="Mass Spectrometry">
@@ -117,7 +117,7 @@
         
         <div class="navbar-menu navbar-end">
             
-            <a class="navbar-item search" title="Chercher" href="javascript:;">
+            <a class="navbar-item search" title="검색" href="javascript:;">
                 <i class="fas fa-search"></i>
             </a>
             
@@ -151,7 +151,7 @@
         <span class="column is-narrow">
             
             
-            15 分钟 lire (À propos 2317 mots)
+            15 分钟 소요 (약 2317 단어)
         </span>
         
     </div>
@@ -167,13 +167,14 @@
 <p>If we apply MS²  analysis, we can go beyond the limitations of MS1. In this process, a specific parent ion is first isolated in the quadrupole. Only this ion (actually also co-isolated ions in the same window) is allowed to pass through to the next stage, where it enters the collision cell and collide with N2 gas.</p>
 <p>The resulting fragment ions, which carry structural information about the parent ion, are then introduced into the Orbitrap for high-resolution detection. These fragments provide rich m/z information, often linked to the presence or loss of specific functional groups, making the spectrum highly informative.</p>
 <p>By analyzing these MS2 spectra, either through in silico computational tools or by matching against curated spectral libraries, we can narrow down the structural identity of the parent ion. This capability is not only just valuable in environmental science but also has broad and profound applications in other fields. For example, in medical research, it is widely used for the structural identification of metabolites, disease diagnostics biomarker discovery (<a target="_blank" rel="noopener" href="https://polarishub.io/competitions/asap-discovery/antiviral-drug-discovery-2025">an interesting link</a>). In food chemistry, it enables the profiling of bioactive compounds and nutritional components.</p>
-<h2 id="1-MS2-Strategy-knowledge-base"><a href="#1-MS2-Strategy-knowledge-base" class="headerlink" title="1. MS2 Strategy knowledge base"></a>1. MS2 Strategy knowledge base</h2><p>Generally, there are two types of MS² (tandem mass spectrometry) acquisition strategies that can be adopted:</p>
+<h2 id="1-MS2-strategy-knowledge-base"><a href="#1-MS2-strategy-knowledge-base" class="headerlink" title="1. MS2 strategy knowledge base"></a>1. MS2 strategy knowledge base</h2><p>Generally, there are two types of MS² (tandem mass spectrometry) acquisition strategies that can be adopted:</p>
 <ol>
-<li>DDA – Data-Dependent Acquisition<br>In this approach, precursor ions are selected based on the MS1 signal intensity. The instrument automatically selects the top N most intense precursor ions (above a certain threshold) for fragmentation in MS2 (MS/MS).</li>
-</ol>
+<li><p>DDA – Data-Dependent Acquisition<br>In this approach, precursor ions are selected based on the MS1 signal intensity. The instrument automatically selects the top N most intense precursor ions (above a certain threshold) for fragmentation in MS2 (MS/MS).    </p>
 <p>✅ Advantage: High-abundance ions usually yield high-quality MS2 spectra, making structural interpretation more reliable.<br>⚠️ Limitation: Low-abundance ions may be missed, which is especially problematic in environmental samples like mine, where many of the most intense signals originate from background contaminants rather than meaningful analytes.</p>
-<ol>
-<li>DIA – Data-Independent Acquisition<br>In DIA, all ions within predefined m/z windows are fragmented simultaneously, regardless of their intensity.<br>✅ Advantage: Provides broader MS2 coverage, ensuring that even low-abundance compounds are captured.<br>⚠️ Limitation: The resulting MS2 spectra are highly complex and often require advanced deconvolution algorithms to interpret.</li>
+</li>
+<li><p>DIA – Data-Independent Acquisition<br>In DIA, all ions within predefined m/z windows are fragmented simultaneously, regardless of their intensity.        </p>
+<p>✅ Advantage: Provides broader MS2 coverage, ensuring that even low-abundance compounds are captured.<br>⚠️ Limitation: The resulting MS2 spectra are highly complex and often require advanced deconvolution algorithms to interpret.</p>
+</li>
 </ol>
 <p>In my case, I will first work with MS1 full-scan mode, using post-acquisition data analysis to identify and narrow down a list of important precursor ions across different m/z windows. Based on this information, I will then apply a targeted Selected Ion Monitoring (SIM) method focused on these specific ions. For each target, I will optimize key acquisition parameters with the goal of obtaining reproducible, stable, and chemically meaningful fragment patterns for downstream structural interpretation.</p>
 <p>From the paper of Assress et al (2023), I summarize the important paramters used for MS2 DIA analysis</p>
@@ -334,7 +335,7 @@
 
 
 <div class="comments">
-    <h3 class="title is-4">Commentaires</h3>
+    <h3 class="title is-4">댓글</h3>
     
 <script>
     var disqus_config = function () {
@@ -460,7 +461,7 @@
     <div class="searchbox-mask"></div>
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Que voulez-vous chercher ?" />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="아무거나 입력하세요" />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -472,11 +473,11 @@
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Catégories',
-                TAGS: 'Tags',
-                UNTITLED: '(Sans Titre)',
+                POSTS: '글',
+                PAGES: '페이지',
+                CATEGORIES: '카테고리 목록',
+                TAGS: '태그 목록',
+                UNTITLED: '(제목없음)',
             },
             CONTENT_URL: '/content.json',
         };
